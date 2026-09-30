@@ -131,12 +131,12 @@ export function mockVote(postId, pollName, optionIds) {
   return null;
 }
 
-export function mockCreateTopic({ title, raw, categoryId }) {
+export function mockCreateTopic({ title, raw, categoryId, tags = [] }) {
   const id = Math.max(...store.keys()) + 1;
   store.set(id, {
     ...seedTopic(id, title, mockUser),
     categoryName: mockCategories.find((c) => c.id === categoryId)?.name || 'General',
-    tags: [],
+    tags,
     firstPost: { id: id * 10, postNumber: 1, author: mockUser, html: cook(raw.replace(/\[poll[\s\S]*?\[\/poll\]/g, '')), createdAt: new Date().toISOString(), polls: parsePolls(raw) },
     replies: [],
     replyCount: 0,

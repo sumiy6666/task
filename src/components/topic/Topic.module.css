@@ -90,7 +90,9 @@
 }
 .stat { display: flex; align-items: center; gap: calc(11 * var(--px)); width: calc(121 * var(--px)); }
 .stat svg { width: calc(24 * var(--px)); height: calc(24 * var(--px)); }
-.statActive { color: var(--color-link-blue); }
+button.stat { color: inherit; }
+button.stat:hover svg { color: var(--color-primary); }
+.statActive, button.statActive { color: var(--color-link-blue); }
 .statActive svg { color: var(--color-primary); }
 .lastActivity { margin-left: auto; }
 

@@ -1,4 +1,4 @@
-import { createTopic } from '@/lib/discourse';
+import { createTopic, POLL_TAG } from '@/lib/discourse';
 import { errorResponse } from '@/lib/discourse/client';
 import { buildPollMarkup } from '@/lib/discourse/poll';
 
@@ -9,6 +9,7 @@ export async function POST(request) {
     if (!cleanTitle) return Response.json({ error: 'Please add a title.' }, { status: 422 });
 
     let raw = String(body).trim();
+    const tags = [];
     if (type === 'poll') {
       const options = (poll?.options || []).map((o) => String(o).trim()).filter(Boolean);
       if (options.length < 2) return Response.json({ error: 'A poll needs at least two options.' }, { status: 422 });
@@ -22,11 +23,12 @@ export async function POST(request) {
         closesAt: poll.closesAt || null,
       });
       raw = raw ? `${raw}\n\n${markup}` : markup;
+      tags.push(POLL_TAG);
     } else if (!raw) {
       return Response.json({ error: 'Please write something before posting.' }, { status: 422 });
     }
 
-    const result = await createTopic({ title: cleanTitle, raw, categoryId });
+    const result = await createTopic({ title: cleanTitle, raw, categoryId, tags });
     return Response.json(result, { status: 201 });
   } catch (error) {
     return errorResponse(error);

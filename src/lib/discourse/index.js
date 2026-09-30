@@ -29,10 +29,15 @@ export async function getTopic(id) {
   return mapTopic(topic, new Map(categories.map((c) => [c.id, c])));
 }
 
-export async function createTopic({ title, raw, categoryId }) {
-  if (!isDiscourseConfigured()) return mockCreateTopic({ title, raw, categoryId });
+// Discourse has no poll index, so every poll topic carries this tag and the
+// polls pages list topics by it (see the API feasibility matrix).
+export const POLL_TAG = 'poll';
+
+export async function createTopic({ title, raw, categoryId, tags = [] }) {
+  if (!isDiscourseConfigured()) return mockCreateTopic({ title, raw, categoryId, tags });
   const body = { title, raw };
   if (categoryId) body.category = categoryId;
+  if (tags.length) body.tags = tags;
   const post = await discourseFetch('/posts.json', { method: 'POST', body });
   return { topicId: post.topic_id };
 }
@@ -95,4 +100,15 @@ export async function votePoll({ postId, pollName, optionIds }) {
   });
   const [poll] = mapPolls({ polls: [data.poll], polls_votes: { [pollName]: data.vote } });
   return poll;
+}
+
+// Like is post action type 2.
+export async function setPostLiked(postId, liked) {
+  if (!isDiscourseConfigured()) return { liked };
+  if (liked) {
+    await discourseFetch('/post_actions.json', { method: 'POST', body: { id: Number(postId), post_action_type_id: 2 } });
+  } else {
+    await discourseFetch(`/post_actions/${encodeURIComponent(postId)}.json?post_action_type_id=2`, { method: 'DELETE' });
+  }
+  return { liked };
 }

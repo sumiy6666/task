@@ -33,14 +33,17 @@ Without `DISCOURSE_URL` and `DISCOURSE_API_KEY` the app runs on built-in demo da
 | Screen | Route | Discourse endpoint |
 | --- | --- | --- |
 | Start a Conversation (general) | `/conversations/new` → `POST /api/topics` | `POST /posts.json` |
-| Start a Conversation (poll) → Review → Post | `/conversations/new?type=poll` → `POST /api/topics` | `POST /posts.json` with `[poll]` markup |
+| Start a Conversation (poll) → Review → Post | `/conversations/new?type=poll` → `POST /api/topics` | `POST /posts.json` with `[poll]` markup and the `poll` tag |
 | Save draft | `POST /api/drafts` | `POST /drafts.json` |
 | Attach image | `POST /api/uploads` | `POST /uploads.json` |
 | Individual Conversation | `/conversations/[id]` | `GET /t/{id}.json`, `GET /categories.json` |
 | Reply | `POST /api/topics/[id]/replies` | `POST /posts.json` |
+| Like | `POST /api/posts/[id]/like` | `POST /post_actions.json`, `DELETE /post_actions/{id}.json` |
 | Bookmark | `POST /api/topics/[id]/bookmark` | `POST /bookmarks.json` |
 | Vote on a poll | `POST /api/polls/vote` | `PUT /polls/vote.json` |
 | Register for event | `POST /api/events/[id]/register` | `POST /discourse-post-event/events/{post_id}/invitees.json` (Calendar plugin) |
+
+Every poll topic is tagged `poll` because Discourse has no poll index endpoint; poll lists (latest, trending, closed) should query `/tag/poll.json`. Tagging must be enabled on the forum and the API user must be allowed to create tags.
 
 Sizes in the new screens are written as `calc(<figma px> * var(--px))`, where `--px` is one pixel of the 1440px Figma frame, so values can be checked directly against the design.
 

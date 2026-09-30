@@ -6,10 +6,11 @@ import styles from '@/components/topic/Topic.module.css';
 import { TopicActions } from '@/components/topic/TopicActions';
 import { PollVote } from '@/components/topic/PollVote';
 import { Replies } from '@/components/topic/Replies';
+import { LikeButton } from '@/components/topic/LikeButton';
 import { CommentIcon, EyeIcon, LikeIcon } from '@/components/topic/icons';
 import { getCurrentUser, getTopic } from '@/lib/discourse';
 import { DiscourseError } from '@/lib/discourse/client';
-import { compactNumber, timeAgo } from '@/lib/discourse/mappers';
+import { compactNumber, timeAgo } from '@/lib/discourse/format';
 
 // Cached so generateMetadata and the page share one Discourse request.
 const loadTopic = cache(async (id) => {
@@ -77,9 +78,13 @@ export default async function ConversationPage({ params }) {
             <span className={`${styles.stat} ${styles.statActive}`}>
               <CommentIcon /> {compactNumber(topic.replyCount)}
             </span>
-            <span className={styles.stat}>
-              <LikeIcon /> {compactNumber(topic.likeCount)}
-            </span>
+            {first ? (
+              <LikeButton postId={first.id} initialLiked={Boolean(first.liked)} initialCount={topic.likeCount} />
+            ) : (
+              <span className={styles.stat}>
+                <LikeIcon /> {compactNumber(topic.likeCount)}
+              </span>
+            )}
             <span className={styles.stat} style={{ width: 'auto' }}>
               <EyeIcon /> {compactNumber(topic.views)} views
             </span>
