@@ -20,6 +20,30 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Discourse backend
+
+The app talks to Discourse only from the server (`src/lib/discourse/`, `src/app/api/`), so the API key never reaches the browser.
+
+1. Copy `.env.example` to `.env.local`.
+2. Set `DISCOURSE_URL`, `DISCOURSE_API_KEY` (Admin → API → New API Key, "All users" scope) and `DISCOURSE_API_USERNAME`.
+3. Restart `npm run dev`.
+
+Without `DISCOURSE_URL` and `DISCOURSE_API_KEY` the app runs on built-in demo data (`src/lib/discourse/mock.js`), so the UI can be worked on offline.
+
+| Screen | Route | Discourse endpoint |
+| --- | --- | --- |
+| Start a Conversation (general) | `/conversations/new` → `POST /api/topics` | `POST /posts.json` |
+| Start a Conversation (poll) → Review → Post | `/conversations/new?type=poll` → `POST /api/topics` | `POST /posts.json` with `[poll]` markup |
+| Save draft | `POST /api/drafts` | `POST /drafts.json` |
+| Attach image | `POST /api/uploads` | `POST /uploads.json` |
+| Individual Conversation | `/conversations/[id]` | `GET /t/{id}.json`, `GET /categories.json` |
+| Reply | `POST /api/topics/[id]/replies` | `POST /posts.json` |
+| Bookmark | `POST /api/topics/[id]/bookmark` | `POST /bookmarks.json` |
+| Vote on a poll | `POST /api/polls/vote` | `PUT /polls/vote.json` |
+| Register for event | `POST /api/events/[id]/register` | `POST /discourse-post-event/events/{post_id}/invitees.json` (Calendar plugin) |
+
+Sizes in the new screens are written as `calc(<figma px> * var(--px))`, where `--px` is one pixel of the 1440px Figma frame, so values can be checked directly against the design.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

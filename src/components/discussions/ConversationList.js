@@ -12,7 +12,7 @@ export function ConversationItem({ conversation, isFirst }) {
       />
 
       <div className="flex-1 flex flex-col justify-center">
-        <Link href={`#`} className="no-underline">
+        <Link href={typeof conversation.id === 'number' ? `/conversations/${conversation.id}` : '#'} className="no-underline">
           <h4 className={`${isFirst ? 'text-[#003ECF]' : 'text-gray-900'} leading-snug hover:text-[#00A4E4] transition-colors`} style={{ fontSize: '1.05vw', fontWeight: 500, marginBottom: '0.4vw', maxWidth: '80%' }}>
             {conversation.title}
           </h4>

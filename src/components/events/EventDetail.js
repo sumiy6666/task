@@ -1,4 +1,4 @@
-export default function EventDetail({ event }) {
+export default function EventDetail({ event, onRegister }) {
   if (!event) return null;
 
   const details = [
@@ -99,7 +99,7 @@ export default function EventDetail({ event }) {
 
             <div className="flex-shrink-0">
               {detail.actionIcon === 'button' ? (
-                <button className="text-[#00A4E4] font-medium cursor-pointer hover:bg-[#00A4E4] hover:text-white transition-colors" style={{ fontSize: '0.65vw', padding: '0.4vw 1.2vw', border: '1px solid #00A4E4', borderRadius: '2vw', background: 'none' }}>
+                <button type="button" onClick={onRegister} className="text-[#00A4E4] font-medium cursor-pointer hover:bg-[#00A4E4] hover:text-white transition-colors" style={{ fontSize: '0.65vw', padding: '0.4vw 1.2vw', border: '1px solid #00A4E4', borderRadius: '2vw', background: 'none' }}>
                   {detail.action}
                 </button>
               ) : (

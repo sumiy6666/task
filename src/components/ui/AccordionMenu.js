@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import Link from 'next/link';
 import styles from './AccordionMenu.module.css';
 
 export function AccordionMenu() {
@@ -16,6 +17,7 @@ export function AccordionMenu() {
         </div>
         <div className={`${styles.submenu} ${expandedItem === 'Discussions' ? styles.open : ''}`}>
           <div>
+            <Link href="/conversations/new" className={`${styles.submenuLink} ${styles.highlight}`}>Start a conversation</Link>
             <a href="#" className={styles.submenuLink}>General</a>
             <a href="#" className={styles.submenuLink}>Tax & Legal</a>
             <a href="#" className={styles.submenuLink}>Technology</a>
@@ -47,7 +49,8 @@ export function AccordionMenu() {
         </div>
         <div className={`${styles.submenu} ${expandedItem === 'Polls' ? styles.open : ''}`}>
           <div>
-            <a href="#" className={styles.submenuLink}>Recent Polls</a>
+            <Link href="/conversations/new?type=poll" className={`${styles.submenuLink} ${styles.highlight}`}>Create a poll</Link>
+            <Link href="/poll" className={styles.submenuLink}>Recent Polls</Link>
             <a href="#" className={styles.submenuLink}>Upcoming Polls</a>
           </div>
         </div>
@@ -59,7 +62,7 @@ export function AccordionMenu() {
         </div>
         <div className={`${styles.submenu} ${expandedItem === 'Events' ? styles.open : ''}`}>
           <div>
-            <a href="#" className={styles.submenuLink}>Webinars</a>
+            <Link href="/events" className={styles.submenuLink}>Webinars</Link>
             <a href="#" className={styles.submenuLink}>Conferences</a>
           </div>
         </div>

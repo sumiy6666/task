@@ -11,7 +11,7 @@ import { PopularTagsList } from '@/components/discussions/PopularTagsList';
 // Mock Data
 const latestConversations = [
   {
-    id: 'c1',
+    id: 101,
     title: 'Best practices for managing liquid investments in family portfolios?',
     author: { name: 'Priya Mehta', avatar: 'https://i.pravatar.cc/100?img=5' },
     timeAgo: '2h ago',
@@ -21,7 +21,7 @@ const latestConversations = [
     likes: 15
   },
   {
-    id: 'c2',
+    id: 102,
     title: 'How do yo approach next-gen engagement in your family office?',
     author: { name: 'Rohan Kapoor', avatar: 'https://i.pravatar.cc/100?img=11' },
     timeAgo: '5h ago',
@@ -31,7 +31,7 @@ const latestConversations = [
     likes: 9
   },
   {
-    id: 'c3',
+    id: 103,
     title: 'Views on direct indexing for concentrated portfolios',
     author: { name: 'Arvind Rajan', avatar: 'https://i.pravatar.cc/100?img=8' },
     timeAgo: '1d ago',
@@ -41,7 +41,7 @@ const latestConversations = [
     likes: 7
   },
   {
-    id: 'c4',
+    id: 104,
     title: 'Using AI for research and portfolio monitoring',
     author: { name: 'Neha Shah', avatar: 'https://i.pravatar.cc/100?img=9' },
     timeAgo: '2d ago',

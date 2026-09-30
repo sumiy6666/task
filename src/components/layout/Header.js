@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import Link from 'next/link';
 import styles from './Header.module.css';
 import { AccordionMenu } from '../ui/AccordionMenu';
 
@@ -11,18 +12,18 @@ export function Header() {
   return (
     <header className={styles.header}>
       <div className={`container ${styles.container}`}>
-        <div className={styles.logo}>
+        <Link href="/" className={styles.logo}>
           <img src="/images/logo.svg" alt="AV CIRCLE" style={{ height: '28px' }} />
-        </div>
+        </Link>
 
         <div className={styles.actions}>
           <div className={styles.iconNav}>
-            <button className={styles.iconButton} aria-label="Home">
-              <img src="/images/icon1home.svg" alt="Home" style={{ width: '20px', height: '20px' }} />
-            </button>
-            <button className={styles.iconButton} aria-label="Messages">
-              <img src="/images/icon2msg.svg" alt="Messages" style={{ width: '20px', height: '20px' }} />
-            </button>
+            <Link href="/" className={styles.iconButton} aria-label="Home">
+              <img src="/images/icon1home.svg" alt="" style={{ width: '20px', height: '20px' }} />
+            </Link>
+            <Link href="/conversations/new" className={styles.iconButton} aria-label="Start a conversation">
+              <img src="/images/icon2msg.svg" alt="" style={{ width: '20px', height: '20px' }} />
+            </Link>
             <button className={styles.iconButton} aria-label="Search">
               <img src="/images/icon3search.svg" alt="Search" style={{ width: '20px', height: '20px' }} />
             </button>

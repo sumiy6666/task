@@ -26,6 +26,14 @@
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;
   --radius-full: 9999px;
+
+  /* One Figma pixel on the 1440px-wide desktop frames. Write sizes as
+     calc(<figma px> * var(--px)) so they can be checked against the design. */
+  --px: calc(100vw / 1440);
+  --color-link-blue: #003ECF;
+  --color-input-border: #D5DAE1;
+  --color-button-grey: #D9D9D9;
+  --gradient-brand: linear-gradient(135deg, #0033CC 0%, #0A9FDA 100%);
 }
 
 * {

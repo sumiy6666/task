@@ -31,7 +31,7 @@ const slides = [
   }
 ];
 
-export default function EventsHeroBanner({ onFilterChange }) {
+export default function EventsHeroBanner({ onFilterChange, onRegister }) {
   const [activeFilter, setActiveFilter] = useState('Webinars');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -86,7 +86,7 @@ export default function EventsHeroBanner({ onFilterChange }) {
         </div>
 
         <div>
-          <button className="inline-flex items-center text-white bg-transparent hover:bg-white/10 transition-colors cursor-pointer" style={{ gap: '0.6vw', padding: '0.6vw 1.5vw', border: '0.1vw solid rgba(255,255,255,0.6)', borderRadius: '2vw', fontSize: '0.85vw' }}>
+          <button type="button" onClick={() => onRegister?.(slides[currentSlide].title)} className="inline-flex items-center text-white bg-transparent hover:bg-white/10 transition-colors cursor-pointer" style={{ gap: '0.6vw', padding: '0.6vw 1.5vw', border: '0.1vw solid rgba(255,255,255,0.6)', borderRadius: '2vw', fontSize: '0.85vw' }}>
             REGISTER NOW
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '1.2vw', height: '1.2vw' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />

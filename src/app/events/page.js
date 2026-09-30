@@ -6,10 +6,16 @@ import EventsHeroBanner from '@/components/events/EventsHeroBanner';
 import UpcomingEventsList from '@/components/events/UpcomingEventsList';
 import EventDetail from '@/components/events/EventDetail';
 import CommunityBanner from '@/components/events/CommunityBanner';
+import { RegisterEventModal } from '@/components/events/RegisterEventModal';
 
 const eventsData = [
   {
     id: 1,
+    // Set to the Discourse post id of the event once events come from the calendar plugin.
+    discourseEventId: null,
+    startsAt: '2024-06-12T16:00:00+05:30',
+    endsAt: '2024-06-12T17:30:00+05:30',
+    location: 'Virtual event',
     title: 'Navigating market volatility: Strategies for family portfolios',
     month: 'June',
     day: '12',
@@ -29,6 +35,11 @@ const eventsData = [
   },
   {
     id: 2,
+    // Set to the Discourse post id of the event once events come from the calendar plugin.
+    discourseEventId: null,
+    startsAt: '2024-06-18T11:00:00+05:30',
+    endsAt: '2024-06-18T12:30:00+05:30',
+    location: 'Virtual event',
     title: 'Global Outlook 2024: Private Markets and alternatives',
     month: 'June',
     day: '18',
@@ -48,6 +59,11 @@ const eventsData = [
   },
   {
     id: 3,
+    // Set to the Discourse post id of the event once events come from the calendar plugin.
+    discourseEventId: null,
+    startsAt: '2024-06-21T16:00:00+05:30',
+    endsAt: '2024-06-21T17:30:00+05:30',
+    location: 'Virtual event',
     title: 'AI in family offices: Opportunities and risks',
     month: 'June',
     day: '21',
@@ -67,6 +83,11 @@ const eventsData = [
   },
   {
     id: 4,
+    // Set to the Discourse post id of the event once events come from the calendar plugin.
+    discourseEventId: null,
+    startsAt: '2024-06-30T11:00:00+05:30',
+    endsAt: '2024-06-30T12:00:00+05:30',
+    location: 'Virtual event',
     title: 'Next-gen leadership in family enterprises',
     month: 'June',
     day: '30',
@@ -88,12 +109,15 @@ const eventsData = [
 
 export default function EventsPage() {
   const [activeEvent, setActiveEvent] = useState(eventsData[0]);
+  const [registering, setRegistering] = useState(null);
+
+  const registerByTitle = (title) => setRegistering(eventsData.find((e) => e.title === title) || eventsData[0]);
 
   return (
     <div className="container min-h-screen" style={{ paddingBottom: '4vw' }}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Events' }]} />
 
-      <EventsHeroBanner />
+      <EventsHeroBanner onRegister={registerByTitle} />
 
       {/* Upcoming Events + Event Detail side-by-side */}
       <div className="flex" style={{ gap: '1.5vw', marginBottom: '2vw' }}>
@@ -105,11 +129,13 @@ export default function EventsPage() {
           />
         </div>
         <div className="flex-[1_1_50%]" style={{ minWidth: '35vw' }}>
-          <EventDetail event={activeEvent} />
+          <EventDetail event={activeEvent} onRegister={() => setRegistering(activeEvent)} />
         </div>
       </div>
 
       <CommunityBanner />
+
+      {registering && <RegisterEventModal key={registering.id} event={registering} onClose={() => setRegistering(null)} />}
     </div>
   );
 }
