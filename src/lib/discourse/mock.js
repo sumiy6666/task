@@ -1,5 +1,7 @@
 // Demo data used when Discourse is not configured, so the UI can be developed
-// and reviewed offline. Created topics live in memory until the server restarts.
+// and reviewed offline. Each request rebuilds the demo store from the seed
+// topics plus the visitor's own actions (see ./demo-session.js), so it works
+// the same on every serverless instance.
 
 const BODY =
   '<p>I’m curious to learn, from this community-what approaches are family offices using to baalnce liquidity, return expectations and portfolio flexibility? Are there any frameworks, tools or strategies that have worked well for you, especially in volatile markets?</p><p>Would love to hear your experience, lessons learnt, or resources you’d reccomend!</p>';
@@ -73,15 +75,21 @@ function seedTopic(id, title, author, extra = {}) {
   };
 }
 
-const store = globalThis.__avMockTopics || (globalThis.__avMockTopics = new Map());
-if (store.size === 0) {
+// Seed topics, freshly built so each request can mutate its own copy.
+export function createStore() {
+  const store = new Map();
   store.set(101, seedTopic(101, 'Best practices for managing liquid investments in family portfolios?', mockUser));
   for (const r of related) {
     store.set(r.id, seedTopic(r.id, r.title, { username: 'member', name: 'Rohan Kapoor', avatar: r.avatar }));
   }
+  return store;
 }
 
-export function mockGetTopic(id) {
+export function nextTopicId(store) {
+  return Math.max(...store.keys()) + 1;
+}
+
+export function mockGetTopic(store, id) {
   return store.get(Number(id)) || null;
 }
 
@@ -91,6 +99,7 @@ const escapeHtml = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt
 function cook(raw) {
   return raw
     .split(/\n{2,}/)
+    .filter((block) => block.trim())
     .map((block) => {
       const poll = block.match(/\[poll[^\]]*\]([\s\S]*?)\[\/poll\]/);
       if (poll) {
@@ -115,7 +124,7 @@ function parsePolls(raw) {
   }));
 }
 
-export function mockVote(postId, pollName, optionIds) {
+function vote(store, { postId, pollName, optionIds }) {
   for (const topic of store.values()) {
     if (topic.firstPost?.id !== Number(postId)) continue;
     const poll = topic.firstPost.polls?.find((p) => p.name === pollName);
@@ -131,32 +140,45 @@ export function mockVote(postId, pollName, optionIds) {
   return null;
 }
 
-export function mockCreateTopic({ title, raw, categoryId, tags = [] }) {
-  const id = Math.max(...store.keys()) + 1;
+function createTopic(store, { id, title, raw, categoryId, tags = [], at }) {
   store.set(id, {
     ...seedTopic(id, title, mockUser),
     categoryName: mockCategories.find((c) => c.id === categoryId)?.name || 'General',
     tags,
-    firstPost: { id: id * 10, postNumber: 1, author: mockUser, html: cook(raw.replace(/\[poll[\s\S]*?\[\/poll\]/g, '')), createdAt: new Date().toISOString(), polls: parsePolls(raw) },
+    firstPost: { id: id * 10, postNumber: 1, author: mockUser, html: cook(raw.replace(/\[poll[\s\S]*?\[\/poll\]/g, '')), createdAt: at, polls: parsePolls(raw) },
     replies: [],
     replyCount: 0,
     likeCount: 0,
     views: 0,
-    lastActivityAt: new Date().toISOString(),
+    lastActivityAt: at,
   });
   return { topicId: id };
 }
 
-export function mockCreateReply(topicId, { raw, replyToPostNumber }) {
+function createReply(store, { topicId, raw, replyToPostNumber, at }) {
   const topic = store.get(Number(topicId));
   if (!topic) return null;
   const all = [topic.firstPost, ...topic.replies.flatMap((r) => [r, ...r.children])];
   const postNumber = Math.max(...all.map((p) => p.postNumber)) + 1;
-  const post = { id: topic.id * 1000 + postNumber, postNumber, author: mockUser, html: cook(raw), createdAt: new Date().toISOString(), children: [] };
+  const post = { id: topic.id * 1000 + postNumber, postNumber, author: mockUser, html: cook(raw), createdAt: at, children: [] };
   const parent = topic.replies.find((r) => r.postNumber === replyToPostNumber || r.children.some((c) => c.postNumber === replyToPostNumber));
   if (parent) parent.children.push({ ...post, replyToPostNumber });
   else topic.replies.push(post);
   topic.replyCount += 1;
-  topic.lastActivityAt = post.createdAt;
+  topic.lastActivityAt = at;
   return { postId: post.id };
+}
+
+// Applies one recorded visitor action to the store and returns its result.
+export function applyOp(store, op) {
+  switch (op.t) {
+    case 'topic':
+      return createTopic(store, op);
+    case 'reply':
+      return createReply(store, op);
+    case 'vote':
+      return vote(store, op);
+    default:
+      return null;
+  }
 }

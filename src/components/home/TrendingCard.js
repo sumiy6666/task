@@ -6,11 +6,11 @@ import styles from './TrendingCard.module.css';
 import { ArrowRight } from 'lucide-react';
 
 const tabs = [
-  { id: 'trending', icon: '/images/Trending.svg', title: "GIFT City's family fund route is open, and mostly unused by Indian families", desc: "Three years after the framework arrived, the first full registration went to a foreign structure. Indian families are still routing through Category III AIFs.", image: '/images/feature1.jpg' },
-  { id: 'mostactive', icon: '/images/MostActive.svg', title: "Most active discussions this week", desc: "A look at what the community is talking about right now.", image: '/images/herobanner1.jpg' },
-  { id: 'latest', icon: '/images/LatestUpdates.svg', title: "Latest updates on platform features", desc: "Discover the new tools we've added to help you manage your family office better.", image: '/images/feature1.jpg' },
-  { id: 'insight', icon: '/images/Insight.svg', title: "Insight into upcoming tax regulations", desc: "Prepare your family office for the 2026 tax changes.", image: '/images/herobanner1.jpg' },
-  { id: 'polls', icon: '/images/RecentPolls.svg', title: "Recent polls on asset allocation", desc: "See how other family offices are adjusting their portfolios.", image: '/images/feature1.jpg' }
+  { id: 'trending', icon: '/images/Trending.svg', title: "GIFT City's family fund route is open, and mostly unused by Indian families", desc: "Three years after the framework arrived, the first full registration went to a foreign structure. Indian families are still routing through Category III AIFs.", image: '/images/feature1.jpg', href: '/insights' },
+  { id: 'mostactive', icon: '/images/MostActive.svg', title: "Most active discussions this week", desc: "A look at what the community is talking about right now.", image: '/images/herobanner1.jpg', href: '/discussions' },
+  { id: 'latest', icon: '/images/LatestUpdates.svg', title: "Latest updates on platform features", desc: "Discover the new tools we've added to help you manage your family office better.", image: '/images/feature1.jpg', href: '/discussions' },
+  { id: 'insight', icon: '/images/Insight.svg', title: "Insight into upcoming tax regulations", desc: "Prepare your family office for the 2026 tax changes.", image: '/images/herobanner1.jpg', href: '/insights' },
+  { id: 'polls', icon: '/images/RecentPolls.svg', title: "Recent polls on asset allocation", desc: "See how other family offices are adjusting their portfolios.", image: '/images/feature1.jpg', href: '/poll' }
 ];
 
 export function TrendingCard() {
@@ -36,7 +36,7 @@ export function TrendingCard() {
       <div className={styles.content}>
         <div className={styles.header}>
           <span className={styles.tag}>TRENDING</span>
-          <Button variant="outline" size="sm" icon={<ArrowRight size={16} />} iconPosition="right" className={styles.readMoreBtn} style={{ background: 'transparent', border: '1px solid white', color: 'white', display: 'flex', alignItems: 'center', gap: '8px', padding: '0.1rem 0.3rem 0.1rem 1rem', borderRadius: '24px', fontSize: '11px' }}>
+          <Button href={tabs[activeTab].href} variant="outline" size="sm" icon={<ArrowRight size={16} />} iconPosition="right" className={styles.readMoreBtn} style={{ background: 'transparent', border: '1px solid white', color: 'white', display: 'flex', alignItems: 'center', gap: '8px', padding: '0.1rem 0.3rem 0.1rem 1rem', borderRadius: '24px', fontSize: '11px' }}>
             READ MORE
           </Button>
         </div>

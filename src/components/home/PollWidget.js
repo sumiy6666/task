@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { Card } from '../ui/Card';
 import styles from './PollWidget.module.css';
 
@@ -18,7 +19,7 @@ export function PollWidget() {
         </div>
         <div className={styles.titleSection}>
           <span className={styles.tag}>POLLS</span>
-          <h3>When a family adds a new asset class, how long before it appears in consolidated reporting?</h3>
+          <h3><Link href="/poll">When a family adds a new asset class, how long before it appears in consolidated reporting?</Link></h3>
         </div>
       </div>
       

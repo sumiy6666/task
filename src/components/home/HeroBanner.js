@@ -10,14 +10,16 @@ const bannerData = [
     tag: 'FEATURED',
     title: 'The engagement letter decides what the family keeps',
     desc: 'Under the AICPA Code, working papers stay with the firm unless a contract says otherwise. Most letters say nothing.',
-    buttonText: 'LEARN MORE'
+    buttonText: 'LEARN MORE',
+    href: '/insights'
   },
   {
     image: '/images/herobanner1.jpg',
     tag: 'TRENDING',
     title: "GIFT City's family fund route is open",
     desc: 'Three years after the framework arrived, the first full registration went to a foreign structure.',
-    buttonText: 'READ ARTICLE'
+    buttonText: 'READ ARTICLE',
+    href: '/insights'
   }
 ];
 
@@ -42,10 +44,10 @@ export function HeroBanner() {
           <p>Connect, learn and grow with professionals around the world.</p>
         </div>
         <div className={styles.welcomeActions}>
-          <Button variant="secondary" icon={<img src="/images/banner_conversation.svg" alt="conversation" style={{ width: '16px', height: '16px' }} />} iconPosition="left" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'transparent', border: '1px solid #ccc', color: '#555', padding: '0.3vw 1.5vw', borderRadius: '24px', fontSize: '11px' }}>
+          <Button href="/conversations/new" variant="secondary" icon={<img src="/images/banner_conversation.svg" alt="conversation" style={{ width: '16px', height: '16px' }} />} iconPosition="left" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'transparent', border: '1px solid #ccc', color: '#555', padding: '0.3vw 1.5vw', borderRadius: '24px', fontSize: '11px' }}>
             START A CONVERSATION
           </Button>
-          <Button variant="primary" icon={<ArrowRight size={16} />} iconPosition="right" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#00A4E4', color: 'white', padding: '0.3vw 1.5vw', borderRadius: '24px', border: 'none', fontSize: '11px' }}>
+          <Button href="/discussions" variant="primary" icon={<ArrowRight size={16} />} iconPosition="right" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#00A4E4', color: 'white', padding: '0.3vw 1.5vw', borderRadius: '24px', border: 'none', fontSize: '11px' }}>
             LEARN MORE
           </Button>
         </div>
@@ -73,7 +75,7 @@ export function HeroBanner() {
         </div>
 
         <div className={styles.learnMoreBtnWrapper}>
-          <Button variant="outline" icon={<ArrowRight size={16} />} iconPosition="right" className={styles.learnMoreBtn} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'transparent', border: '1px solid white', color: 'white', padding: '0.3rem 1.2rem', borderRadius: '24px', fontSize: '12px' }}>
+          <Button href={bannerData[currentSlide].href} variant="outline" icon={<ArrowRight size={16} />} iconPosition="right" className={styles.learnMoreBtn} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'transparent', border: '1px solid white', color: 'white', padding: '0.3rem 1.2rem', borderRadius: '24px', fontSize: '12px' }}>
             {bannerData[currentSlide].buttonText}
           </Button>
         </div>

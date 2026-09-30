@@ -2,7 +2,8 @@
 // configured and falls back to demo data otherwise.
 import { actingUsername, discourseFetch, DiscourseError, isDiscourseConfigured } from './client';
 import { mapCategory, mapPolls, mapTopic, mapUser } from './mappers';
-import { mockCategories, mockCreateReply, mockCreateTopic, mockGetTopic, mockUser, mockVote } from './mock';
+import { loadDemo, recordDemoOp } from './demo-session';
+import { mockCategories, mockGetTopic, mockUser, nextTopicId } from './mock';
 
 export { isDiscourseConfigured };
 
@@ -24,7 +25,7 @@ export async function getCategories() {
 }
 
 export async function getTopic(id) {
-  if (!isDiscourseConfigured()) return mockGetTopic(id);
+  if (!isDiscourseConfigured()) return mockGetTopic((await loadDemo()).store, id);
   const [topic, categories] = await Promise.all([discourseFetch(`/t/${encodeURIComponent(id)}.json`), getCategories()]);
   return mapTopic(topic, new Map(categories.map((c) => [c.id, c])));
 }
@@ -34,7 +35,11 @@ export async function getTopic(id) {
 export const POLL_TAG = 'poll';
 
 export async function createTopic({ title, raw, categoryId, tags = [] }) {
-  if (!isDiscourseConfigured()) return mockCreateTopic({ title, raw, categoryId, tags });
+  if (!isDiscourseConfigured()) {
+    const demo = await loadDemo();
+    const op = { t: 'topic', id: nextTopicId(demo.store), title, raw, categoryId, tags, at: new Date().toISOString() };
+    return recordDemoOp(demo, op);
+  }
   const body = { title, raw };
   if (categoryId) body.category = categoryId;
   if (tags.length) body.tags = tags;
@@ -43,7 +48,10 @@ export async function createTopic({ title, raw, categoryId, tags = [] }) {
 }
 
 export async function createReply(topicId, { raw, replyToPostNumber }) {
-  if (!isDiscourseConfigured()) return mockCreateReply(topicId, { raw, replyToPostNumber });
+  if (!isDiscourseConfigured()) {
+    const op = { t: 'reply', topicId: Number(topicId), raw, replyToPostNumber, at: new Date().toISOString() };
+    return recordDemoOp(await loadDemo(), op);
+  }
   const body = { topic_id: Number(topicId), raw };
   if (replyToPostNumber) body.reply_to_post_number = replyToPostNumber;
   const post = await discourseFetch('/posts.json', { method: 'POST', body });
@@ -93,7 +101,7 @@ export async function registerForEvent(eventId) {
 }
 
 export async function votePoll({ postId, pollName, optionIds }) {
-  if (!isDiscourseConfigured()) return mockVote(postId, pollName, optionIds);
+  if (!isDiscourseConfigured()) return recordDemoOp(await loadDemo(), { t: 'vote', postId: Number(postId), pollName, optionIds });
   const data = await discourseFetch('/polls/vote.json', {
     method: 'PUT',
     body: { post_id: Number(postId), poll_name: pollName, options: optionIds },

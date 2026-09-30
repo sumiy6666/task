@@ -43,7 +43,7 @@ function toIcsDate(date) {
   return new Date(date).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 }
 
-function downloadIcs(event) {
+export function downloadIcs(event) {
   const escape = (s) => String(s || '').replace(/[\\;,]/g, (c) => `\\${c}`).replace(/\n/g, '\\n');
   const ics = [
     'BEGIN:VCALENDAR',

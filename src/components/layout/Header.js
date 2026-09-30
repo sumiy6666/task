@@ -27,9 +27,9 @@ export function Header() {
             <button className={styles.iconButton} aria-label="Search">
               <img src="/images/icon3search.svg" alt="Search" style={{ width: '20px', height: '20px' }} />
             </button>
-            <button className={styles.iconButton} aria-label="Conversations">
-              <img src="/images/icon1coversation.svg" alt="Conversations" style={{ width: '20px', height: '20px' }} />
-            </button>
+            <Link href="/discussions" className={styles.iconButton} aria-label="Discussions">
+              <img src="/images/icon1coversation.svg" alt="" style={{ width: '20px', height: '20px' }} />
+            </Link>
 
             <div className={styles.profile}>
               <div className={styles.avatar}>

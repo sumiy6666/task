@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 export function EventBanner() {
   return (
@@ -47,12 +48,12 @@ export function EventBanner() {
         </div>
 
         <div>
-          <button className="inline-flex items-center text-white bg-transparent hover:bg-white/10 transition-colors cursor-pointer" style={{ gap: '0.6vw', padding: '0.6vw 1.5vw', border: '0.1vw solid rgba(255,255,255,0.6)', borderRadius: '2vw', fontSize: '0.85vw' }}>
+          <Link href="/events" className="inline-flex items-center text-white bg-transparent hover:bg-white/10 transition-colors cursor-pointer" style={{ gap: '0.6vw', padding: '0.6vw 1.5vw', border: '0.1vw solid rgba(255,255,255,0.6)', borderRadius: '2vw', fontSize: '0.85vw' }}>
             REGISTER NOW
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '1.2vw', height: '1.2vw' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
-          </button>
+          </Link>
         </div>
       </div>
       

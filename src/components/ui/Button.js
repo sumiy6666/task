@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import styles from './Button.module.css';
 
 
@@ -10,19 +11,31 @@ export function Button({
   icon,
   iconPosition = 'left',
   className = '',
-  asChild,
+  href,
   ...props
 }) {
   const rootClass = `${styles.button} ${styles[variant]} ${styles[size]} ${className}`.trim();
 
-  // If we just want to wrap a link or something else, we might need a slot approach,
-  // but for simplicity we will just render a button.
-  
-  return (
-    <button className={rootClass} {...props}>
+  const content = (
+    <>
       {icon && iconPosition === 'left' && <span className={styles.icon}>{icon}</span>}
       <span className={styles.label}>{children}</span>
       {icon && iconPosition === 'right' && <span className={styles.icon}>{icon}</span>}
+    </>
+  );
+
+  // With `href` the button navigates, rendered as a link so it stays valid HTML.
+  if (href) {
+    return (
+      <Link href={href} className={rootClass} {...props}>
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <button className={rootClass} {...props}>
+      {content}
     </button>
   );
 }

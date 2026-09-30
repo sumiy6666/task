@@ -1,3 +1,6 @@
+import Link from 'next/link';
+import { downloadIcs } from './RegisterEventModal';
+
 export default function EventDetail({ event, onRegister }) {
   if (!event) return null;
 
@@ -14,6 +17,7 @@ export default function EventDetail({ event, onRegister }) {
       subValue: event.speakerRole,
       avatar: event.speakerAvatar,
       action: 'View Profile',
+      href: '/members',
       actionIcon: 'arrow'
     },
     {
@@ -32,6 +36,7 @@ export default function EventDetail({ event, onRegister }) {
       label: 'Related\nDiscussion',
       value: 'Join the conversation with community members.',
       action: 'View Discussions',
+      href: '/discussions',
       actionIcon: 'arrow'
     },
     {
@@ -102,13 +107,20 @@ export default function EventDetail({ event, onRegister }) {
                 <button type="button" onClick={onRegister} className="text-[#00A4E4] font-medium cursor-pointer hover:bg-[#00A4E4] hover:text-white transition-colors" style={{ fontSize: '0.65vw', padding: '0.4vw 1.2vw', border: '1px solid #00A4E4', borderRadius: '2vw', background: 'none' }}>
                   {detail.action}
                 </button>
-              ) : (
-                <a href="#" className="text-[#00A4E4] font-medium hover:underline flex items-center whitespace-nowrap" style={{ gap: '0.3vw', fontSize: '0.7vw' }}>
+              ) : detail.actionIcon === 'calendar' ? (
+                <button type="button" onClick={() => downloadIcs(event)} className="text-[#00A4E4] font-medium hover:underline flex items-center whitespace-nowrap cursor-pointer" style={{ gap: '0.3vw', fontSize: '0.7vw', background: 'none' }}>
                   {detail.action}
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '0.7vw', height: '0.7vw' }}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
-                </a>
+                </button>
+              ) : (
+                <Link href={detail.href || '#'} className="text-[#00A4E4] font-medium hover:underline flex items-center whitespace-nowrap" style={{ gap: '0.3vw', fontSize: '0.7vw' }}>
+                  {detail.action}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '0.7vw', height: '0.7vw' }}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </Link>
               )}
             </div>
           </div>
