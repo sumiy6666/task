@@ -7,6 +7,7 @@ import { GradientBadge } from './GradientBadge';
 import { EmojiButton, insertAtCursor } from './EmojiButton';
 import { PollOptionsEditor } from './PollOptionsEditor';
 import { ChevronDownIcon, CloseIcon, ImageIcon, LinkIcon, PaperPlaneIcon } from './icons';
+import { redirectIfSignedOut } from '@/lib/auth-client';
 
 let nextOptionId = 1;
 const newOption = (text = '') => ({ id: nextOptionId++, text });
@@ -23,6 +24,7 @@ function formatClose(date, time) {
 
 async function postJson(url, body) {
   const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  if (redirectIfSignedOut(res)) return new Promise(() => {});
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || 'Something went wrong. Please try again.');
   return data;
@@ -194,6 +196,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion' }) {
       const form = new FormData();
       form.append('file', file);
       const res = await fetch('/api/uploads', { method: 'POST', body: form });
+      if (redirectIfSignedOut(res)) return;
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Upload failed.');
       setBody((b) => insertAtCursor(bodyRef.current, b, `\n${data.markdown}\n`));

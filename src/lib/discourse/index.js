@@ -1,17 +1,33 @@
 // Data access used by pages and route handlers. Talks to Discourse when it is
 // configured and falls back to demo data otherwise.
-import { actingUsername, discourseFetch, DiscourseError, isDiscourseConfigured } from './client';
+import { cache } from 'react';
+import { actingUsername, discourseFetch, DiscourseError, hasAdminKey, isDiscourseConfigured } from './client';
+import { getUserAuth } from './session';
 import { mapCategory, mapPolls, mapTopic, mapUser } from './mappers';
 import { loadDemo, recordDemoOp } from './demo-session';
 import { mockCategories, mockGetTopic, mockUser, nextTopicId } from './mock';
 
 export { isDiscourseConfigured };
 
-export async function getCurrentUser() {
+// The signed-in member, or null for a guest. Cached per request because the
+// layout and the page both ask.
+export const getCurrentUser = cache(async () => {
   if (!isDiscourseConfigured()) return mockUser;
-  const data = await discourseFetch(`/u/${encodeURIComponent(actingUsername())}.json`);
-  return mapUser(data.user);
-}
+  if (await getUserAuth()) {
+    try {
+      const data = await discourseFetch('/session/current.json');
+      return data?.current_user ? mapUser(data.current_user) : null;
+    } catch (error) {
+      if (error instanceof DiscourseError && [401, 403, 404].includes(error.status)) return null;
+      throw error;
+    }
+  }
+  if (hasAdminKey()) {
+    const data = await discourseFetch(`/u/${encodeURIComponent(actingUsername())}.json`);
+    return mapUser(data.user);
+  }
+  return null;
+});
 
 export async function getCategories() {
   if (!isDiscourseConfigured()) return mockCategories;
@@ -78,7 +94,7 @@ export async function bookmarkPost(postId) {
 
 export async function uploadImage(file) {
   if (!isDiscourseConfigured()) {
-    throw new DiscourseError('Image uploads need a Discourse connection (DISCOURSE_URL and DISCOURSE_API_KEY).', 503);
+    throw new DiscourseError('Image uploads need a Discourse connection (DISCOURSE_URL).', 503);
   }
   const form = new FormData();
   form.append('type', 'composer');

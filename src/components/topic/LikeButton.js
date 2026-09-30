@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import styles from './Topic.module.css';
 import { LikeIcon } from './icons';
+import { redirectIfSignedOut } from '@/lib/auth-client';
 import { compactNumber } from '@/lib/discourse/format';
 
 // Likes the topic's first post; the count shown is the topic total.
@@ -21,6 +22,7 @@ export function LikeButton({ postId, initialLiked, initialCount }) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ liked: next }),
     });
+    if (redirectIfSignedOut(res)) return;
     if (!res.ok) {
       setLiked(!next);
       setCount((c) => c + (next ? -1 : 1));

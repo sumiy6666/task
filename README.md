@@ -22,13 +22,30 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## Discourse backend
 
-The app talks to Discourse only from the server (`src/lib/discourse/`, `src/app/api/`), so the API key never reaches the browser.
+The app talks to Discourse only from the server (`src/lib/discourse/`, `src/app/api/`).
 
-1. Copy `.env.example` to `.env.local`.
-2. Set `DISCOURSE_URL`, `DISCOURSE_API_KEY` (Admin → API → New API Key, "All users" scope) and `DISCOURSE_API_USERNAME`.
-3. Restart `npm run dev`.
+### Sign-in (members post as themselves)
 
-Without `DISCOURSE_URL` and `DISCOURSE_API_KEY` the app runs on built-in demo data (`src/lib/discourse/mock.js`), so the UI can be worked on offline.
+Members sign in with their AV Community forum account using Discourse [User API Keys](https://meta.discourse.org/t/user-api-keys-specification/48536):
+
+1. **Sign in** sends the member to `DISCOURSE_URL/user-api-key/new`, where they log in and approve "AV Community".
+2. Discourse redirects back to `/api/auth/callback` with a personal API key encrypted with a key pair made for that sign-in.
+3. The key is kept in an httpOnly cookie; every request then acts as that member. **Sign out** revokes it on Discourse.
+
+One-time Discourse admin setup (Admin → Settings):
+
+- `allowed user api auth redirects`: add `https://<your app domain>/api/auth/callback` (e.g. `https://av-community.vercel.app/api/auth/callback`).
+- `user api key allowed groups` (or `min trust level for user api key` on older versions): include the members who should sign in, e.g. `trust_level_0`.
+- `allow user api key scopes`: must include `read`, `write` and `session_info` (the default does).
+
+Guests can browse public topics; posting, replying, voting, liking and bookmarking ask them to sign in first.
+
+### Configuration
+
+1. Copy `.env.example` to `.env.local` and set `DISCOURSE_URL`.
+2. Restart `npm run dev`.
+
+Without `DISCOURSE_URL` the app runs on built-in demo data (`src/lib/discourse/mock.js`). Each visitor's demo posts, replies and votes are kept in a cookie in their own browser (`demo-session.js`), so other visitors do not see them.
 
 | Screen | Route | Discourse endpoint |
 | --- | --- | --- |

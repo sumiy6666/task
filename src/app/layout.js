@@ -1,4 +1,7 @@
+import { Suspense } from 'react';
 import { Header } from '@/components/layout/Header';
+import { SignInNotice } from '@/components/layout/SignInNotice';
+import { getCurrentUser, isDiscourseConfigured } from '@/lib/discourse';
 import { Footer } from '@/components/layout/Footer';
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -18,11 +21,20 @@ export const metadata = {
   description: "Connect, learn and grow with professionals around the world.",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  // A Discourse outage should not take the whole site down with it.
+  const user = await getCurrentUser().catch((error) => {
+    console.error('Could not load the signed-in member', error);
+    return null;
+  });
+
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <Header />
+        <Header user={user} canSignIn={isDiscourseConfigured()} />
+        <Suspense fallback={null}>
+          <SignInNotice />
+        </Suspense>
         {children}
         <Footer />
       </body>

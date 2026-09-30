@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import styles from '@/components/topic/Topic.module.css';
 import { TopicActions } from '@/components/topic/TopicActions';
@@ -17,6 +17,10 @@ const loadTopic = cache(async (id) => {
   try {
     return await getTopic(id);
   } catch (error) {
+    // A private topic (or a login-only forum) asks guests to sign in first.
+    if (error instanceof DiscourseError && error.status === 403 && !(await getCurrentUser())) {
+      redirect(`/api/auth/login?return=${encodeURIComponent(`/conversations/${id}`)}`);
+    }
     if (error instanceof DiscourseError && (error.status === 404 || error.status === 403)) return null;
     throw error;
   }

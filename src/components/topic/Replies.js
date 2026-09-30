@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './Topic.module.css';
 import { EmojiButton, insertAtCursor } from '../compose/EmojiButton';
+import { redirectIfSignedOut, signInHref } from '@/lib/auth-client';
 
 function Reply({ post, onReply }) {
   return (
@@ -32,6 +33,7 @@ export function Replies({ topicId, replies, currentUser }) {
   const inputRef = useRef(null);
 
   const startReply = (post) => {
+    if (!currentUser) return window.location.assign(signInHref());
     setReplyTo(post);
     inputRef.current?.focus();
   };
@@ -47,6 +49,7 @@ export function Replies({ topicId, replies, currentUser }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ raw: text, replyToPostNumber: replyTo?.postNumber ?? null }),
       });
+      if (redirectIfSignedOut(res)) return;
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Could not post your reply.');
       setText('');
@@ -74,6 +77,14 @@ export function Replies({ topicId, replies, currentUser }) {
         </div>
       ))}
 
+      {!currentUser ? (
+        <div className={styles.composer}>
+          <img className={styles.avatarMd} src="/images/avatar-placeholder.svg" alt="" />
+          <a className={styles.postButton} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 'auto', padding: '0 28px' }} href={signInHref(`/conversations/${topicId}`)}>
+            SIGN IN TO REPLY
+          </a>
+        </div>
+      ) : (
       <form className={styles.composer} onSubmit={submit}>
         <img className={styles.avatarMd} src={currentUser.avatar} alt="" />
         <div className={styles.composerForm}>
@@ -101,6 +112,7 @@ export function Replies({ topicId, replies, currentUser }) {
           {error && <span className={styles.error} role="alert">{error}</span>}
         </div>
       </form>
+      )}
     </>
   );
 }

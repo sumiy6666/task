@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import styles from './Topic.module.css';
 import { BookmarkIcon, ShareIcon } from './icons';
+import { redirectIfSignedOut } from '@/lib/auth-client';
 
 export function TopicActions({ topicId, postId, title, initiallyBookmarked }) {
   const [bookmarked, setBookmarked] = useState(initiallyBookmarked);
@@ -21,6 +22,7 @@ export function TopicActions({ topicId, postId, title, initiallyBookmarked }) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ postId }),
     });
+    if (redirectIfSignedOut(res)) return;
     if (!res.ok) {
       setBookmarked(false);
       const data = await res.json().catch(() => ({}));

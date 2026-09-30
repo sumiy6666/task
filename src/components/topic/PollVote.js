@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import styles from './Topic.module.css';
+import { redirectIfSignedOut } from '@/lib/auth-client';
 
 export function PollVote({ postId, poll: initialPoll }) {
   const [poll, setPoll] = useState(initialPoll);
@@ -29,6 +30,7 @@ export function PollVote({ postId, poll: initialPoll }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ postId, pollName: poll.name, optionIds: selected }),
       });
+      if (redirectIfSignedOut(res)) return;
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Could not record your vote.');
       setPoll(data.poll);

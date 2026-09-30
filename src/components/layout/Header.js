@@ -3,9 +3,14 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './Header.module.css';
 import { AccordionMenu } from '../ui/AccordionMenu';
+import { usePathname } from 'next/navigation';
 
-export function Header() {
+// `user` is the signed-in Discourse member (null for a guest). `canSignIn`
+// is false in demo mode, where there is no forum to sign in to.
+export function Header({ user = null, canSignIn = false }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const pathname = usePathname() || '/';
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -31,11 +36,34 @@ export function Header() {
               <img src="/images/icon1coversation.svg" alt="" style={{ width: '20px', height: '20px' }} />
             </Link>
 
-            <div className={styles.profile}>
-              <div className={styles.avatar}>
-                <img src="https://i.pravatar.cc/100?img=33" alt="User Avatar" />
+            {user ? (
+              <div className={styles.profileWrap}>
+                <button
+                  type="button"
+                  className={styles.profile}
+                  aria-label={`Signed in as ${user.name}`}
+                  aria-expanded={isProfileOpen}
+                  onClick={() => setIsProfileOpen((open) => !open)}
+                >
+                  <span className={styles.avatar}>
+                    <img src={user.avatar} alt="" />
+                  </span>
+                </button>
+                {isProfileOpen && canSignIn && (
+                  <div className={styles.profileMenu}>
+                    <span className={styles.profileName}>{user.name}</span>
+                    <form action="/api/auth/logout" method="post">
+                      <input type="hidden" name="return" value={pathname} />
+                      <button type="submit" className={styles.signOut}>Sign out</button>
+                    </form>
+                  </div>
+                )}
               </div>
-            </div>
+            ) : canSignIn ? (
+              <a href={`/api/auth/login?return=${encodeURIComponent(pathname)}`} className={styles.signIn}>
+                Sign in
+              </a>
+            ) : null}
 
           </div>
 

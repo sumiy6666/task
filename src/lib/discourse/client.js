@@ -1,5 +1,6 @@
 // Server-side Discourse API client. Never import this from a client component:
-// it reads the API key from the environment.
+// it reads API keys from the environment and the member's cookies.
+import { getUserAuth } from './session';
 
 const BASE_URL = (process.env.DISCOURSE_URL || '').replace(/\/+$/, '');
 const API_KEY = process.env.DISCOURSE_API_KEY || '';
@@ -13,8 +14,15 @@ export class DiscourseError extends Error {
   }
 }
 
+// Discourse is used whenever its URL is set. Members act through their own
+// User API Key (see ./user-api-key.js); DISCOURSE_API_KEY is an optional
+// admin key used for guests' reads and for acting as DISCOURSE_API_USERNAME.
 export function isDiscourseConfigured() {
-  return Boolean(BASE_URL && API_KEY);
+  return Boolean(BASE_URL);
+}
+
+export function hasAdminKey() {
+  return Boolean(API_KEY);
 }
 
 export function discourseBaseUrl() {
@@ -25,16 +33,25 @@ export function actingUsername() {
   return API_USERNAME;
 }
 
-export async function discourseFetch(path, { method = 'GET', body, formData, username, cache = 'no-store' } = {}) {
+export const SIGN_IN_REQUIRED = 'Please sign in to continue.';
+
+export async function discourseFetch(path, { method = 'GET', body, formData, username, cache = 'no-store', requireUser = method !== 'GET' } = {}) {
   if (!isDiscourseConfigured()) {
-    throw new DiscourseError('Discourse is not configured (set DISCOURSE_URL and DISCOURSE_API_KEY).', 503);
+    throw new DiscourseError('Discourse is not configured (set DISCOURSE_URL).', 503);
   }
 
-  const headers = {
-    'Api-Key': API_KEY,
-    'Api-Username': username || API_USERNAME,
-    Accept: 'application/json',
-  };
+  const headers = { Accept: 'application/json' };
+  const user = await getUserAuth();
+  if (user) {
+    headers['User-Api-Key'] = user.key;
+    headers['User-Api-Client-Id'] = user.clientId;
+  } else if (API_KEY) {
+    headers['Api-Key'] = API_KEY;
+    headers['Api-Username'] = username || API_USERNAME;
+  } else if (requireUser) {
+    throw new DiscourseError(SIGN_IN_REQUIRED, 401);
+  }
+  // Otherwise the request goes out as an anonymous guest (public reads).
 
   let payload;
   if (formData) {
@@ -54,6 +71,10 @@ export async function discourseFetch(path, { method = 'GET', body, formData, use
   }
 
   if (!res.ok) {
+    // A revoked or expired member key comes back as 403 "invalid_access".
+    if (user && (res.status === 401 || (res.status === 403 && data?.error_type === 'invalid_access'))) {
+      throw new DiscourseError(SIGN_IN_REQUIRED, 401);
+    }
     const errors = data?.errors || (data?.error ? [data.error] : []);
     throw new DiscourseError(errors[0] || `Discourse request failed (${res.status})`, res.status, errors);
   }
