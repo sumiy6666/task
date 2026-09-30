@@ -1,0 +1,66 @@
+.pulseCard {
+  margin-bottom: 2rem;
+  overflow: visible;
+}
+
+.title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+  color: var(--color-text-main);
+  text-transform: uppercase;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 1.5rem 1rem;
+  border-radius: var(--radius-lg);
+  color: white;
+  transition: transform 0.2s;
+  min-height: 120px;
+}
+
+.statItem:hover {
+  transform: translateY(-5px);
+}
+
+.statValue {
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin-bottom: 0.25rem;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.blue {
+  background-color: var(--color-primary);
+}
+
+.darkBlue {
+  background-color: var(--color-accent-blue);
+}
+
+.purple {
+  background-color: var(--color-accent-purple);
+}
+
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

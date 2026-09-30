@@ -1,0 +1,85 @@
+.pollCard {
+  margin-bottom: 2rem;
+}
+
+.header {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.iconBox {
+  width: 3.5rem;
+  height: 3.5rem;
+  background-color: #385E87;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconBox svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.tag {
+  font-size: 0.9rem;
+  color: #385E87;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.titleSection h3 {
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--color-text-main);
+}
+
+.pollResults {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.pollBarWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.pollBarBg {
+  flex: 1;
+  background-color: #f0f4f8;
+  border-radius: var(--radius-full);
+  height: 2.5rem;
+  overflow: hidden;
+}
+
+.pollBarFill {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 0.75rem;
+  border-radius: var(--radius-full);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.percentText {
+  z-index: 1;
+}
+
+.labelText {
+  position: absolute;
+  right: 1.5rem;
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+}

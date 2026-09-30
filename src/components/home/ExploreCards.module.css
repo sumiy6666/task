@@ -1,0 +1,61 @@
+.exploreContainer {
+  height: 100%;
+}
+
+.title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+  color: var(--color-text-main);
+  text-transform: uppercase;
+}
+
+.cardsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.exploreCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2.5rem;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.exploreCard:hover {
+  transform: translateX(5px);
+}
+
+.cardContent {
+  max-width: 70%;
+}
+
+.cardContent h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.cardContent p {
+  font-size: 0.875rem;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+.cardIcon {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+}
+
+.cardIcon svg {
+  width: 2.5rem;
+  height: 2.5rem;
+}

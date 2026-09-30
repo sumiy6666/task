@@ -1,0 +1,73 @@
+.menuList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menuItem {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.menuItem:last-child {
+  border-bottom: none;
+}
+
+.menuItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 0;
+  cursor: pointer;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.menuItemHeader.active {
+  color: #003ECF;
+}
+
+.expandIcon {
+  color: #999;
+  font-size: 1.9rem;
+  font-weight: 300;
+}
+
+.active .expandIcon {
+  color: #00A4E4;
+}
+
+.submenu {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  max-height: 0;
+  padding: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.submenu.open {
+  max-height: 500px;
+  padding: 1rem 0 1.5rem;
+  opacity: 1;
+}
+
+.submenuLink {
+  color: #000;
+  padding: .3rem 0;
+  font-size: .98rem;
+  text-decoration: none;
+  display: block;
+  font-weight: 500;
+}
+
+.submenuLink:hover {
+  color: #00A4E4;
+}
+
+.submenuLink.highlight {
+  color: #00A4E4;
+  font-weight: 500;
+}

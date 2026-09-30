@@ -1,0 +1,172 @@
+.footerContainer {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.footerGrid {
+  display: grid;
+  grid-template-columns: 2.4fr 1fr;
+  gap: 6rem;
+  padding: 3rem 4rem 1.5rem;
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.rightCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.stayLoopCard {
+  background-color: #f3f6f9;
+  padding: 2rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stayLoopCard h3 {
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.stayLoopCard p {
+  color: #000;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.loopForm {
+  display: flex;
+  position: relative;
+}
+
+.loopForm input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  outline: none;
+  font-size: 0.85rem;
+  background: #fff;
+}
+
+.loopForm button {
+  position: absolute;
+  right: 0.25rem;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  width: 2.75rem;
+  border-radius: 50%;
+  background-color: #00A4E4;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+
+.loopForm button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.iconLinks {
+  display: flex;
+  flex-direction: column;
+}
+
+.iconLinks a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: #333;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.iconLinks a:last-child {
+  border-bottom: none;
+}
+
+.iconLinks a:hover {
+  color: #00A4E4;
+}
+
+.iconCircle {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background-color: #11A0DB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  filter: brightness(0) invert(1);
+}
+
+.bottomBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.85rem;
+  background: linear-gradient(to right, #0D99D2, #003ECF);
+  color: white;
+  border-radius: 40px;
+  padding: 1.5rem 3rem;
+  margin: 0 1.5rem 1.5rem;
+}
+
+.legalLinks {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.separator {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.legalLinks a {
+  color: white;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.legalLinks a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .footerGrid {
+    grid-template-columns: 1fr;
+    padding: 2rem;
+    gap: 2rem;
+  }
+
+  .bottomBar {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem 2rem;
+  }
+}

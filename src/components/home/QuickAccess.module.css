@@ -1,0 +1,85 @@
+.quickAccessCard {
+  background: linear-gradient(135deg, #2789FF, #1E4773, #1D3E62, #11A0DB);
+  padding: 2rem;
+}
+
+.title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.actionsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mainAction {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mainAction span {
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+.actionBtn {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+  box-shadow: 0 4px 15px rgba(0, 164, 228, 0.3);
+}
+
+.actionBtn:hover {
+  transform: scale(1.05);
+}
+
+.actionBtn svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.iconActions {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.smallActionBtn {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background-color: white;
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.smallActionBtn:hover {
+  transform: scale(1.05);
+}
+
+.smallActionBtn svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .actionsContainer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+}

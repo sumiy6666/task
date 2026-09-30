@@ -1,0 +1,77 @@
+.updateCard {
+  height: 100%;
+}
+
+.title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+  color: var(--color-text-main);
+  text-transform: uppercase;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 290px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.list::-webkit-scrollbar {
+  width: 4px;
+}
+.list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.list::-webkit-scrollbar-thumb {
+  background-color: #385e8747;
+  border-radius: 4px;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  background-color: var(--color-bg);
+  border-radius: var(--radius-full);
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.listItem:hover {
+  transform: translateX(5px);
+  background-color: #e5ebf1;
+}
+
+.itemContent h4 {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #385e87;
+  margin-bottom: 0.25rem;
+}
+
+.itemContent p {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.arrowBtn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: #3A97FF;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+
+.arrowBtn svg {
+  width: 1rem;
+  height: 1rem;
+}
