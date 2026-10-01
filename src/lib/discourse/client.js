@@ -5,6 +5,10 @@ import { getUserAuth } from './session';
 const BASE_URL = (process.env.DISCOURSE_URL || '').replace(/\/+$/, '');
 const API_KEY = process.env.DISCOURSE_API_KEY || '';
 const API_USERNAME = process.env.DISCOURSE_API_USERNAME || 'system';
+// Set SIGN_IN_ENABLED=false to switch member sign-in off (e.g. while the
+// Discourse callback is being set up). Everyone then acts through
+// DISCOURSE_API_KEY, or the app runs on demo data when there is no key.
+const SIGN_IN_ENABLED = process.env.SIGN_IN_ENABLED !== 'false';
 
 export class DiscourseError extends Error {
   constructor(message, status, errors = []) {
@@ -18,7 +22,11 @@ export class DiscourseError extends Error {
 // User API Key (see ./user-api-key.js); DISCOURSE_API_KEY is an optional
 // admin key used for guests' reads and for acting as DISCOURSE_API_USERNAME.
 export function isDiscourseConfigured() {
-  return Boolean(BASE_URL);
+  return Boolean(BASE_URL && (SIGN_IN_ENABLED || API_KEY));
+}
+
+export function isSignInEnabled() {
+  return SIGN_IN_ENABLED && isDiscourseConfigured();
 }
 
 export function hasAdminKey() {
@@ -41,7 +49,7 @@ export async function discourseFetch(path, { method = 'GET', body, formData, use
   }
 
   const headers = { Accept: 'application/json' };
-  const user = await getUserAuth();
+  const user = SIGN_IN_ENABLED ? await getUserAuth() : null;
   if (user) {
     headers['User-Api-Key'] = user.key;
     headers['User-Api-Client-Id'] = user.clientId;

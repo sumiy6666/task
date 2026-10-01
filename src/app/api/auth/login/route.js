@@ -1,13 +1,13 @@
 import crypto from 'node:crypto';
 import { NextResponse } from 'next/server';
-import { discourseBaseUrl, isDiscourseConfigured } from '@/lib/discourse/client';
+import { discourseBaseUrl, isSignInEnabled } from '@/lib/discourse/client';
 import { CLIENT_COOKIE, cookieOptions, PENDING_COOKIE, safeReturnPath } from '@/lib/discourse/session';
 import { createKeyPair, SCOPES } from '@/lib/discourse/user-api-key';
 
 // Sends the member to Discourse to sign in and approve a User API Key.
 export async function GET(request) {
   const returnTo = safeReturnPath(request.nextUrl.searchParams.get('return'));
-  if (!isDiscourseConfigured()) return NextResponse.redirect(new URL(returnTo, request.url));
+  if (!isSignInEnabled()) return NextResponse.redirect(new URL(returnTo, request.url));
 
   const origin = process.env.APP_URL?.replace(/\/+$/, '') || request.nextUrl.origin;
   const clientId = request.cookies.get(CLIENT_COOKIE)?.value || crypto.randomUUID();

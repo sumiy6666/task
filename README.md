@@ -38,6 +38,8 @@ One-time Discourse admin setup (Admin → Settings):
 - `user api key allowed groups` (or `min trust level for user api key` on older versions): include the members who should sign in, e.g. `trust_level_0`.
 - `allow user api key scopes`: must include `read`, `write` and `session_info` (the default does).
 
+To switch sign-in off temporarily, set `SIGN_IN_ENABLED=false`. Everyone then posts through `DISCOURSE_API_KEY` as `DISCOURSE_API_USERNAME`; without a key the app runs on demo data.
+
 Guests can browse public topics; posting, replying, voting, liking and bookmarking ask them to sign in first.
 
 ### Configuration

@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { Header } from '@/components/layout/Header';
 import { SignInNotice } from '@/components/layout/SignInNotice';
-import { getCurrentUser, isDiscourseConfigured } from '@/lib/discourse';
+import { getCurrentUser, isSignInEnabled } from '@/lib/discourse';
 import { Footer } from '@/components/layout/Footer';
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -31,7 +31,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <Header user={user} canSignIn={isDiscourseConfigured()} />
+        <Header user={user} canSignIn={isSignInEnabled()} />
         <Suspense fallback={null}>
           <SignInNotice />
         </Suspense>

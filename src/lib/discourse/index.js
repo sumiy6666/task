@@ -1,19 +1,19 @@
 // Data access used by pages and route handlers. Talks to Discourse when it is
 // configured and falls back to demo data otherwise.
 import { cache } from 'react';
-import { actingUsername, discourseFetch, DiscourseError, hasAdminKey, isDiscourseConfigured } from './client';
+import { actingUsername, discourseFetch, DiscourseError, hasAdminKey, isDiscourseConfigured, isSignInEnabled } from './client';
 import { getUserAuth } from './session';
 import { mapCategory, mapPolls, mapTopic, mapUser } from './mappers';
 import { loadDemo, recordDemoOp } from './demo-session';
 import { mockCategories, mockGetTopic, mockUser, nextTopicId } from './mock';
 
-export { isDiscourseConfigured };
+export { isDiscourseConfigured, isSignInEnabled };
 
 // The signed-in member, or null for a guest. Cached per request because the
 // layout and the page both ask.
 export const getCurrentUser = cache(async () => {
   if (!isDiscourseConfigured()) return mockUser;
-  if (await getUserAuth()) {
+  if (isSignInEnabled() && (await getUserAuth())) {
     try {
       const data = await discourseFetch('/session/current.json');
       return data?.current_user ? mapUser(data.current_user) : null;
