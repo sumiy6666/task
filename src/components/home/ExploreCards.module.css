@@ -59,3 +59,45 @@
   width: 2.5rem;
   height: 2.5rem;
 }
+
+@media (max-width: 768px) {
+  .exploreContainer {
+    margin-bottom: 1.5rem;
+    height: auto;
+    padding: 1.75rem 1.5rem;
+  }
+
+  .title {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    margin-bottom: 1.75rem;
+  }
+
+  .cardsList {
+    gap: 1.25rem;
+  }
+
+  .exploreCard {
+    align-items: flex-start;
+    padding: 1.75rem 1.5rem 1.5rem 1.75rem;
+    min-height: 9rem;
+  }
+
+  .exploreCard:hover {
+    transform: none;
+  }
+
+  .cardContent {
+    padding-top: 1rem;
+  }
+
+  .cardContent h4 {
+    font-size: 1.05rem;
+    font-weight: 500;
+  }
+
+  .cardContent p {
+    font-size: 0.85rem;
+  }
+}

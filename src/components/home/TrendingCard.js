@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import styles from './TrendingCard.module.css';
@@ -41,7 +42,7 @@ export function TrendingCard() {
           </Button>
         </div>
 
-        <h2 className={styles.title}>{tabs[activeTab].title}</h2>
+        <h2 className={styles.title}><Link href={tabs[activeTab].href}>{tabs[activeTab].title}</Link></h2>
         <p className={styles.desc}>{tabs[activeTab].desc}</p>
 
         <button

@@ -83,7 +83,9 @@ export function Header({ user = null, canSignIn = false }) {
         </div>
 
         <div className={`${styles.sideMenuWrapper} ${isMenuOpen ? styles.open : ''}`}>
-          <div className={styles.sideMenuInner}>
+          {/* Close once a link is chosen; several share the current path, so
+              waiting for the route to change would leave the menu open. */}
+          <div className={styles.sideMenuInner} onClick={(e) => e.target.closest('a') && setIsMenuOpen(false)}>
             <AccordionMenu />
           </div>
         </div>

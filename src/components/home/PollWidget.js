@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import { Card } from '../ui/Card';
 import styles from './PollWidget.module.css';
 
@@ -21,8 +22,11 @@ export function PollWidget() {
           <span className={styles.tag}>POLLS</span>
           <h3><Link href="/poll">When a family adds a new asset class, how long before it appears in consolidated reporting?</Link></h3>
         </div>
+        <Link href="/poll" className={styles.learnMore}>
+          LEARN MORE <ArrowRight size={14} />
+        </Link>
       </div>
-      
+
       <div className={styles.pollResults}>
         {pollData.map((item, index) => (
           <div key={index} className={styles.pollBarWrapper}>

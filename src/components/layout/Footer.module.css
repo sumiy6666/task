@@ -170,3 +170,122 @@
     padding: 1.5rem 2rem;
   }
 }
+/* Logo and blurb, shown under the links on phones only. */
+.brand {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .footerGrid {
+    grid-template-columns: 1.4fr 1fr;
+    gap: 2.5rem;
+    padding: 2.5rem 2.5rem 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .footerGrid {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  .stayLoopCard {
+    padding: 2rem 1.75rem;
+    margin-bottom: 1.75rem;
+    border-radius: 1.25rem;
+  }
+
+  .stayLoopCard h3 {
+    font-size: 1.3rem;
+    font-weight: 500;
+  }
+
+  .stayLoopCard p {
+    font-size: 1rem;
+  }
+
+  .loopForm input {
+    padding: 0.8rem 1.25rem;
+    border-color: transparent;
+  }
+
+  .loopForm button {
+    width: 2.1rem;
+    height: 2.1rem;
+    top: 50%;
+    bottom: auto;
+    right: 0.6rem;
+    transform: translateY(-50%);
+  }
+
+  /* Two columns of links between dividers. */
+  .iconLinks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem 1rem;
+    padding: 1.5rem 0.5rem;
+    border-top: 1px solid #d5dae1;
+  }
+
+  .iconLinks a {
+    border-bottom: none;
+    font-size: 1rem;
+    font-weight: 400;
+    gap: 0.75rem;
+  }
+
+  .iconCircle {
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+  }
+
+  .icon {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem 0.25rem 0;
+    border-top: 1px solid #d5dae1;
+  }
+
+  .brandLogo {
+    width: 40%;
+    flex-shrink: 0;
+  }
+
+  .brand p {
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: #000;
+  }
+
+  .bottomBar {
+    align-items: flex-start;
+    text-align: left;
+    gap: 1.25rem;
+    margin: 0 1rem 1rem;
+    padding: 1.75rem 1.75rem 1.5rem;
+    border-radius: 1.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .legalLinks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem 1rem;
+    width: 100%;
+    font-size: 0.7rem;
+    font-weight: 400;
+  }
+
+  .separator {
+    display: none;
+  }
+}

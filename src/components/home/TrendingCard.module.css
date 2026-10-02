@@ -145,3 +145,51 @@
     padding: 2rem;
   }
 }
+@media (max-width: 768px) {
+  .trendingCard {
+    min-height: 560px;
+    margin-bottom: 1.5rem;
+  }
+
+  .sidebar {
+    margin: 1rem 1rem 0;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .navIcons {
+    justify-content: space-between;
+  }
+
+  .navIcon {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .content {
+    padding: 2rem 1.5rem;
+  }
+
+  /* The design leaves only the tabs on phones; the headline is the link. */
+  .readMoreBtn,
+  .nextBtn {
+    display: none !important;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .title {
+    font-size: 1.45rem;
+    line-height: 1.25;
+    max-width: none;
+    margin-bottom: 0.75rem;
+  }
+
+  .desc {
+    font-size: 0.95rem;
+    line-height: 1.45;
+    max-width: none;
+  }
+}

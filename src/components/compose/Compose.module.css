@@ -436,21 +436,76 @@
   white-space: nowrap;
 }
 
-@media (max-width: 768px) {
+/* Tablets and phones: real pixels instead of the scaled Figma pixel, which
+   would shrink text to around 8px on a tablet. */
+@media (max-width: 1024px) {
   .card {
     --px: 1px;
-    margin: 16px 0 32px;
-    padding: 24px 16px;
+    margin: 16px 0 40px;
+    min-height: 0;
+    padding: 36px 32px 32px;
+    border-radius: 20px;
+  }
+  .closeButton { top: 44px; right: 32px; }
+  .pollGrid {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    column-gap: 40px;
+  }
+  .optionRow { gap: 14px; }
+  .dragHandle { padding-left: 0; }
+  .dateInput { flex: 1; min-width: 0; width: auto; height: 36px; }
+  .reviewQuestion { font-size: 24px; }
+  .reviewOptions { width: 100%; }
+  .success { padding: 64px 0; }
+  .successActions { gap: 24px; margin-top: 56px; }
+}
+
+@media (max-width: 640px) {
+  .card {
+    margin: 4px 0 32px;
+    padding: 24px 18px 22px;
     border-radius: 16px;
   }
-  .closeButton { top: 24px; right: 16px; }
-  .titleRow { flex-direction: column; }
-  .category { width: 100%; }
-  .pollGrid { grid-template-columns: 1fr; row-gap: 32px; }
-  .optionRow { gap: 12px; }
-  .reviewTop { flex-direction: column; gap: 16px; }
+  .closeButton { top: 26px; right: 18px; width: 34px; height: 34px; }
+  .author { gap: 14px; padding-right: 44px; }
+  .avatarRing { width: 52px; height: 52px; }
+  .authorName { font-size: 22px; }
+
+  /* 16px text keeps iOS from zooming into the fields. */
+  .titleRow { flex-direction: column; gap: 12px; margin-top: 24px; }
+  .titleInput { flex: none; height: 52px; padding: 0 16px; font-size: 16px; }
+  .category { width: 100%; height: 56px; }
+  .categoryValue { font-size: 15px; }
+  .bodyInput { margin-top: 12px; height: 240px; padding: 14px 16px; font-size: 16px; }
+
+  .pollGrid { grid-template-columns: 1fr; row-gap: 28px; margin-top: 24px; }
+  .sectionTitle { font-size: 17px; }
+  .optionList { margin-top: 14px; }
+  .optionRow { gap: 8px; }
+  .optionInput { height: 46px; padding: 0 12px 0 16px; }
+  .optionInput input { font-size: 16px; min-width: 0; }
+  .settingsList { margin-top: 18px; }
+  .settingLabel { font-size: 15px; }
+  .endDate { margin-top: 26px; }
+  .dateRow { margin-top: 10px; }
+  .dateInput { height: 42px; font-size: 15px; }
+
+  .footer { flex-wrap: wrap; gap: 12px; padding-top: 24px; }
+  .tools { padding-left: 4px; gap: 22px; }
+  .actions { flex-wrap: wrap; justify-content: flex-end; }
+  .btn { height: 40px; }
+  .error, .notice { margin-right: 0; }
+
+  .reviewHeading { margin-top: 6px; font-size: 16px; }
+  .reviewTop { flex-direction: column; gap: 16px; margin-top: 22px; }
   .reviewTop .category { margin-top: 0; }
-  .reviewOptions { width: 100%; }
-  .footer { flex-wrap: wrap; gap: 16px; }
-  .successActions { flex-direction: column; gap: 16px; }
+  .reviewQuestion { font-size: 20px; line-height: 1.35; margin-top: 20px; }
+  .reviewOptions { margin-top: 20px; }
+  .reviewOptions li { height: 46px; padding: 0 16px; font-size: 15px; }
+
+  .success { padding: 48px 0 32px; }
+  .successTitle { font-size: 24px; margin-top: 28px; }
+  .successText { font-size: 14px; line-height: 1.5; margin-top: 12px; }
+  .successActions { flex-direction: column; gap: 14px; margin-top: 40px; width: 100%; }
+  .successActions .btn { width: 100%; }
 }

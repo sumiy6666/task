@@ -1,9 +1,16 @@
 'use client';
 import React from 'react';
 import styles from './Footer.module.css';
+import { usePathname } from 'next/navigation';
 import { AccordionMenu } from '../ui/AccordionMenu';
 
+// Pages that run full-width without the site footer.
+const NO_FOOTER = ['/conversations/new'];
+
 export function Footer() {
+  const pathname = usePathname();
+  if (NO_FOOTER.includes(pathname)) return null;
+
   return (
     <div className="container" style={{ marginTop: '0rem', marginBottom: '2rem' }}>
       <footer className={styles.footerContainer}>
@@ -29,6 +36,11 @@ export function Footer() {
               <a href="#"><div className={styles.iconCircle}><img src="/images/Icon5.svg" alt="Profile" className={styles.icon} /></div> Profile</a>
               <a href="#"><div className={styles.iconCircle}><img src="/images/Icon6.svg" alt="Notification" className={styles.icon} /></div> Notification</a>
               <a href="#"><div className={styles.iconCircle}><img src="/images/Vector2.svg" alt="AI Assistance" className={styles.icon} /></div> AI Assistance</a>
+            </div>
+
+            <div className={styles.brand}>
+              <img src="/images/logo.svg" alt="AV CIRCLE" className={styles.brandLogo} />
+              <p>AV CIRCLE is the community platform for Asset Vantage users to connect, learn, share knowledge and grow together.</p>
             </div>
           </div>
         </div>

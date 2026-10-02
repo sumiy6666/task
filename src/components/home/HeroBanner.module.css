@@ -164,3 +164,113 @@
     font-size: 2rem;
   }
 }
+@media (max-width: 1024px) {
+  .featuredBanner {
+    height: 460px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* On phones the welcome text sits on the page background and the banner
+     becomes its own rounded card. */
+  .heroWrapper {
+    background-color: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+    margin-bottom: 1.5rem;
+  }
+
+  .welcomeSection {
+    gap: 1.75rem;
+    padding: 1.5rem 0 2rem;
+  }
+
+  .welcomeText h1 {
+    font-size: 2.1rem;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+
+  .highlight {
+    display: block;
+    text-transform: uppercase;
+  }
+
+  .welcomeText p {
+    font-size: 1rem;
+    line-height: 1.5;
+    max-width: 20rem;
+  }
+
+  .welcomeActions {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  /* The buttons carry desktop sizing in inline styles. */
+  .welcomeActions > a {
+    padding: 0.55rem 1rem !important;
+    font-size: 10px !important;
+    min-height: 2.5rem;
+  }
+
+  .welcomeActions > a:first-child {
+    background: var(--color-surface) !important;
+    border-color: var(--color-surface) !important;
+  }
+
+  .featuredBanner {
+    height: auto;
+    min-height: 360px;
+    padding: 1.5rem 1.25rem 1.75rem;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+  }
+
+  .bannerContent {
+    max-width: none;
+  }
+
+  .featuredTag {
+    font-size: 0.7rem;
+    line-height: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .bannerContent h2 {
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+
+  .bannerContent p {
+    font-size: 0.95rem;
+    line-height: 1.45;
+    margin-bottom: 1.5rem;
+  }
+
+  .learnMoreBtnWrapper {
+    display: inline-block;
+    position: relative;
+    bottom: auto;
+    left: auto;
+  }
+
+  .bannerControls {
+    top: 1.25rem;
+    right: 1.25rem;
+    bottom: auto;
+  }
+
+  .navBtn {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .userBadge {
+    display: none;
+  }
+}
