@@ -1,13 +1,14 @@
 import React from 'react';
+import { Reveal } from '@/components/ui/Reveal';
 
 export function ActiveMembersList({ members }) {
   return (
     <div className="bg-white flex flex-col h-full" style={{ borderRadius: 'calc(1.2 * var(--sa))', padding: 'calc(1.8 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(1 * var(--sa)) rgba(0,0,0,0.03)' }}>
-      <h3 className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '100%', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1 * var(--sa))' }}>
+      <Reveal as="h3" className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '100%', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1 * var(--sa))' }}>
         MOST ACTIVE MEMBERS
-      </h3>
+      </Reveal>
       <hr className="border-0" style={{ borderTop: 'calc(0.05 * var(--sa)) solid #eaeaea', margin: '0 0 calc(1.5 * var(--sa)) 0' }} />
-      <div className="flex flex-col" style={{ gap: 'calc(1.5 * var(--sa))' }}>
+      <Reveal stagger={120} className="flex flex-col" style={{ gap: 'calc(1.5 * var(--sa))' }}>
         {members.map((member, index) => (
           <div key={index} className="flex items-center justify-between">
             <div className="flex items-center" style={{ gap: 'calc(1 * var(--sa))' }}>
@@ -36,7 +37,7 @@ export function ActiveMembersList({ members }) {
             </button>
           </div>
         ))}
-      </div>
+      </Reveal>
     </div>
   );
 }

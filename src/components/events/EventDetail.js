@@ -1,3 +1,4 @@
+import { Reveal } from '@/components/ui/Reveal';
 import Link from 'next/link';
 import { downloadIcs } from './RegisterEventModal';
 import styles from './Events.module.css';
@@ -57,7 +58,7 @@ export default function EventDetail({ event, onRegister }) {
   return (
     <div className={`bg-white flex flex-col h-full overflow-hidden ${styles.panel}`}>
       {/* Header */}
-      <div className={styles.detailHead}>
+      <Reveal className={styles.detailHead}>
         <span className={`text-[#00A4E4] font-semibold uppercase ${styles.detailCategory}`}>
           {event.category}
         </span>
@@ -75,10 +76,10 @@ export default function EventDetail({ event, onRegister }) {
             <img src={event.detailImage} alt={event.title} className="w-full h-full object-cover" />
           </div>
         </div>
-      </div>
+      </Reveal>
 
       {/* Details table */}
-      <div className={`flex flex-col ${styles.detailTable}`}>
+      <Reveal stagger={100} delay={200} className={`flex flex-col ${styles.detailTable}`}>
         {details.map((detail, idx) => (
           <div key={idx} className={`flex items-start ${styles.detailRow}`}>
             <span className={`font-semibold text-[#132742] flex-shrink-0 ${styles.detailLabel}`}>
@@ -122,7 +123,7 @@ export default function EventDetail({ event, onRegister }) {
             </div>
           </div>
         ))}
-      </div>
+      </Reveal>
     </div>
   );
 }

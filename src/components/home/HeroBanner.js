@@ -25,23 +25,31 @@ const bannerData = [
 
 export function HeroBanner() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  // The first slide's text waits for the welcome heading; later slides don't.
+  const [hasSlid, setHasSlid] = useState(false);
+
+  const goTo = (getNext) => {
+    setHasSlid(true);
+    setCurrentSlide(getNext);
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
+      setHasSlid(true);
       setCurrentSlide((prev) => (prev + 1) % bannerData.length);
     }, 5000);
     return () => clearInterval(timer);
   }, []);
 
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % bannerData.length);
-  const prevSlide = () => setCurrentSlide((prev) => (prev === 0 ? bannerData.length - 1 : prev - 1));
+  const nextSlide = () => goTo((prev) => (prev + 1) % bannerData.length);
+  const prevSlide = () => goTo((prev) => (prev === 0 ? bannerData.length - 1 : prev - 1));
 
   return (
     <div className={styles.heroWrapper}>
       <div className={styles.welcomeSection}>
         <div className={styles.welcomeText}>
-          <h1>Welcome to <span className={styles.highlight}>AV Community</span></h1>
-          <p>Connect, learn and grow with professionals around the world.</p>
+          <h1 className="rise-in">Welcome to <span className={styles.highlight}>AV Community</span></h1>
+          <p className="rise-in" style={{ '--delay': '0.15s' }}>Connect, learn and grow with professionals around the world.</p>
         </div>
         <div className={styles.welcomeActions}>
           <Button href="/conversations/new" variant="secondary" icon={<img src="/images/banner_conversation.svg" alt="conversation" style={{ width: '16px', height: '16px' }} />} iconPosition="left" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'transparent', border: '1px solid #ccc', color: '#555', padding: '0.3vw 1.5vw', borderRadius: '24px', fontSize: '11px' }}>
@@ -66,15 +74,20 @@ export function HeroBanner() {
           />
         ))}
 
-        <div className={styles.bannerContent}>
-          <span className={styles.featuredTag}>{bannerData[currentSlide].tag}</span>
-          <h2>{bannerData[currentSlide].title}</h2>
-          <p>
+        {/* Keyed by slide so the text animates in again on every change. */}
+        <div key={currentSlide} className={styles.bannerContent} style={{ '--base': hasSlid ? '0.3s' : '0.6s' }}>
+          <span className={`${styles.featuredTag} rise-in`}>{bannerData[currentSlide].tag}</span>
+          <h2 className="rise-in" style={{ '--delay': '0.15s' }}>{bannerData[currentSlide].title}</h2>
+          <p className="rise-in" style={{ '--delay': '0.3s' }}>
             {bannerData[currentSlide].desc}
           </p>
         </div>
 
-        <div className={styles.learnMoreBtnWrapper}>
+        <div
+          key={`btn-${currentSlide}`}
+          className={`${styles.learnMoreBtnWrapper} rise-in`}
+          style={{ '--base': hasSlid ? '0.3s' : '0.6s', '--delay': '0.45s' }}
+        >
           <Button href={bannerData[currentSlide].href} variant="outline" icon={<ArrowRight size={16} />} iconPosition="right" className={styles.learnMoreBtn} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'transparent', border: '1px solid white', color: 'white', padding: '0.3rem 1.2rem', borderRadius: '24px', fontSize: '12px' }}>
             {bannerData[currentSlide].buttonText}
           </Button>

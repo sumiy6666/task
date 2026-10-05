@@ -1,3 +1,4 @@
+import { Reveal } from '@/components/ui/Reveal';
 import EventCard from './EventCard';
 import styles from './Events.module.css';
 
@@ -6,11 +7,11 @@ export default function UpcomingEventsList({ events, activeEventId, onEventSelec
     <div className={`bg-white flex flex-col h-full overflow-hidden ${styles.panel}`}>
       {/* header */}
       <div className={styles.listHeader}>
-        <h3 className={`font-semibold text-[#132742] uppercase ${styles.listTitle}`}>UPCOMING EVENTS</h3>
+        <Reveal as="h3" className={`font-semibold text-[#132742] uppercase ${styles.listTitle}`}>UPCOMING EVENTS</Reveal>
       </div>
 
       {/* list */}
-      <div className="flex flex-col flex-1 overflow-y-auto">
+      <Reveal stagger={120} className="flex flex-col flex-1 overflow-y-auto">
         {events.map((event) => (
           <EventCard
             key={event.id}
@@ -19,7 +20,7 @@ export default function UpcomingEventsList({ events, activeEventId, onEventSelec
             onClick={() => onEventSelect(event)}
           />
         ))}
-      </div>
+      </Reveal>
 
       {/* view more */}
       <div className={styles.viewMore}>

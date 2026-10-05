@@ -9,10 +9,52 @@
   transform: none;
 }
 
+/* Same motion as .reveal; only `from` is set, so children end at their own
+   opacity. (Keyframe names are local to this module.) */
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+
+/* Stagger mode: children are hidden until shown, then each plays riseIn
+   in turn. An animation rather than a transition, so the
+   children's own hover transitions are left alone; `backwards` releases
+   every property once it ends. */
+.group:not(.shown) > * {
+  opacity: 0;
+}
+
+.group.shown > * {
+  animation: riseIn 0.8s cubic-bezier(0.2, 0.65, 0.3, 1) backwards;
+  animation-delay: calc(var(--start, 0ms) + var(--i, 12) * var(--stagger, 120ms));
+}
+
+.group > :nth-child(1) { --i: 0; }
+.group > :nth-child(2) { --i: 1; }
+.group > :nth-child(3) { --i: 2; }
+.group > :nth-child(4) { --i: 3; }
+.group > :nth-child(5) { --i: 4; }
+.group > :nth-child(6) { --i: 5; }
+.group > :nth-child(7) { --i: 6; }
+.group > :nth-child(8) { --i: 7; }
+.group > :nth-child(9) { --i: 8; }
+.group > :nth-child(10) { --i: 9; }
+.group > :nth-child(11) { --i: 10; }
+
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+
+  .group:not(.shown) > * {
+    opacity: 1;
+  }
+
+  .group.shown > * {
+    animation: none;
   }
 }

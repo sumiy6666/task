@@ -66,16 +66,17 @@ export default function EventsHeroBanner({ onFilterChange, onRegister }) {
       <div className={styles.heroShade} aria-hidden />
 
       {/* Left Content */}
-      <div className={`relative flex flex-col justify-center h-full text-white ${styles.heroContent}`} style={{ zIndex: 2 }}>
-        <div className={`uppercase font-medium ${styles.heroLabel}`}>
+      {/* Keyed by slide so the text animates in one by one on every change. */}
+      <div key={currentSlide} className={`relative flex flex-col justify-center h-full text-white ${styles.heroContent}`} style={{ zIndex: 2 }}>
+        <div className={`rise-in uppercase font-medium ${styles.heroLabel}`}>
           {slide.label}
         </div>
 
-        <h2 className={`font-semibold leading-tight transition-all duration-500 ${styles.heroTitle}`}>
+        <h2 className={`rise-in font-semibold leading-tight ${styles.heroTitle}`} style={{ '--delay': '0.15s' }}>
           {slide.title}
         </h2>
 
-        <div className={`flex flex-col ${styles.heroMeta}`}>
+        <div className={`rise-in flex flex-col ${styles.heroMeta}`} style={{ '--delay': '0.3s' }}>
           {[slide.date, slide.time, slide.location].map((text, i) => (
             <div key={i} className={`flex items-center ${styles.heroMetaItem}`}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.heroIcon}>
@@ -87,7 +88,7 @@ export default function EventsHeroBanner({ onFilterChange, onRegister }) {
           ))}
         </div>
 
-        <div>
+        <div className="rise-in" style={{ '--delay': '0.45s' }}>
           <button type="button" onClick={() => onRegister?.(slides[currentSlide].title)} className={`inline-flex items-center text-white bg-transparent hover:bg-white/10 transition-colors cursor-pointer ${styles.registerBtn}`}>
             REGISTER NOW
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.heroIcon}>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Reveal } from '@/components/ui/Reveal';
 import Link from 'next/link';
 
 export function ConversationItem({ conversation, isFirst }) {
@@ -61,9 +62,9 @@ export function ConversationList({ title, conversations, showViewAll = false }) 
   return (
     <div className="bg-white flex flex-col h-full" style={{ borderRadius: 'calc(1.2 * var(--sa))', padding: 'calc(1.8 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(1 * var(--sa)) rgba(0,0,0,0.03)' }}>
       <div className="flex justify-between items-center" style={{ marginBottom: 'calc(1.5 * var(--sa))' }}>
-        <h3 className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '100%', letterSpacing: '0em', color: '#000' }}>
+        <Reveal as="h3" className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '100%', letterSpacing: '0em', color: '#000' }}>
           {title}
-        </h3>
+        </Reveal>
         {showViewAll && (
           <button className="flex items-center text-gray-500 bg-white border border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors shadow-sm" style={{ gap: 'calc(0.6 * var(--sa))', fontSize: 'calc(0.7 * var(--fa) + var(--fb))', padding: 'calc(0.5 * var(--sa)) calc(1.2 * var(--sa))', borderRadius: 'calc(2 * var(--sa))' }}>
             VIEW ALL
@@ -74,11 +75,11 @@ export function ConversationList({ title, conversations, showViewAll = false }) 
         )}
       </div>
 
-      <div className="flex flex-col">
+      <Reveal stagger={120} className="flex flex-col">
         {conversations.map((conv, index) => (
           <ConversationItem key={conv.id} conversation={conv} isFirst={index === 0} />
         ))}
-      </div>
+      </Reveal>
     </div>
   );
 }

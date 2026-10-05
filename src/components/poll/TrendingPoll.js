@@ -12,11 +12,11 @@ export default function TrendingPoll() {
 
       {/* Content */}
       <div className="relative flex flex-col justify-center h-full text-white" style={{ zIndex: 2, padding: 'calc(3 * var(--sa)) calc(4 * var(--sa))', width: 'var(--split)' }}>
-        <div className="uppercase font-medium" style={{ fontSize: 'calc(0.8 * var(--fa) + var(--fb))', letterSpacing: '0.05em', marginBottom: 'calc(1.5 * var(--sa))', opacity: 0.9 }}>
+        <div className="rise-in uppercase font-medium" style={{ fontSize: 'calc(0.8 * var(--fa) + var(--fb))', letterSpacing: '0.05em', marginBottom: 'calc(1.5 * var(--sa))', opacity: 0.9 }}>
           TRENDING POLL
         </div>
 
-        <h2 className="font-semibold leading-tight" style={{ fontSize: 'calc(1.6 * var(--fa) + var(--fb))', marginBottom: 'calc(2.5 * var(--sa))', maxWidth: 'calc(35 * var(--da) + var(--db))' }}>
+        <h2 className="rise-in font-semibold leading-tight" style={{ '--delay': '0.15s', fontSize: 'calc(1.6 * var(--fa) + var(--fb))', marginBottom: 'calc(2.5 * var(--sa))', maxWidth: 'calc(35 * var(--da) + var(--db))' }}>
           When a family adds a new asset class, how long before it appears in consolidated reporting?
         </h2>
 
@@ -29,8 +29,9 @@ export default function TrendingPoll() {
           ].map((opt, i) => (
             <div
               key={i}
-              className="relative flex items-center justify-between overflow-hidden cursor-pointer transition-colors"
+              className="rise-in relative flex items-center justify-between overflow-hidden cursor-pointer transition-colors"
               style={{
+                '--delay': `${0.3 + i * 0.12}s`,
                 borderRadius: 'calc(2 * var(--sa))',
                 height: 'calc(2.4 * var(--da) + var(--db))',
                 border: opt.active ? 'none' : 'calc(0.1 * var(--sa)) solid rgba(255,255,255,0.4)',

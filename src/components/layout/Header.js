@@ -1,16 +1,32 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import styles from './Header.module.css';
 import { AccordionMenu } from '../ui/AccordionMenu';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 // `user` is the signed-in Discourse member (null for a guest). `canSignIn`
 // is false in demo mode, where there is no forum to sign in to.
 export function Header({ user = null, canSignIn = false }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const searchInputRef = useRef(null);
   const pathname = usePathname() || '/';
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isSearchOpen) searchInputRef.current?.focus();
+  }, [isSearchOpen]);
+
+  const submitSearch = (e) => {
+    e.preventDefault();
+    const term = query.trim();
+    if (!term) return;
+    setIsSearchOpen(false);
+    router.push(`/discussions?q=${encodeURIComponent(term)}`);
+  };
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -29,8 +45,14 @@ export function Header({ user = null, canSignIn = false }) {
             <Link href="/conversations/new" className={styles.iconButton} aria-label="Start a conversation">
               <img src="/images/icon2msg.svg" alt="" style={{ width: '20px', height: '20px' }} />
             </Link>
-            <button className={styles.iconButton} aria-label="Search">
-              <img src="/images/icon3search.svg" alt="Search" style={{ width: '20px', height: '20px' }} />
+            <button
+              type="button"
+              className={styles.iconButton}
+              aria-label="Search"
+              aria-expanded={isSearchOpen}
+              onClick={() => setIsSearchOpen((open) => !open)}
+            >
+              <img src="/images/icon3search.svg" alt="" style={{ width: '20px', height: '20px' }} />
             </button>
             <Link href="/discussions" className={styles.iconButton} aria-label="Discussions">
               <img src="/images/icon1coversation.svg" alt="" style={{ width: '20px', height: '20px' }} />
@@ -65,9 +87,29 @@ export function Header({ user = null, canSignIn = false }) {
               </a>
             ) : null}
 
+            {isSearchOpen && (
+              <form
+                className={styles.searchBox}
+                role="search"
+                onSubmit={submitSearch}
+                onKeyDown={(e) => e.key === 'Escape' && setIsSearchOpen(false)}
+              >
+                <img src="/images/icon3search.svg" alt="" style={{ width: '18px', height: '18px' }} />
+                <input
+                  ref={searchInputRef}
+                  type="search"
+                  className={styles.searchInput}
+                  placeholder="Search the community..."
+                  aria-label="Search the community"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+                <button type="button" className={styles.searchClose} aria-label="Close search" onClick={() => setIsSearchOpen(false)}>
+                  &times;
+                </button>
+              </form>
+            )}
           </div>
-
-
 
           <button className={`${styles.menuButton} ${isMenuOpen ? styles.menuButtonOpen : ''}`} aria-label="Menu" onClick={toggleMenu}>
             {isMenuOpen ? (

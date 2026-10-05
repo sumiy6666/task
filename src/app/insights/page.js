@@ -7,6 +7,11 @@ import { InsightListCard } from '@/components/insights/InsightListCard';
 import { DiscussionItem } from '@/components/insights/DiscussionItem';
 import { RecommendedArticleItem } from '@/components/insights/RecommendedArticleItem';
 import { ExpertPerspectiveCard } from '@/components/insights/ExpertPerspectiveCard';
+import { Reveal } from '@/components/ui/Reveal';
+
+// Each sidebar row fades up on scroll. The wrapper carries the divider, since
+// an item drops its own border as the last child of its wrapper.
+const LIST_ROW = 'border-b border-gray-100 last:border-b-0';
 
 // Mock Data
 const featuredArticle = {
@@ -129,13 +134,15 @@ export default function InsightsListingPage() {
         {/* Main Content Column */}
         <div className="flex-[1_1_65%]" style={{ minWidth: 'min(100%, calc(40 * var(--da) + var(--db)))' }}>
           <div className="bg-white" style={{ borderRadius: 'calc(1.1 * var(--sa))', padding: 'calc(1.8 * var(--sa))', marginBottom: 'calc(1.2 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(0.8 * var(--sa)) rgba(0,0,0,0.06)' }}>
-            <h3 className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '100%', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1 * var(--sa))' }}>
+            <Reveal as="h3" className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '100%', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1 * var(--sa))' }}>
               LATEST INSIGHTS
-            </h3>
+            </Reveal>
 
             <div className="flex flex-col">
-              {latestInsights.map(article => (
-                <InsightListCard key={article.id} article={article} />
+              {latestInsights.map((article, i) => (
+                <Reveal key={article.id} delay={150 + i * 120}>
+                  <InsightListCard article={article} />
+                </Reveal>
               ))}
             </div>
 
@@ -150,12 +157,14 @@ export default function InsightsListingPage() {
           </div>
 
           <div className="bg-white" style={{ borderRadius: 'calc(1.1 * var(--sa))', padding: 'calc(2 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(0.8 * var(--sa)) rgba(0,0,0,0.06)' }}>
-            <h3 className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '100%', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1.5 * var(--sa))' }}>
+            <Reveal as="h3" className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '100%', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1.5 * var(--sa))' }}>
               EXPERT PERSPECTIVES
-            </h3>
+            </Reveal>
             <div className="grid grid-cols-3 max-sm:grid-cols-1" style={{ gap: 'calc(1.2 * var(--sa))' }}>
-              {expertPerspectives.map(expert => (
-                <ExpertPerspectiveCard key={expert.id} expert={expert} />
+              {expertPerspectives.map((expert, i) => (
+                <Reveal key={expert.id} delay={150 + i * 150} className="flex">
+                  <ExpertPerspectiveCard expert={expert} />
+                </Reveal>
               ))}
             </div>
           </div>
@@ -164,29 +173,35 @@ export default function InsightsListingPage() {
         {/* Sidebar Column */}
         <div className="flex-[1_1_30%] flex flex-col" style={{ minWidth: 'min(100%, calc(20 * var(--da) + var(--db)))', gap: 'calc(1 * var(--sa))' }}>
           <div className="bg-white" style={{ borderRadius: 'calc(0.8 * var(--sa))', padding: 'calc(1.5 * var(--sa))', boxShadow: '0 calc(0.3 * var(--sa)) calc(1 * var(--sa)) rgba(0,0,0,0.05)' }}>
-            <h3 className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '1.2', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1 * var(--sa))' }}>
+            <Reveal as="h3" delay={200} className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '1.2', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1 * var(--sa))' }}>
               RELATED<br />DISCUSSIONS
-            </h3>
+            </Reveal>
             <div>
-              {relatedDiscussions.map(discussion => (
-                <DiscussionItem key={discussion.id} discussion={discussion} />
+              {relatedDiscussions.map((discussion, i) => (
+                <Reveal key={discussion.id} delay={350 + i * 120} className={LIST_ROW}>
+                  <DiscussionItem discussion={discussion} />
+                </Reveal>
               ))}
             </div>
           </div>
 
-          <PollWidget
-            question={relatedPolls.question}
-            options={relatedPolls.options}
-            responsesText={relatedPolls.responsesText}
-          />
+          <Reveal delay={200}>
+            <PollWidget
+              question={relatedPolls.question}
+              options={relatedPolls.options}
+              responsesText={relatedPolls.responsesText}
+            />
+          </Reveal>
 
           <div className="bg-white" style={{ borderRadius: 'calc(0.8 * var(--sa))', padding: 'calc(1.5 * var(--sa))', boxShadow: '0 calc(0.3 * var(--sa)) calc(1 * var(--sa)) rgba(0,0,0,0.05)' }}>
-            <h3 className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '1.2', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1 * var(--sa))' }}>
+            <Reveal as="h3" delay={200} className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '1.2', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1 * var(--sa))' }}>
               RECOMMENDED<br />ARTICLES
-            </h3>
+            </Reveal>
             <div>
-              {recommendedArticles.map(article => (
-                <RecommendedArticleItem key={article.id} article={article} />
+              {recommendedArticles.map((article, i) => (
+                <Reveal key={article.id} delay={350 + i * 120} className={LIST_ROW}>
+                  <RecommendedArticleItem article={article} />
+                </Reveal>
               ))}
             </div>
           </div>

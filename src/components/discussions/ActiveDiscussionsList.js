@@ -1,14 +1,15 @@
 import React from 'react';
+import { Reveal } from '@/components/ui/Reveal';
 import Link from 'next/link';
 
 export function ActiveDiscussionsList({ discussions }) {
   return (
     <div className="bg-white flex flex-col h-full" style={{ borderRadius: 'calc(1.2 * var(--sa))', padding: 'calc(1.8 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(1 * var(--sa)) rgba(0,0,0,0.03)' }}>
-      <h3 className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '100%', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1.5 * var(--sa))' }}>
+      <Reveal as="h3" className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '100%', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1.5 * var(--sa))' }}>
         RECENTLY ACTIVE DISCUSSIONS
-      </h3>
+      </Reveal>
 
-      <div className="flex flex-col" style={{ gap: 'calc(1 * var(--sa))' }}>
+      <Reveal stagger={120} className="flex flex-col" style={{ gap: 'calc(1 * var(--sa))' }}>
         {discussions.map((disc, index) => (
           <div
             key={index}
@@ -33,7 +34,7 @@ export function ActiveDiscussionsList({ discussions }) {
             </button>
           </div>
         ))}
-      </div>
+      </Reveal>
     </div>
   );
 }

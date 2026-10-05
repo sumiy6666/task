@@ -1,8 +1,9 @@
+import { Reveal } from '@/components/ui/Reveal';
 export default function MemberDetail({ member }) {
   if (!member) return null;
 
   return (
-    <div className="bg-white flex flex-col h-full overflow-hidden" style={{ borderRadius: 'calc(1.2 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(0.8 * var(--sa)) rgba(0,0,0,0.06)', padding: 'calc(2.5 * var(--sa))' }}>
+    <Reveal stagger={120} className="bg-white flex flex-col h-full overflow-hidden" style={{ borderRadius: 'calc(1.2 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(0.8 * var(--sa)) rgba(0,0,0,0.06)', padding: 'calc(2.5 * var(--sa))' }}>
       {/* Top Profile Info */}
       <div className="flex items-center" style={{ gap: 'calc(2 * var(--sa))', marginBottom: 'calc(2.5 * var(--sa))' }}>
         <div className="flex-shrink-0 rounded-full overflow-hidden" style={{ width: 'calc(8 * var(--da) + var(--db))', height: 'calc(8 * var(--da) + var(--db))', boxShadow: '0 calc(0.4 * var(--sa)) calc(1 * var(--sa)) rgba(0,0,0,0.1)' }}>
@@ -76,6 +77,6 @@ export default function MemberDetail({ member }) {
       >
         Follow Member
       </button>
-    </div>
+    </Reveal>
   );
 }

@@ -1,3 +1,5 @@
+import { Reveal } from '@/components/ui/Reveal';
+
 export default function TakePollDetail({ poll }) {
   if (!poll) return null;
 
@@ -5,13 +7,13 @@ export default function TakePollDetail({ poll }) {
 
   return (
     <div className="bg-white flex flex-col h-full" style={{ borderRadius: 'calc(1.2 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(0.8 * var(--sa)) rgba(0,0,0,0.06)', padding: 'calc(2.5 * var(--sa)) calc(3 * var(--sa))' }}>
-      <h3 className="font-semibold text-[#00A4E4] uppercase" style={{ fontSize: 'calc(0.8 * var(--fa) + var(--fb))', letterSpacing: '0.1em', marginBottom: 'calc(1.5 * var(--sa))' }}>TAKE POLL</h3>
+      <Reveal as="h3" className="font-semibold text-[#00A4E4] uppercase" style={{ fontSize: 'calc(0.8 * var(--fa) + var(--fb))', letterSpacing: '0.1em', marginBottom: 'calc(1.5 * var(--sa))' }}>TAKE POLL</Reveal>
 
-      <h2 className="font-medium text-[#132742]" style={{ fontSize: 'calc(0.95 * var(--fa) + var(--fb))', lineHeight: '1.5', marginBottom: 'calc(2.5 * var(--sa))' }}>
+      <Reveal as="h2" delay={120} className="font-medium text-[#132742]" style={{ fontSize: 'calc(0.95 * var(--fa) + var(--fb))', lineHeight: '1.5', marginBottom: 'calc(2.5 * var(--sa))' }}>
         {poll.question}
-      </h2>
+      </Reveal>
 
-      <div className="flex flex-col" style={{ gap: 'calc(1 * var(--sa))' }}>
+      <Reveal stagger={120} delay={240} className="flex flex-col" style={{ gap: 'calc(1 * var(--sa))' }}>
         {poll.options.map((option, index) => (
           <div
             key={index}
@@ -23,7 +25,7 @@ export default function TakePollDetail({ poll }) {
             <span className="text-[#64748b] font-medium" style={{ fontSize: 'calc(0.8 * var(--fa) + var(--fb))' }}>{option.percentage}</span>
           </div>
         ))}
-      </div>
+      </Reveal>
     </div>
   );
 }

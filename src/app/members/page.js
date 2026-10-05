@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
-import { EventBanner } from '@/components/discussions/EventBanner';
 import MemberDirectoryFilters from '@/components/members/MemberDirectoryFilters';
 import MembersList from '@/components/members/MembersList';
 import MemberDetail from '@/components/members/MemberDetail';
@@ -91,8 +90,6 @@ export default function MembersPage() {
   return (
     <div className="container min-h-screen" style={{ paddingBottom: 'calc(4 * var(--sa))' }}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Member Directory' }]} />
-
-      <EventBanner />
 
       <MemberDirectoryFilters />
 

@@ -1,9 +1,10 @@
+import { Reveal } from '@/components/ui/Reveal';
 import Link from 'next/link';
 import styles from './Events.module.css';
 
 export default function CommunityBanner() {
   return (
-    <div className={`flex items-center justify-between ${styles.banner}`}>
+    <Reveal stagger={150} className={`flex items-center justify-between ${styles.banner}`}>
       <div>
         <h3 className={`text-white font-semibold uppercase ${styles.bannerTitle}`}>
           STAY ENGAGED WITH THE COMMUNITY
@@ -18,6 +19,6 @@ export default function CommunityBanner() {
       >
         Explore Discussions
       </Link>
-    </div>
+    </Reveal>
   );
 }

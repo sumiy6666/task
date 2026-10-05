@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { Reveal } from '@/components/ui/Reveal';
 
 const tabs = ['MOST VIEWED', 'MOST REPLIED', 'MOST LIKED'];
 
@@ -8,11 +9,11 @@ export function TrendingDiscussions({ conversations }) {
 
   return (
     <div className="bg-white flex flex-col h-full" style={{ borderRadius: 'calc(1.2 * var(--sa))', padding: 'calc(1.8 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(1 * var(--sa)) rgba(0,0,0,0.03)' }}>
-      <h3 className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '100%', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1.5 * var(--sa))' }}>
+      <Reveal as="h3" className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '100%', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1.5 * var(--sa))' }}>
         TRENDING DISCUSSIONS
-      </h3>
+      </Reveal>
 
-      <div className="flex" style={{ gap: 'calc(0.8 * var(--sa))', marginBottom: 'calc(1.5 * var(--sa))' }}>
+      <Reveal stagger={100} delay={100} className="flex" style={{ gap: 'calc(0.8 * var(--sa))', marginBottom: 'calc(1.5 * var(--sa))' }}>
         {tabs.map(tab => (
           <button
             key={tab}
@@ -29,9 +30,9 @@ export function TrendingDiscussions({ conversations }) {
             {tab}
           </button>
         ))}
-      </div>
+      </Reveal>
 
-      <div className="flex flex-col">
+      <Reveal stagger={120} className="flex flex-col">
         {conversations.map((conv, index) => (
           <div key={conv.id} className="flex items-center max-sm:flex-wrap border-b border-gray-100 last:border-b-0" style={{ gap: 'calc(1 * var(--sa))', padding: 'calc(1.2 * var(--sa)) 0' }}>
             <img
@@ -72,7 +73,7 @@ export function TrendingDiscussions({ conversations }) {
             </div>
           </div>
         ))}
-      </div>
+      </Reveal>
     </div>
   );
 }

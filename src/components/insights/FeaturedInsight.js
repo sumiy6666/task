@@ -87,20 +87,21 @@ export function FeaturedInsight({ article }) {
 
         {/* Content */}
         {/* On phones the Categories box sits above the text, so start the text below it. */}
-        <div className="relative flex flex-col justify-center h-full text-white max-sm:pt-[96px]!" style={{ zIndex: 2, padding: 'calc(2 * var(--sa)) calc(2.5 * var(--sa))' }}>
-          <div className="uppercase font-medium" style={{ fontSize: 'calc(0.65 * var(--fa) + var(--fb))', letterSpacing: '0.1em', marginBottom: 'calc(1.5 * var(--sa))' }}>
+        {/* Keyed by slide so the text animates in one by one on every change. */}
+        <div key={currentSlide} className="relative flex flex-col justify-center h-full text-white max-sm:pt-[96px]!" style={{ zIndex: 2, padding: 'calc(2 * var(--sa)) calc(2.5 * var(--sa))' }}>
+          <div className="rise-in uppercase font-medium" style={{ fontSize: 'calc(0.65 * var(--fa) + var(--fb))', letterSpacing: '0.1em', marginBottom: 'calc(1.5 * var(--sa))' }}>
             FEATURED ARTICLE
           </div>
 
-          <h2 className="font-semibold leading-tight" style={{ fontSize: 'calc(1.8 * var(--fa) + var(--fb))', marginBottom: 'calc(0.6 * var(--sa))', maxWidth: 'calc(30 * var(--da) + var(--db))' }}>
+          <h2 className="rise-in font-semibold leading-tight" style={{ '--delay': '0.15s', fontSize: 'calc(1.8 * var(--fa) + var(--fb))', marginBottom: 'calc(0.6 * var(--sa))', maxWidth: 'calc(30 * var(--da) + var(--db))' }}>
             {currentBanner.title}
           </h2>
 
-          <p className="leading-relaxed" style={{ fontSize: 'calc(0.75 * var(--fa) + var(--fb))', opacity: 0.9, marginBottom: 'calc(1.2 * var(--sa))', maxWidth: 'calc(28 * var(--da) + var(--db))' }}>
+          <p className="rise-in leading-relaxed" style={{ '--delay': '0.3s', fontSize: 'calc(0.75 * var(--fa) + var(--fb))', opacity: 0.9, marginBottom: 'calc(1.2 * var(--sa))', maxWidth: 'calc(28 * var(--da) + var(--db))' }}>
             {currentBanner.description}
           </p>
 
-          <div className="flex items-center" style={{ gap: 'calc(0.4 * var(--sa))', marginBottom: 'calc(1.2 * var(--sa))', fontSize: 'calc(0.65 * var(--fa) + var(--fb))', opacity: 0.8 }}>
+          <div className="rise-in flex items-center" style={{ '--delay': '0.45s', gap: 'calc(0.4 * var(--sa))', marginBottom: 'calc(1.2 * var(--sa))', fontSize: 'calc(0.65 * var(--fa) + var(--fb))', opacity: 0.8 }}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 'calc(1 * var(--da) + var(--db))', height: 'calc(1 * var(--da) + var(--db))' }}>
               <circle cx="12" cy="12" r="10" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" />
@@ -108,7 +109,7 @@ export function FeaturedInsight({ article }) {
             {currentBanner.readTime} read
           </div>
 
-          <div className="flex items-center" style={{ gap: 'calc(0.8 * var(--sa))', marginBottom: 'calc(1.5 * var(--sa))' }}>
+          <div className="rise-in flex items-center" style={{ '--delay': '0.6s', gap: 'calc(0.8 * var(--sa))', marginBottom: 'calc(1.5 * var(--sa))' }}>
             <img src={currentBanner.author.avatar} alt={currentBanner.author.name} className="rounded-full object-cover" style={{ width: 'calc(3 * var(--da) + var(--db))', height: 'calc(3 * var(--da) + var(--db))', border: 'calc(0.15 * var(--sa)) solid rgba(255,255,255,0.2)' }} />
             <div>
               <div className="font-semibold" style={{ fontSize: 'calc(0.9 * var(--fa) + var(--fb))' }}>{currentBanner.author.name}</div>
@@ -118,7 +119,7 @@ export function FeaturedInsight({ article }) {
             </div>
           </div>
 
-          <div>
+          <div className="rise-in" style={{ '--delay': '0.75s' }}>
             <Link href={`/insights/${currentBanner.id}`} className="inline-flex items-center text-white no-underline hover:bg-white/10 transition-all" style={{ gap: 'calc(0.4 * var(--sa))', padding: 'calc(0.4 * var(--sa)) calc(1.2 * var(--sa))', border: 'calc(0.07 * var(--sa)) solid rgba(255,255,255,0.5)', borderRadius: 'calc(2 * var(--sa))', fontSize: 'calc(0.7 * var(--fa) + var(--fb))' }}>
               READ MORE
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 'calc(1 * var(--da) + var(--db))', height: 'calc(1 * var(--da) + var(--db))' }}>
