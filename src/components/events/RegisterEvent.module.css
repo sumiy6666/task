@@ -13,8 +13,8 @@
   padding: 24px;
   overflow-y: auto;
   background: rgba(225, 233, 247, 0.45);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  /* The 9px blur is set inline in RegisterEventModal.js: the CSS build drops
+     backdrop-filter from this stylesheet. */
   animation: fade 0.2s ease-out;
 }
 @keyframes fade { from { opacity: 0; } }

@@ -7,6 +7,7 @@ import UpcomingEventsList from '@/components/events/UpcomingEventsList';
 import EventDetail from '@/components/events/EventDetail';
 import CommunityBanner from '@/components/events/CommunityBanner';
 import { RegisterEventModal } from '@/components/events/RegisterEventModal';
+import styles from '@/components/events/Events.module.css';
 
 const eventsData = [
   {
@@ -114,21 +115,21 @@ export default function EventsPage() {
   const registerByTitle = (title) => setRegistering(eventsData.find((e) => e.title === title) || eventsData[0]);
 
   return (
-    <div className="container min-h-screen" style={{ paddingBottom: '4vw' }}>
+    <div className={`container min-h-screen ${styles.page}`}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Events' }]} />
 
       <EventsHeroBanner onRegister={registerByTitle} />
 
       {/* Upcoming Events + Event Detail side-by-side */}
-      <div className="flex" style={{ gap: '1.5vw', marginBottom: '2vw' }}>
-        <div className="flex-[1_1_50%]" style={{ minWidth: '35vw' }}>
+      <div className={styles.columns}>
+        <div className={styles.column}>
           <UpcomingEventsList
             events={eventsData}
             activeEventId={activeEvent.id}
             onEventSelect={setActiveEvent}
           />
         </div>
-        <div className="flex-[1_1_50%]" style={{ minWidth: '35vw' }}>
+        <div className={styles.column}>
           <EventDetail event={activeEvent} onRegister={() => setRegistering(activeEvent)} />
         </div>
       </div>

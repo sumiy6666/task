@@ -1,11 +1,14 @@
 /* Figma "Individual Conversation" frame, converted to the 1440px scale. */
 
 .layout {
+  /* Sizes stop growing past the 1440px design, and the two columns share the
+     container width in the design ratio, so the cards line up with the header. */
+  --px: min(calc(100vw / 1440), 1px);
   display: grid;
-  grid-template-columns: calc(881 * var(--px)) calc(398 * var(--px));
+  grid-template-columns: minmax(0, 881fr) minmax(0, 398fr);
   gap: calc(29 * var(--px));
   align-items: start;
-  margin: calc(80 * var(--px)) -1.5rem calc(90 * var(--px));
+  margin: calc(80 * var(--px)) 0 calc(90 * var(--px));
 }
 
 .card {
@@ -183,7 +186,17 @@ button.stat:hover svg { color: var(--color-primary); }
 
 /* Sidebar */
 .side {
-  padding: calc(125 * var(--px)) calc(35 * var(--px)) calc(42 * var(--px)) calc(29 * var(--px));
+  padding: calc(55 * var(--px)) calc(35 * var(--px)) calc(42 * var(--px)) calc(29 * var(--px));
+}
+/* Fills the space above the list, so the first item sits where the design has it. */
+.relatedHeading {
+  font-size: calc(15 * var(--px));
+  line-height: calc(20 * var(--px));
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #111;
+  margin-bottom: calc(50 * var(--px));
 }
 .relatedItem {
   display: flex;
@@ -191,7 +204,7 @@ button.stat:hover svg { color: var(--color-primary); }
   gap: calc(38 * var(--px));
   padding: calc(18 * var(--px)) 0;
 }
-.relatedItem:first-child { padding-top: 0; }
+.relatedHeading + .relatedItem { padding-top: 0; }
 .relatedItem + .relatedItem { border-top: 1px solid #e3e6ea; padding-top: calc(28 * var(--px)); }
 .relatedItem .avatarLg { box-shadow: 0 calc(4 * var(--px)) calc(10 * var(--px)) rgba(0, 0, 0, 0.18); }
 .relatedTitle { font-size: calc(18 * var(--px)); line-height: calc(25 * var(--px)); color: #111; }
@@ -233,11 +246,65 @@ button.stat:hover svg { color: var(--color-primary); }
 }
 .voteButton:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* Tablets: real pixels at the design sizes, one column. */
 @media (max-width: 1024px) {
-  .layout { --px: 1px; grid-template-columns: 1fr; margin: 24px 0 48px; gap: 24px; }
-  .main { padding: 24px 16px 40px; }
-  .composerRow { flex-wrap: wrap; }
-  .replyInput { width: 100%; }
-  .children { margin-left: 24px; }
-  .side { padding: 24px 16px; }
+  .layout { --px: 1px; grid-template-columns: minmax(0, 1fr); margin: 24px 0 48px; gap: 24px; }
+  .main { padding: 40px 40px 48px; }
+  .title { max-width: none; }
+  .cooked, .replyBody, .children .replyBody { max-width: none; }
+  .composerRow { align-items: center; }
+  .replyInput { flex: 1; width: auto; min-width: 0; }
+  .side { padding: 32px 40px 24px; }
+  .relatedHeading { margin-bottom: 24px; }
+}
+
+/* Phones */
+@media (max-width: 640px) {
+  .layout { margin: 8px 0 40px; gap: 20px; }
+  .card { border-radius: 16px; }
+  .main { padding: 24px 18px 28px; }
+
+  .titleRow { gap: 16px; }
+  .title { font-size: 18px; line-height: 25px; }
+  .titleActions { gap: 18px; padding-top: 4px; margin-right: 0; }
+  .iconButton svg { width: 22px; height: 22px; }
+
+  .author { gap: 14px; margin-top: 22px; }
+  .avatarLg { width: 46px; height: 46px; }
+  .authorName { font-size: 16px; margin-top: 2px; }
+  .authorMeta { font-size: 13px; }
+  .tags { font-size: 13px; margin-top: 6px; }
+
+  .cooked { margin-top: 20px; font-size: 15px; line-height: 23px; }
+  .cooked p + p, .cooked p + ul, .cooked ul + p { margin-top: 14px; }
+
+  /* Fixed-width stats overflowed a phone; let them flow and wrap. */
+  .stats { height: auto; flex-wrap: wrap; gap: 10px 22px; padding: 14px 0; margin-top: 24px; font-size: 13px; }
+  .stat { width: auto; gap: 7px; }
+  .stat svg { width: 20px; height: 20px; }
+
+  .thread { padding: 24px 0 20px; }
+  .reply { gap: 14px; }
+  .avatarMd { width: 44px; height: 44px; }
+  .replyName { font-size: 16px; }
+  .replyBody { font-size: 14px; line-height: 21px; }
+  .children { margin: 20px 0 0 20px; padding-left: 14px; gap: 20px; }
+  .children .reply { gap: 12px; }
+  .children .avatarMd { width: 36px; height: 36px; }
+
+  .composer { gap: 12px; padding-top: 20px; }
+  .composer .avatarMd { width: 40px; height: 40px; }
+  .composerForm { min-width: 0; }
+  .composerRow { gap: 10px; flex-wrap: nowrap; }
+  .replyInput input { min-width: 0; }
+  .replyInput { height: 44px; }
+  .replyInput input { font-size: 16px; }
+  .postButton { width: 84px; height: 44px; }
+
+  .side { padding: 24px 18px 12px; }
+  .relatedHeading { font-size: 15px; margin-bottom: 36px; }
+  .relatedItem { gap: 16px; padding: 14px 0; }
+  .relatedItem + .relatedItem { padding-top: 16px; }
+  .relatedItem .avatarLg { width: 56px; height: 56px; }
+  .relatedTitle { font-size: 16px; line-height: 23px; }
 }

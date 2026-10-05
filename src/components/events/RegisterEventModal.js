@@ -39,6 +39,9 @@ const BENEFITS = [
   },
 ];
 
+// Inline because the CSS build drops backdrop-filter from the module stylesheet.
+const BACKDROP_BLUR = { backdropFilter: 'blur(9px)', WebkitBackdropFilter: 'blur(9px)' };
+
 function toIcsDate(date) {
   return new Date(date).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 }
@@ -123,7 +126,7 @@ export function RegisterEventModal({ event, onClose }) {
   };
 
   return (
-    <div className={styles.backdrop} onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+    <div className={styles.backdrop} style={BACKDROP_BLUR} onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div
         ref={modalRef}
         role="dialog"

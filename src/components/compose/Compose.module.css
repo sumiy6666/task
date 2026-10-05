@@ -1,11 +1,14 @@
 /* All sizes are Figma pixels from the 1440px "Start a Conversation" frames. */
 
 .card {
+  /* The card stops growing at 1300px (the container width), so stop scaling
+     its contents past the 1440px design too, or they spill out of it. */
+  --px: min(calc(100vw / 1440), 1px);
   position: relative;
   background: var(--color-surface);
   border-radius: calc(22 * var(--px));
   box-shadow: 0 calc(8 * var(--px)) calc(30 * var(--px)) rgba(20, 60, 140, 0.12);
-  margin: calc(33 * var(--px)) -1.5rem calc(60 * var(--px));
+  margin: calc(33 * var(--px)) 0 calc(60 * var(--px));
   min-height: calc(676 * var(--px));
   padding: calc(45 * var(--px)) calc(71 * var(--px)) calc(43 * var(--px)) calc(45 * var(--px));
   display: flex;

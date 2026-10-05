@@ -133,31 +133,31 @@ const popularTags = [
 
 export default function DiscussionPage() {
   return (
-    <div className="container min-h-screen" style={{ paddingBottom: '4vw' }}>
+    <div className="container min-h-screen" style={{ paddingBottom: 'calc(4 * var(--sa))' }}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Discussion' }]} />
 
       <EventBanner />
 
-      <div className="flex" style={{ gap: '1.5vw', marginBottom: '1.5vw' }}>
-        <div className="flex-[1_1_70%]" style={{ minWidth: '45vw' }}>
+      <div className="flex max-lg:flex-col" style={{ gap: 'calc(1.5 * var(--sa))', marginBottom: 'calc(1.5 * var(--sa))' }}>
+        <div className="flex-[1_1_70%]" style={{ minWidth: 'min(100%, calc(45 * var(--da) + var(--db)))' }}>
           <ConversationList title="LATEST CONVERSATIONS" conversations={latestConversations} showViewAll={true} />
         </div>
-        <div className="flex-[1_1_30%]" style={{ minWidth: '22vw' }}>
+        <div className="flex-[1_1_30%]" style={{ minWidth: 'min(100%, calc(22 * var(--da) + var(--db)))' }}>
           <CategoryList categories={categories} />
         </div>
       </div>
 
-      <div className="flex" style={{ gap: '1.5vw' }}>
-        <div className="flex-[1_1_70%] flex flex-col" style={{ minWidth: '45vw', gap: '1.5vw' }}>
+      <div className="flex max-lg:flex-col" style={{ gap: 'calc(1.5 * var(--sa))' }}>
+        <div className="flex-[1_1_70%] flex flex-col" style={{ minWidth: 'min(100%, calc(45 * var(--da) + var(--db)))', gap: 'calc(1.5 * var(--sa))' }}>
           <ActiveDiscussionsList discussions={activeDiscussions} />
           <TrendingDiscussions conversations={trendingConversations} />
           
-          <div className="rounded-2xl overflow-hidden" style={{ height: '18vw', marginTop: '1vw' }}>
+          <div className="rounded-2xl overflow-hidden" style={{ height: 'calc(18 * var(--da) + var(--db))', marginTop: 'calc(1 * var(--sa))' }}>
              <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=1200&auto=format&fit=crop" className="w-full h-full object-cover" alt="Discussion bottom banner" />
           </div>
         </div>
         
-        <div className="flex-[1_1_30%] flex flex-col" style={{ minWidth: '22vw', gap: '1.5vw' }}>
+        <div className="flex-[1_1_30%] flex flex-col" style={{ minWidth: 'min(100%, calc(22 * var(--da) + var(--db)))', gap: 'calc(1.5 * var(--sa))' }}>
           <ActiveMembersList members={activeMembers} />
           <PopularTagsList tags={popularTags} />
         </div>

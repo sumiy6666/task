@@ -89,7 +89,7 @@ export default function MembersPage() {
   const [activeMember, setActiveMember] = useState(membersData[0]);
 
   return (
-    <div className="container min-h-screen" style={{ paddingBottom: '4vw' }}>
+    <div className="container min-h-screen" style={{ paddingBottom: 'calc(4 * var(--sa))' }}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Member Directory' }]} />
 
       <EventBanner />
@@ -97,15 +97,15 @@ export default function MembersPage() {
       <MemberDirectoryFilters />
 
       {/* Members List + Detail side-by-side */}
-      <div className="flex" style={{ gap: '1.5vw' }}>
-        <div className="flex-[1_1_55%]" style={{ minWidth: '40vw' }}>
+      <div className="flex max-lg:flex-col" style={{ gap: 'calc(1.5 * var(--sa))' }}>
+        <div className="flex-[1_1_55%]" style={{ minWidth: 'min(100%, calc(40 * var(--da) + var(--db)))' }}>
           <MembersList
             members={membersData}
             activeMemberId={activeMember.id}
             onMemberSelect={setActiveMember}
           />
         </div>
-        <div className="flex-[1_1_45%]" style={{ minWidth: '32vw' }}>
+        <div className="flex-[1_1_45%]" style={{ minWidth: 'min(100%, calc(32 * var(--da) + var(--db)))' }}>
           <MemberDetail member={activeMember} />
         </div>
       </div>

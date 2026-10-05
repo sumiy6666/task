@@ -120,16 +120,16 @@ const recommendedArticles = [
 
 export default function InsightsListingPage() {
   return (
-    <div className="container min-h-screen" style={{ paddingBottom: '2.5vw' }}>
+    <div className="container min-h-screen" style={{ paddingBottom: 'calc(2.5 * var(--sa))' }}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Insights' }]} />
 
       <FeaturedInsight article={featuredArticle} />
 
-      <div className="flex flex-wrap" style={{ gap: '1.5vw' }}>
+      <div className="flex flex-wrap" style={{ gap: 'calc(1.5 * var(--sa))' }}>
         {/* Main Content Column */}
-        <div className="flex-[1_1_65%]" style={{ minWidth: '40vw' }}>
-          <div className="bg-white" style={{ borderRadius: '1.1vw', padding: '1.8vw', marginBottom: '1.2vw', boxShadow: '0 0.2vw 0.8vw rgba(0,0,0,0.06)' }}>
-            <h3 className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: '1vw', lineHeight: '100%', letterSpacing: '0em', color: '#000', marginBottom: '1vw' }}>
+        <div className="flex-[1_1_65%]" style={{ minWidth: 'min(100%, calc(40 * var(--da) + var(--db)))' }}>
+          <div className="bg-white" style={{ borderRadius: 'calc(1.1 * var(--sa))', padding: 'calc(1.8 * var(--sa))', marginBottom: 'calc(1.2 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(0.8 * var(--sa)) rgba(0,0,0,0.06)' }}>
+            <h3 className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '100%', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1 * var(--sa))' }}>
               LATEST INSIGHTS
             </h3>
 
@@ -139,21 +139,21 @@ export default function InsightsListingPage() {
               ))}
             </div>
 
-            <div style={{ marginTop: '1.2vw' }}>
-              <a href="#" className="text-gray-400 no-underline flex items-center hover:text-[#00A4E4] transition-colors" style={{ fontSize: '0.7vw', gap: '0.4vw' }}>
+            <div style={{ marginTop: 'calc(1.2 * var(--sa))' }}>
+              <a href="#" className="text-gray-400 no-underline flex items-center hover:text-[#00A4E4] transition-colors" style={{ fontSize: 'calc(0.7 * var(--fa) + var(--fb))', gap: 'calc(0.4 * var(--sa))' }}>
                 VIEW MORE
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '1vw', height: '1vw' }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 'calc(1 * var(--da) + var(--db))', height: 'calc(1 * var(--da) + var(--db))' }}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
               </a>
             </div>
           </div>
 
-          <div className="bg-white" style={{ borderRadius: '1.1vw', padding: '2vw', boxShadow: '0 0.2vw 0.8vw rgba(0,0,0,0.06)' }}>
-            <h3 className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: '1vw', lineHeight: '100%', letterSpacing: '0em', color: '#000', marginBottom: '1.5vw' }}>
+          <div className="bg-white" style={{ borderRadius: 'calc(1.1 * var(--sa))', padding: 'calc(2 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(0.8 * var(--sa)) rgba(0,0,0,0.06)' }}>
+            <h3 className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '100%', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1.5 * var(--sa))' }}>
               EXPERT PERSPECTIVES
             </h3>
-            <div className="grid grid-cols-3" style={{ gap: '1.2vw' }}>
+            <div className="grid grid-cols-3 max-sm:grid-cols-1" style={{ gap: 'calc(1.2 * var(--sa))' }}>
               {expertPerspectives.map(expert => (
                 <ExpertPerspectiveCard key={expert.id} expert={expert} />
               ))}
@@ -162,9 +162,9 @@ export default function InsightsListingPage() {
         </div>
 
         {/* Sidebar Column */}
-        <div className="flex-[1_1_30%] flex flex-col" style={{ minWidth: '20vw', gap: '1vw' }}>
-          <div className="bg-white" style={{ borderRadius: '0.8vw', padding: '1.5vw', boxShadow: '0 0.3vw 1vw rgba(0,0,0,0.05)' }}>
-            <h3 className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: '1vw', lineHeight: '1.2', letterSpacing: '0em', color: '#000', marginBottom: '1vw' }}>
+        <div className="flex-[1_1_30%] flex flex-col" style={{ minWidth: 'min(100%, calc(20 * var(--da) + var(--db)))', gap: 'calc(1 * var(--sa))' }}>
+          <div className="bg-white" style={{ borderRadius: 'calc(0.8 * var(--sa))', padding: 'calc(1.5 * var(--sa))', boxShadow: '0 calc(0.3 * var(--sa)) calc(1 * var(--sa)) rgba(0,0,0,0.05)' }}>
+            <h3 className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '1.2', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1 * var(--sa))' }}>
               RELATED<br />DISCUSSIONS
             </h3>
             <div>
@@ -180,8 +180,8 @@ export default function InsightsListingPage() {
             responsesText={relatedPolls.responsesText}
           />
 
-          <div className="bg-white" style={{ borderRadius: '0.8vw', padding: '1.5vw', boxShadow: '0 0.3vw 1vw rgba(0,0,0,0.05)' }}>
-            <h3 className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: '1vw', lineHeight: '1.2', letterSpacing: '0em', color: '#000', marginBottom: '1vw' }}>
+          <div className="bg-white" style={{ borderRadius: 'calc(0.8 * var(--sa))', padding: 'calc(1.5 * var(--sa))', boxShadow: '0 calc(0.3 * var(--sa)) calc(1 * var(--sa)) rgba(0,0,0,0.05)' }}>
+            <h3 className="uppercase" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: 500, fontSize: 'calc(1 * var(--fa) + var(--fb))', lineHeight: '1.2', letterSpacing: '0em', color: '#000', marginBottom: 'calc(1 * var(--sa))' }}>
               RECOMMENDED<br />ARTICLES
             </h3>
             <div>

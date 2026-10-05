@@ -1,7 +1,7 @@
 import { cache } from 'react';
-import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { Reveal } from '@/components/ui/Reveal';
 import styles from '@/components/topic/Topic.module.css';
 import { TopicActions } from '@/components/topic/TopicActions';
 import { PollVote } from '@/components/topic/PollVote';
@@ -45,6 +45,7 @@ export default async function ConversationPage({ params }) {
 
       <div className={styles.layout}>
         <article className={`${styles.card} ${styles.main}`}>
+          <Reveal>
           <div className={styles.titleRow}>
             <h1 className={styles.title}>{topic.title}</h1>
             {first && <TopicActions topicId={topic.id} postId={first.id} title={topic.title} initiallyBookmarked={first.bookmarked} />}
@@ -94,17 +95,19 @@ export default async function ConversationPage({ params }) {
             </span>
             <span className={styles.lastActivity}>Last activity {timeAgo(topic.lastActivityAt)}</span>
           </div>
+          </Reveal>
 
           <Replies topicId={topic.id} replies={topic.replies} currentUser={currentUser} />
         </article>
 
         {topic.related.length > 0 && (
-          <aside className={`${styles.card} ${styles.side}`} aria-label="Related conversations">
-            {topic.related.map((item) => (
-              <Link key={item.id} href={`/conversations/${item.id}`} className={styles.relatedItem}>
+          <aside className={`${styles.card} ${styles.side}`} aria-labelledby="related-heading">
+            <h2 id="related-heading" className={styles.relatedHeading}>Related Discussions</h2>
+            {topic.related.map((item, i) => (
+              <Reveal key={item.id} delay={150 + i * 120} href={`/conversations/${item.id}`} className={styles.relatedItem}>
                 <img className={styles.avatarLg} src={item.avatar} alt="" />
                 <span className={styles.relatedTitle}>{item.title}</span>
-              </Link>
+              </Reveal>
             ))}
           </aside>
         )}

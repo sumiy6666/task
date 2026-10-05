@@ -69,32 +69,32 @@ const articlePoll = {
 
 export default function InsightDetailPage() {
   return (
-    <div className="container min-h-screen" style={{ paddingBottom: '2.5vw' }}>
+    <div className="container min-h-screen" style={{ paddingBottom: 'calc(2.5 * var(--sa))' }}>
       <Breadcrumb items={[
         { label: 'Home', href: '/' },
         { label: 'Articles', href: '/insights' },
         { label: 'The engagement letter decides what the family keeps' }
       ]} />
 
-      <div className="bg-white" style={{ borderRadius: '1.1vw', padding: '3vw', boxShadow: '0 0.2vw 1vw rgba(0,0,0,0.02)' }}>
+      <div className="bg-white" style={{ borderRadius: 'calc(1.1 * var(--sa))', padding: 'calc(3 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(1 * var(--sa)) rgba(0,0,0,0.02)' }}>
 
         {/* Article Header - left aligned */}
-        <div style={{ marginBottom: '2vw' }}>
-          <h1 className="font-semibold text-gray-900" style={{ fontSize: '3.2vw', lineHeight: 1.2, marginBottom: '0.3vw' }}>
+        <div style={{ marginBottom: 'calc(2 * var(--sa))' }}>
+          <h1 className="font-semibold text-gray-900" style={{ fontSize: 'calc(3.2 * var(--fa) + var(--fb))', lineHeight: 1.2, marginBottom: 'calc(0.3 * var(--sa))' }}>
             {articleData.title}
           </h1>
-          <h1 className="font-semibold text-[#00A4E4]" style={{ fontSize: '3.2vw', lineHeight: 1.2 }}>
+          <h1 className="font-semibold text-[#00A4E4]" style={{ fontSize: 'calc(3.2 * var(--fa) + var(--fb))', lineHeight: 1.2 }}>
             {articleData.titleHighlight}
           </h1>
         </div>
 
         {/* Article Hero Image */}
-        <div className="overflow-hidden" style={{ borderRadius: '0.8vw', marginBottom: '1.2vw', maxHeight: '30vw' }}>
+        <div className="overflow-hidden" style={{ borderRadius: 'calc(0.8 * var(--sa))', marginBottom: 'calc(1.2 * var(--sa))', maxHeight: 'calc(30 * var(--da) + var(--db))' }}>
           <img src={articleData.image} alt={articleData.title} className="w-full h-full object-cover" />
         </div>
 
         {/* Article Meta */}
-        <div className="flex text-[#00A4E4] border-b border-gray-100" style={{ gap: '1vw', fontSize: '1vw', marginBottom: '1.5vw', paddingBottom: '1.2vw' }}>
+        <div className="flex text-[#00A4E4] border-b border-gray-100" style={{ gap: 'calc(1 * var(--sa))', fontSize: 'calc(1 * var(--fa) + var(--fb))', marginBottom: 'calc(1.5 * var(--sa))', paddingBottom: 'calc(1.2 * var(--sa))' }}>
           <span>{articleData.author}</span>
           <span className="text-gray-300">|</span>
           <span>{articleData.timeAgo}</span>
@@ -106,9 +106,9 @@ export default function InsightDetailPage() {
         <ArticleContent content={articleData.content} />
 
         {/* Related Articles Section */}
-        <div style={{ marginBottom: '2.5vw' }}>
-          <h3 className="font-semibold text-gray-800" style={{ fontSize: '1.5vw', marginBottom: '1.2vw' }}>Related Articles</h3>
-          <div className="grid grid-cols-4" style={{ gap: '1.5vw' }}>
+        <div style={{ marginBottom: 'calc(2.5 * var(--sa))' }}>
+          <h3 className="font-semibold text-gray-800" style={{ fontSize: 'calc(1.5 * var(--fa) + var(--fb))', marginBottom: 'calc(1.2 * var(--sa))' }}>Related Articles</h3>
+          <div className="grid grid-cols-4 max-lg:grid-cols-2" style={{ gap: 'calc(1.5 * var(--sa))' }}>
             {relatedArticles.map(article => (
               <RelatedArticleGridCard key={article.id} article={article} />
             ))}
@@ -116,10 +116,10 @@ export default function InsightDetailPage() {
         </div>
 
         {/* Divider */}
-        <hr className="border-0" style={{ borderTop: '0.05vw solid #eaeaea', margin: '2vw 0' }} />
+        <hr className="border-0" style={{ borderTop: 'calc(0.05 * var(--sa)) solid #eaeaea', margin: 'calc(2 * var(--sa)) 0' }} />
 
         {/* Footer Area: Poll & Discussion */}
-        <div className="grid grid-cols-2" style={{ gap: '2vw' }}>
+        <div className="grid grid-cols-2 max-sm:grid-cols-1" style={{ gap: 'calc(2 * var(--sa))' }}>
           <div>
             <PollWidget
               question={articlePoll.question}

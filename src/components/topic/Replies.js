@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './Topic.module.css';
 import { EmojiButton, insertAtCursor } from '../compose/EmojiButton';
+import { Reveal } from '../ui/Reveal';
 import { redirectIfSignedOut, signInHref } from '@/lib/auth-client';
 
 function Reply({ post, onReply }) {
@@ -65,7 +66,7 @@ export function Replies({ topicId, replies, currentUser }) {
   return (
     <>
       {replies.map((post) => (
-        <div key={post.id} className={styles.thread}>
+        <Reveal key={post.id} className={styles.thread}>
           <Reply post={post} onReply={startReply} />
           {post.children.length > 0 && (
             <div className={styles.children}>
@@ -74,7 +75,7 @@ export function Replies({ topicId, replies, currentUser }) {
               ))}
             </div>
           )}
-        </div>
+        </Reveal>
       ))}
 
       {!currentUser ? (

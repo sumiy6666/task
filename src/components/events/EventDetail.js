@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { downloadIcs } from './RegisterEventModal';
+import styles from './Events.module.css';
 
 export default function EventDetail({ event, onRegister }) {
   if (!event) return null;
@@ -54,70 +55,66 @@ export default function EventDetail({ event, onRegister }) {
   ];
 
   return (
-    <div className="bg-white flex flex-col h-full overflow-hidden" style={{ borderRadius: '1.2vw', boxShadow: '0 0.2vw 0.8vw rgba(0,0,0,0.06)' }}>
+    <div className={`bg-white flex flex-col h-full overflow-hidden ${styles.panel}`}>
       {/* Header */}
-      <div style={{ backgroundColor: '#f0f4f8', padding: '2.5vw 3vw', borderBottom: '1px solid #e5e7eb' }}>
-        <span className="text-[#00A4E4] font-semibold uppercase" style={{ fontSize: '0.75vw', letterSpacing: '0.1em', marginBottom: '1.2vw', display: 'block' }}>
-        {event.category}
-      </span>
+      <div className={styles.detailHead}>
+        <span className={`text-[#00A4E4] font-semibold uppercase ${styles.detailCategory}`}>
+          {event.category}
+        </span>
 
-      <div className="flex" style={{ gap: '2vw', marginBottom: '2vw' }}>
-        <div className="flex-1">
-          <h2 className="font-semibold text-[#132742]" style={{ fontSize: '1.1vw', lineHeight: '1.4', marginBottom: '1vw' }}>
-            {event.title}
-          </h2>
-          <p className="text-[#6b7280]" style={{ fontSize: '0.75vw', lineHeight: '1.6' }}>
-            {event.description}
-          </p>
-        </div>
-        <div className="flex-shrink-0 overflow-hidden" style={{ width: '8vw', height: '6vw', borderRadius: '0.6vw' }}>
-          <img src={event.detailImage} alt={event.title} className="w-full h-full object-cover" />
-        </div>
+        <div className={`flex ${styles.detailIntro}`}>
+          <div className="flex-1">
+            <h2 className={`font-semibold text-[#132742] ${styles.detailTitle}`}>
+              {event.title}
+            </h2>
+            <p className={`text-[#6b7280] ${styles.detailDesc}`}>
+              {event.description}
+            </p>
+          </div>
+          <div className={`flex-shrink-0 overflow-hidden ${styles.detailImage}`}>
+            <img src={event.detailImage} alt={event.title} className="w-full h-full object-cover" />
+          </div>
         </div>
       </div>
 
       {/* Details table */}
-      <div className="flex flex-col" style={{ padding: '0 3vw 2.5vw' }}>
+      <div className={`flex flex-col ${styles.detailTable}`}>
         {details.map((detail, idx) => (
-          <div
-            key={idx}
-            className="flex items-start"
-            style={{ padding: '1.5vw 0', borderTop: '1px solid #e5e7eb', gap: '2vw' }}
-          >
-            <span className="font-semibold text-[#132742] flex-shrink-0 whitespace-pre-line" style={{ fontSize: '0.75vw', width: '7vw' }}>
+          <div key={idx} className={`flex items-start ${styles.detailRow}`}>
+            <span className={`font-semibold text-[#132742] flex-shrink-0 ${styles.detailLabel}`}>
               {detail.label}
             </span>
 
-            <div className="flex-1 flex items-start" style={{ gap: '1vw' }}>
+            <div className={`flex-1 flex items-start ${styles.detailValueWrap}`}>
               {detail.avatar && (
-                <img src={detail.avatar} alt="" className="rounded-full flex-shrink-0 object-cover" style={{ width: '2.5vw', height: '2.5vw' }} />
+                <img src={detail.avatar} alt="" className={`rounded-full flex-shrink-0 object-cover ${styles.detailAvatar}`} />
               )}
-              <div className="flex flex-col" style={{ gap: '0.2vw' }}>
-                <span className="text-[#4b5563] whitespace-pre-line" style={{ fontSize: '0.75vw', lineHeight: '1.5' }}>
+              <div className={`flex flex-col ${styles.detailValues}`}>
+                <span className={`text-[#4b5563] whitespace-pre-line ${styles.detailValue}`}>
                   {detail.value}
                 </span>
                 {detail.subValue && (
-                  <span className="text-[#9ca3af]" style={{ fontSize: '0.7vw' }}>{detail.subValue}</span>
+                  <span className={`text-[#9ca3af] ${styles.detailSub}`}>{detail.subValue}</span>
                 )}
               </div>
             </div>
 
             <div className="flex-shrink-0">
               {detail.actionIcon === 'button' ? (
-                <button type="button" onClick={onRegister} className="text-[#00A4E4] font-medium cursor-pointer hover:bg-[#00A4E4] hover:text-white transition-colors" style={{ fontSize: '0.65vw', padding: '0.4vw 1.2vw', border: '1px solid #00A4E4', borderRadius: '2vw', background: 'none' }}>
+                <button type="button" onClick={onRegister} className={`text-[#00A4E4] font-medium cursor-pointer hover:bg-[#00A4E4] hover:text-white transition-colors ${styles.detailRegister}`}>
                   {detail.action}
                 </button>
               ) : detail.actionIcon === 'calendar' ? (
-                <button type="button" onClick={() => downloadIcs(event)} className="text-[#00A4E4] font-medium hover:underline flex items-center whitespace-nowrap cursor-pointer" style={{ gap: '0.3vw', fontSize: '0.7vw', background: 'none' }}>
+                <button type="button" onClick={() => downloadIcs(event)} className={`text-[#00A4E4] font-medium hover:underline flex items-center whitespace-nowrap cursor-pointer ${styles.detailLink}`}>
                   {detail.action}
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '0.7vw', height: '0.7vw' }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 </button>
               ) : (
-                <Link href={detail.href || '#'} className="text-[#00A4E4] font-medium hover:underline flex items-center whitespace-nowrap" style={{ gap: '0.3vw', fontSize: '0.7vw' }}>
+                <Link href={detail.href || '#'} className={`text-[#00A4E4] font-medium hover:underline flex items-center whitespace-nowrap ${styles.detailLink}`}>
                   {detail.action}
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '0.7vw', height: '0.7vw' }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 </Link>

@@ -67,9 +67,9 @@ export function FeaturedInsight({ article }) {
   const currentBanner = bannerSlides[currentSlide];
 
   return (
-    <div className="relative overflow-visible" style={{ borderRadius: '1.1vw', marginBottom: '1.5vw', boxShadow: '0 0.3vw 1.5vw rgba(0,0,0,0.05)' }}>
+    <div className="relative overflow-visible" style={{ borderRadius: 'calc(1.1 * var(--sa))', marginBottom: 'calc(1.5 * var(--sa))', boxShadow: '0 calc(0.3 * var(--sa)) calc(1.5 * var(--sa)) rgba(0,0,0,0.05)' }}>
       {/* Main Banner Section - full width */}
-      <div className="relative overflow-hidden" style={{ minHeight: '28vw', borderRadius: '1.1vw' }}>
+      <div className="relative overflow-hidden" style={{ minHeight: 'calc(28 * var(--da) + var(--db))', borderRadius: 'calc(1.1 * var(--sa))' }}>
         {/* Background layers for smooth crossfade */}
         {bannerSlides.map((slide, index) => (
           <div
@@ -86,41 +86,42 @@ export function FeaturedInsight({ article }) {
         ))}
 
         {/* Content */}
-        <div className="relative flex flex-col justify-center h-full text-white" style={{ zIndex: 2, padding: '2vw 2.5vw' }}>
-          <div className="uppercase font-medium" style={{ fontSize: '0.65vw', letterSpacing: '0.1em', marginBottom: '1.5vw' }}>
+        {/* On phones the Categories box sits above the text, so start the text below it. */}
+        <div className="relative flex flex-col justify-center h-full text-white max-sm:pt-[96px]!" style={{ zIndex: 2, padding: 'calc(2 * var(--sa)) calc(2.5 * var(--sa))' }}>
+          <div className="uppercase font-medium" style={{ fontSize: 'calc(0.65 * var(--fa) + var(--fb))', letterSpacing: '0.1em', marginBottom: 'calc(1.5 * var(--sa))' }}>
             FEATURED ARTICLE
           </div>
 
-          <h2 className="font-semibold leading-tight" style={{ fontSize: '1.8vw', marginBottom: '0.6vw', maxWidth: '30vw' }}>
+          <h2 className="font-semibold leading-tight" style={{ fontSize: 'calc(1.8 * var(--fa) + var(--fb))', marginBottom: 'calc(0.6 * var(--sa))', maxWidth: 'calc(30 * var(--da) + var(--db))' }}>
             {currentBanner.title}
           </h2>
 
-          <p className="leading-relaxed" style={{ fontSize: '0.75vw', opacity: 0.9, marginBottom: '1.2vw', maxWidth: '28vw' }}>
+          <p className="leading-relaxed" style={{ fontSize: 'calc(0.75 * var(--fa) + var(--fb))', opacity: 0.9, marginBottom: 'calc(1.2 * var(--sa))', maxWidth: 'calc(28 * var(--da) + var(--db))' }}>
             {currentBanner.description}
           </p>
 
-          <div className="flex items-center" style={{ gap: '0.4vw', marginBottom: '1.2vw', fontSize: '0.65vw', opacity: 0.8 }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '1vw', height: '1vw' }}>
+          <div className="flex items-center" style={{ gap: 'calc(0.4 * var(--sa))', marginBottom: 'calc(1.2 * var(--sa))', fontSize: 'calc(0.65 * var(--fa) + var(--fb))', opacity: 0.8 }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 'calc(1 * var(--da) + var(--db))', height: 'calc(1 * var(--da) + var(--db))' }}>
               <circle cx="12" cy="12" r="10" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" />
             </svg>
             {currentBanner.readTime} read
           </div>
 
-          <div className="flex items-center" style={{ gap: '0.8vw', marginBottom: '1.5vw' }}>
-            <img src={currentBanner.author.avatar} alt={currentBanner.author.name} className="rounded-full object-cover" style={{ width: '3vw', height: '3vw', border: '0.15vw solid rgba(255,255,255,0.2)' }} />
+          <div className="flex items-center" style={{ gap: 'calc(0.8 * var(--sa))', marginBottom: 'calc(1.5 * var(--sa))' }}>
+            <img src={currentBanner.author.avatar} alt={currentBanner.author.name} className="rounded-full object-cover" style={{ width: 'calc(3 * var(--da) + var(--db))', height: 'calc(3 * var(--da) + var(--db))', border: 'calc(0.15 * var(--sa)) solid rgba(255,255,255,0.2)' }} />
             <div>
-              <div className="font-semibold" style={{ fontSize: '0.9vw' }}>{currentBanner.author.name}</div>
-              <div style={{ fontSize: '0.65vw', opacity: 0.8 }}>
+              <div className="font-semibold" style={{ fontSize: 'calc(0.9 * var(--fa) + var(--fb))' }}>{currentBanner.author.name}</div>
+              <div style={{ fontSize: 'calc(0.65 * var(--fa) + var(--fb))', opacity: 0.8 }}>
                 {currentBanner.timeAgo} &nbsp;|&nbsp; {currentBanner.category}
               </div>
             </div>
           </div>
 
           <div>
-            <Link href={`/insights/${currentBanner.id}`} className="inline-flex items-center text-white no-underline hover:bg-white/10 transition-all" style={{ gap: '0.4vw', padding: '0.4vw 1.2vw', border: '0.07vw solid rgba(255,255,255,0.5)', borderRadius: '2vw', fontSize: '0.7vw' }}>
+            <Link href={`/insights/${currentBanner.id}`} className="inline-flex items-center text-white no-underline hover:bg-white/10 transition-all" style={{ gap: 'calc(0.4 * var(--sa))', padding: 'calc(0.4 * var(--sa)) calc(1.2 * var(--sa))', border: 'calc(0.07 * var(--sa)) solid rgba(255,255,255,0.5)', borderRadius: 'calc(2 * var(--sa))', fontSize: 'calc(0.7 * var(--fa) + var(--fb))' }}>
               READ MORE
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '1vw', height: '1vw' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 'calc(1 * var(--da) + var(--db))', height: 'calc(1 * var(--da) + var(--db))' }}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
             </Link>
@@ -128,24 +129,24 @@ export function FeaturedInsight({ article }) {
         </div>
 
         {/* Slider Controls */}
-        <div className="absolute flex" style={{ bottom: '1.2vw', right: '1.2vw', gap: '0.4vw', zIndex: 10 }}>
+        <div className="absolute flex" style={{ bottom: 'calc(1.2 * var(--sa))', right: 'calc(1.2 * var(--sa))', gap: 'calc(0.4 * var(--sa))', zIndex: 10 }}>
           <button
             onClick={prevSlide}
             className="rounded-full text-white flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer"
-            style={{ width: '2.5vw', height: '2.5vw', backgroundColor: '#00A4E4', boxShadow: '0 0.2vw 0.6vw rgba(0,0,0,0.25)' }}
+            style={{ width: 'calc(2.5 * var(--da) + var(--db))', height: 'calc(2.5 * var(--da) + var(--db))', backgroundColor: '#00A4E4', boxShadow: '0 calc(0.2 * var(--sa)) calc(0.6 * var(--sa)) rgba(0,0,0,0.25)' }}
             aria-label="Previous"
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '1.1vw', height: '1.1vw' }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: 'calc(1.1 * var(--da) + var(--db))', height: 'calc(1.1 * var(--da) + var(--db))' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
           <button
             onClick={nextSlide}
             className="rounded-full text-white flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer"
-            style={{ width: '2.5vw', height: '2.5vw', backgroundColor: '#00A4E4', boxShadow: '0 0.2vw 0.6vw rgba(0,0,0,0.25)' }}
+            style={{ width: 'calc(2.5 * var(--da) + var(--db))', height: 'calc(2.5 * var(--da) + var(--db))', backgroundColor: '#00A4E4', boxShadow: '0 calc(0.2 * var(--sa)) calc(0.6 * var(--sa)) rgba(0,0,0,0.25)' }}
             aria-label="Next"
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '1.1vw', height: '1.1vw' }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: 'calc(1.1 * var(--da) + var(--db))', height: 'calc(1.1 * var(--da) + var(--db))' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
           </button>
@@ -155,22 +156,22 @@ export function FeaturedInsight({ article }) {
       {/* Categories Dropdown - overlapping on the right side of the banner */}
       <div
         className="absolute bg-white flex flex-col overflow-hidden"
-        style={{ top: '1.5vw', right: '1.5vw', width: '16vw', borderRadius: '0.8vw', boxShadow: '0 0.4vw 1.2vw rgba(0,0,0,0.15)', zIndex: 15 }}
+        style={{ top: 'calc(1.5 * var(--sa))', right: 'calc(1.5 * var(--sa))', width: 'calc(16 * var(--da) + var(--db))', borderRadius: 'calc(0.8 * var(--sa))', boxShadow: '0 calc(0.4 * var(--sa)) calc(1.2 * var(--sa)) rgba(0,0,0,0.15)', zIndex: 15 }}
         ref={dropdownRef}
       >
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className="flex flex-col text-left w-full cursor-pointer bg-white transition-colors border-none"
-          style={{ padding: '0.8vw 1.2vw' }}
+          style={{ padding: 'calc(0.8 * var(--sa)) calc(1.2 * var(--sa))' }}
         >
-          <span className="font-semibold text-gray-800 uppercase tracking-wide" style={{ fontSize: '0.65vw', marginBottom: '0.4vw' }}>
+          <span className="font-semibold text-gray-800 uppercase tracking-wide" style={{ fontSize: 'calc(0.65 * var(--fa) + var(--fb))', marginBottom: 'calc(0.4 * var(--sa))' }}>
             CATEGORIES
           </span>
           <div className="flex items-center justify-between w-full">
-            <span className="font-medium text-[#0056b3]" style={{ fontSize: '0.9vw' }}>
+            <span className="font-medium text-[#0056b3]" style={{ fontSize: 'calc(0.9 * var(--fa) + var(--fb))' }}>
               {selectedCategory}
             </span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="#00A4E4" strokeWidth="2" style={{ width: '1.1vw', height: '1.1vw', transition: 'transform 0.2s', transform: isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#00A4E4" strokeWidth="2" style={{ width: 'calc(1.1 * var(--da) + var(--db))', height: 'calc(1.1 * var(--da) + var(--db))', transition: 'transform 0.2s', transform: isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </div>
@@ -185,7 +186,7 @@ export function FeaturedInsight({ article }) {
                   setIsDropdownOpen(false);
                 }}
                 className="w-full text-left font-medium text-gray-800 hover:text-[#00A4E4] bg-white hover:bg-blue-50 transition-colors cursor-pointer border-none"
-                style={{ padding: '0.8vw 1.2vw', fontSize: '0.8vw', borderBottom: index < categories.length - 2 ? '0.05vw solid #f0f0f0' : 'none' }}
+                style={{ padding: 'calc(0.8 * var(--sa)) calc(1.2 * var(--sa))', fontSize: 'calc(0.8 * var(--fa) + var(--fb))', borderBottom: index < categories.length - 2 ? 'calc(0.05 * var(--sa)) solid #f0f0f0' : 'none' }}
               >
                 {cat}
               </button>

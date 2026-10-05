@@ -81,3 +81,39 @@ img {
     padding: 0 1rem;
   }
 }
+
+/* Scale for pages whose inline styles were written in vw. Each value is
+   calc(N * var(--xa) + var(--xb)): exactly N vw on desktop, and a readable
+   size on tablets and phones where N vw would shrink text to a few pixels.
+   --fa/--fb: font sizes. --da/--db: widths and heights. --sa: spacing. */
+:root {
+  --fa: 1vw;
+  --fb: 0px;
+  --da: 1vw;
+  --db: 0px;
+  --sa: 1vw;
+  /* Width of a banner's text half: full width on phones. */
+  --split: 50%;
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --fa: 10px;
+    --fb: 5.5px;
+    --da: 10.5px;
+    --db: 6px;
+    --sa: 10px;
+    --split: 65%;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --fa: 8px;
+    --fb: 6.5px;
+    --da: 9px;
+    --db: 6px;
+    --sa: 7.5px;
+    --split: 100%;
+  }
+}

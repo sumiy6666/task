@@ -72,15 +72,15 @@ const allClosedPollsData = [
 
 export default function ClosedPollsPage() {
   return (
-    <div className="container min-h-screen" style={{ paddingBottom: '4vw' }}>
+    <div className="container min-h-screen" style={{ paddingBottom: 'calc(4 * var(--sa))' }}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Poll', href: '/poll' }, { label: 'Closed Polls' }]} />
 
-      <div className="rounded-2xl" style={{ backgroundColor: '#eef1f5', padding: '3vw', borderRadius: '1.2vw' }}>
-        <div style={{ marginBottom: '3vw' }}>
-          <h3 className="font-semibold text-[#132742] uppercase" style={{ fontSize: '0.9vw', letterSpacing: '0.1em' }}>CLOSED POLLS</h3>
+      <div className="rounded-2xl" style={{ backgroundColor: '#eef1f5', padding: 'calc(3 * var(--sa))', borderRadius: 'calc(1.2 * var(--sa))' }}>
+        <div style={{ marginBottom: 'calc(3 * var(--sa))' }}>
+          <h3 className="font-semibold text-[#132742] uppercase" style={{ fontSize: 'calc(0.9 * var(--fa) + var(--fb))', letterSpacing: '0.1em' }}>CLOSED POLLS</h3>
         </div>
 
-        <div className="grid grid-cols-3" style={{ rowGap: '4vw' }}>
+        <div className="grid grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1" style={{ rowGap: 'calc(4 * var(--sa))' }}>
           {allClosedPollsData.map((poll, idx) => {
             const isRightColumn = (idx + 1) % 3 === 0;
             const isMiddleColumn = idx % 3 === 1;
@@ -88,9 +88,9 @@ export default function ClosedPollsPage() {
               <div
                 key={poll.id}
                 style={{
-                  ...(isMiddleColumn ? { paddingLeft: '3vw', paddingRight: '3vw' } : {}),
-                  ...(!isRightColumn && !isMiddleColumn ? { paddingRight: '3vw' } : {}),
-                  ...(isRightColumn ? { paddingLeft: '3vw' } : {}),
+                  ...(isMiddleColumn ? { paddingLeft: 'calc(3 * var(--sa))', paddingRight: 'calc(3 * var(--sa))' } : {}),
+                  ...(!isRightColumn && !isMiddleColumn ? { paddingRight: 'calc(3 * var(--sa))' } : {}),
+                  ...(isRightColumn ? { paddingLeft: 'calc(3 * var(--sa))' } : {}),
                   ...(!isRightColumn ? { borderRight: '1px solid #d1d5db' } : {})
                 }}
               >

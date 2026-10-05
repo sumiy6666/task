@@ -1,0 +1,223 @@
+/* Events page. Desktop sizes are in vw (as designed); tablets and phones
+   switch to fixed pixels so text stays readable. */
+
+/* Page layout */
+.page { padding-bottom: 4vw; }
+.columns { display: flex; gap: 1.5vw; margin-bottom: 2vw; }
+.column { flex: 1 1 50%; min-width: 35vw; }
+
+/* Hero */
+.hero {
+  border-radius: 1.2vw;
+  margin-bottom: 2vw;
+  min-height: 30vw;
+  box-shadow: 0 0.4vw 1.5vw rgba(0, 0, 0, 0.1);
+}
+.heroShade { display: none; }
+.heroContent { padding: 3vw 4vw; width: 50%; }
+.heroLabel { font-size: 0.8vw; letter-spacing: 0.05em; margin-bottom: 1.5vw; opacity: 0.9; }
+.heroTitle { font-size: 2.2vw; margin-bottom: 2vw; max-width: 35vw; }
+.heroMeta { gap: 1vw; margin-bottom: 2.5vw; }
+.heroMetaItem { gap: 0.8vw; font-size: 0.9vw; opacity: 0.9; }
+.heroIcon { width: 1.2vw; height: 1.2vw; flex-shrink: 0; }
+.registerBtn {
+  gap: 0.6vw;
+  padding: 0.6vw 1.5vw;
+  border: 0.1vw solid rgba(255, 255, 255, 0.6);
+  border-radius: 2vw;
+  font-size: 0.85vw;
+}
+
+.explore { top: 2.5vw; right: 3vw; z-index: 10; width: 15vw; }
+.exploreTrigger {
+  padding: 1vw 1.5vw;
+  border-radius: 0.8vw;
+  box-shadow: 0 0.4vw 1.5vw rgba(0, 0, 0, 0.15);
+  border: none;
+}
+.exploreTriggerOpen { border-radius: 0.8vw 0.8vw 0 0; }
+.exploreLabels { gap: 0.3vw; }
+.exploreLabel { font-size: 0.6vw; letter-spacing: 0.08em; }
+.exploreValue { font-size: 0.8vw; }
+.exploreChevron { width: 1vw; height: 1vw; }
+.exploreMenu { border-radius: 0 0 0.8vw 0.8vw; box-shadow: 0 0.4vw 1.5vw rgba(0, 0, 0, 0.15); }
+.exploreItem { padding: 0.8vw 1.5vw; font-size: 0.8vw; border-top: 1px solid #f3f4f6; }
+.exploreCheck { width: 1vw; height: 1vw; }
+
+.dots { bottom: 2vw; left: 50%; transform: translateX(-50%); gap: 0.5vw; z-index: 10; }
+.dot { width: 0.5vw; height: 0.5vw; border: none; }
+.dotActive { width: 2vw; }
+.arrows { bottom: 2vw; right: 2vw; gap: 0.5vw; z-index: 10; }
+.arrow { width: 2.5vw; height: 2.5vw; background-color: #00A4E4; border: none; color: white; }
+.arrow svg { width: 1.2vw; height: 1.2vw; }
+
+/* Upcoming events list */
+.panel { border-radius: 1.2vw; box-shadow: 0 0.2vw 0.8vw rgba(0, 0, 0, 0.06); }
+.listHeader { padding: 2vw 2.5vw; }
+.listTitle { font-size: 0.85vw; letter-spacing: 0.1em; }
+.viewMore { padding: 1.5vw 2.5vw; border-top: 1px solid #e5e7eb; }
+.viewMoreLink { gap: 0.4vw; font-size: 0.7vw; }
+.viewMoreLink svg { width: 0.8vw; height: 0.8vw; }
+
+/* Event card */
+.card { padding: 1.8vw 2vw; border-bottom: 1px solid #e5e7eb; gap: 1.5vw; }
+.thumb { width: 8vw; height: 5.5vw; border-radius: 0.6vw; }
+.date { width: 3.5vw; }
+.month { font-size: 0.7vw; }
+.day { font-size: 1.8vw; line-height: 1; }
+.weekday { font-size: 0.6vw; }
+.cardBody { gap: 0.5vw; min-width: 0; }
+.cardTitle { font-size: 0.85vw; line-height: 1.4; }
+.cardMeta { gap: 1.2vw; font-size: 0.7vw; }
+.cardMetaItem { gap: 0.3vw; }
+.cardMetaItem svg { width: 0.9vw; height: 0.9vw; flex-shrink: 0; }
+.cardCategory { font-size: 0.7vw; }
+
+/* Event detail */
+.detailHead { background-color: #f0f4f8; padding: 2.5vw 3vw; border-bottom: 1px solid #e5e7eb; }
+.detailCategory { font-size: 0.75vw; letter-spacing: 0.1em; margin-bottom: 1.2vw; display: block; }
+.detailIntro { gap: 2vw; margin-bottom: 2vw; }
+.detailTitle { font-size: 1.1vw; line-height: 1.4; margin-bottom: 1vw; }
+.detailDesc { font-size: 0.75vw; line-height: 1.6; }
+.detailImage { width: 8vw; height: 6vw; border-radius: 0.6vw; }
+.detailTable { padding: 0 3vw 2.5vw; }
+.detailRow { padding: 1.5vw 0; border-top: 1px solid #e5e7eb; gap: 2vw; }
+.detailLabel { font-size: 0.75vw; width: 7vw; white-space: pre-line; }
+.detailValueWrap { gap: 1vw; }
+.detailAvatar { width: 2.5vw; height: 2.5vw; }
+.detailValues { gap: 0.2vw; }
+.detailValue { font-size: 0.75vw; line-height: 1.5; }
+.detailSub { font-size: 0.7vw; }
+.detailRegister { font-size: 0.65vw; padding: 0.4vw 1.2vw; border: 1px solid #00A4E4; border-radius: 2vw; background: none; }
+.detailLink { gap: 0.3vw; font-size: 0.7vw; background: none; }
+.detailLink svg { width: 0.7vw; height: 0.7vw; }
+
+/* Community banner */
+.banner {
+  background: linear-gradient(135deg, #0c2b4a 0%, #00A4E4 100%);
+  border-radius: 1.2vw;
+  padding: 2.5vw 4vw;
+}
+.bannerTitle { font-size: 0.8vw; letter-spacing: 0.1em; margin-bottom: 0.6vw; }
+.bannerText { font-size: 0.85vw; }
+.bannerLink { gap: 0.6vw; padding: 0.7vw 2vw; border-radius: 2vw; font-size: 0.85vw; white-space: nowrap; }
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .page { padding-bottom: 40px; }
+  .columns { flex-direction: column; gap: 20px; margin-bottom: 20px; }
+  .column { min-width: 0; }
+
+  .hero { border-radius: 20px; margin-bottom: 20px; min-height: 420px; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1); }
+  .heroContent { padding: 48px 40px 88px; width: 68%; }
+  .heroLabel { font-size: 12px; margin-bottom: 16px; }
+  .heroTitle { font-size: 30px; margin-bottom: 20px; max-width: none; }
+  .heroMeta { gap: 10px; margin-bottom: 28px; }
+  .heroMetaItem { gap: 10px; font-size: 15px; }
+  .heroIcon { width: 16px; height: 16px; }
+  .registerBtn { gap: 8px; padding: 10px 20px; border-width: 1px; border-radius: 999px; font-size: 13px; }
+  .registerBtn svg { width: 16px; height: 16px; }
+
+  .explore { top: 28px; right: 28px; width: 210px; }
+  .exploreTrigger { padding: 12px 18px; border-radius: 12px; }
+  .exploreTriggerOpen { border-radius: 12px 12px 0 0; }
+  .exploreLabels { gap: 4px; }
+  .exploreLabel { font-size: 10px; }
+  .exploreValue { font-size: 14px; }
+  .exploreChevron, .exploreCheck { width: 16px; height: 16px; }
+  .exploreMenu { border-radius: 0 0 12px 12px; }
+  .exploreItem { padding: 12px 18px; font-size: 14px; }
+
+  .dots { bottom: 32px; gap: 6px; }
+  .dot { width: 8px; height: 8px; }
+  .dotActive { width: 26px; }
+  .arrows { bottom: 24px; right: 24px; gap: 8px; }
+  .arrow { width: 40px; height: 40px; }
+  .arrow svg { width: 18px; height: 18px; }
+
+  .panel { border-radius: 20px; }
+  .listHeader { padding: 24px 28px 18px; }
+  .listTitle { font-size: 13px; }
+  .viewMore { padding: 18px 28px; }
+  .viewMoreLink { gap: 6px; font-size: 12px; }
+  .viewMoreLink svg { width: 12px; height: 12px; }
+
+  .card { padding: 20px 28px; gap: 18px; }
+  .thumb { width: 120px; height: 84px; border-radius: 10px; }
+  .date { width: 44px; }
+  .month { font-size: 12px; }
+  .day { font-size: 28px; }
+  .weekday { font-size: 11px; }
+  .cardBody { gap: 6px; }
+  .cardTitle { font-size: 15px; }
+  .cardMeta { flex-wrap: wrap; gap: 4px 16px; font-size: 12px; }
+  .cardMetaItem { gap: 5px; }
+  .cardMetaItem svg { width: 13px; height: 13px; }
+  .cardCategory { font-size: 12px; }
+
+  .detailHead { padding: 28px; }
+  .detailCategory { font-size: 12px; margin-bottom: 12px; }
+  .detailIntro { gap: 20px; margin-bottom: 0; }
+  .detailTitle { font-size: 19px; margin-bottom: 8px; }
+  .detailDesc { font-size: 14px; }
+  .detailImage { width: 120px; height: 90px; border-radius: 10px; }
+  .detailTable { padding: 0 28px 20px; }
+  .detailRow { padding: 16px 0; gap: 20px; }
+  .detailLabel { font-size: 13px; width: 110px; }
+  .detailValueWrap { gap: 12px; }
+  .detailAvatar { width: 36px; height: 36px; }
+  .detailValues { gap: 2px; }
+  .detailValue { font-size: 13px; }
+  .detailSub { font-size: 12px; }
+  .detailRegister { font-size: 12px; padding: 6px 16px; border-radius: 999px; }
+  .detailLink { gap: 5px; font-size: 12px; }
+  .detailLink svg { width: 12px; height: 12px; }
+
+  .banner { border-radius: 20px; padding: 28px 32px; gap: 20px; }
+  .bannerTitle { font-size: 12px; margin-bottom: 6px; }
+  .bannerText { font-size: 14px; }
+  .bannerLink { gap: 8px; padding: 10px 22px; border-radius: 999px; font-size: 14px; }
+}
+
+/* Phones */
+@media (max-width: 640px) {
+  .hero { border-radius: 16px; min-height: 0; }
+  /* Darker wash so white text reads over the whole photo. */
+  .heroShade {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(to bottom, rgba(21, 75, 175, 0.35), rgba(21, 75, 175, 0.75));
+  }
+  .heroContent { width: 100%; padding: 96px 20px 80px; }
+  .heroTitle { font-size: 24px; }
+  .heroMetaItem { font-size: 14px; }
+
+  .explore { top: 20px; left: 20px; right: auto; width: 200px; }
+
+  .dots { left: 20px; bottom: 34px; transform: none; }
+  .arrows { bottom: 24px; right: 20px; }
+  .arrow { width: 36px; height: 36px; }
+
+  .panel { border-radius: 16px; }
+  .listHeader { padding: 20px 20px 14px; }
+  .viewMore { padding: 16px 20px; }
+
+  .card { padding: 16px 20px; gap: 12px; }
+  .thumb { width: 72px; height: 60px; }
+  .date { width: 36px; }
+  .day { font-size: 24px; }
+  .cardTitle { font-size: 14px; }
+
+  .detailHead { padding: 22px 20px; }
+  .detailTitle { font-size: 17px; }
+  .detailImage { width: 84px; height: 72px; }
+  .detailTable { padding: 0 20px 16px; }
+  /* Label and action share the first line; the value gets the full width below. */
+  .detailRow { flex-wrap: wrap; gap: 8px 16px; }
+  .detailLabel { flex: 1; width: auto; white-space: normal; }
+  .detailValueWrap { order: 3; flex-basis: 100%; }
+
+  .banner { flex-direction: column; align-items: flex-start; border-radius: 16px; padding: 24px 20px; gap: 16px; }
+}
