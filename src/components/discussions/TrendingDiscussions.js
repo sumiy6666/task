@@ -1,10 +1,14 @@
 'use client';
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 const tabs = ['MOST VIEWED', 'MOST REPLIED', 'MOST LIKED'];
+const sortKey = { 'MOST VIEWED': 'views', 'MOST REPLIED': 'replies', 'MOST LIKED': 'likes' };
 
 export function TrendingDiscussions({ conversations }) {
   const [activeTab, setActiveTab] = useState('MOST VIEWED');
+  const key = sortKey[activeTab];
+  const sorted = [...conversations].sort((a, b) => (b[key] || 0) - (a[key] || 0));
 
   return (
     <div className="bg-white flex flex-col h-full" style={{ borderRadius: 'calc(1.2 * var(--sa))', padding: 'calc(1.8 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(1 * var(--sa)) rgba(0,0,0,0.03)' }}>
@@ -32,7 +36,7 @@ export function TrendingDiscussions({ conversations }) {
       </div>
 
       <div className="flex flex-col">
-        {conversations.map((conv, index) => (
+        {sorted.map((conv) => (
           <div key={conv.id} className="flex items-center max-sm:flex-wrap border-b border-gray-100 last:border-b-0" style={{ gap: 'calc(1 * var(--sa))', padding: 'calc(1.2 * var(--sa)) 0' }}>
             <img
               src={conv.author.avatar}
@@ -41,9 +45,11 @@ export function TrendingDiscussions({ conversations }) {
               style={{ width: 'calc(2.5 * var(--da) + var(--db))', height: 'calc(2.5 * var(--da) + var(--db))' }}
             />
             <div className="flex-1 min-w-0">
-              <h4 className="font-semibold text-gray-900 leading-snug hover:text-[#00A4E4] cursor-pointer transition-colors" style={{ fontSize: 'calc(0.9 * var(--fa) + var(--fb))', marginBottom: 'calc(0.2 * var(--sa))' }}>
-                {conv.title}
-              </h4>
+              <Link href={typeof conv.id === 'number' ? `/conversations/${conv.id}` : '#'}>
+                <h4 className="font-semibold text-gray-900 leading-snug hover:text-[#00A4E4] cursor-pointer transition-colors" style={{ fontSize: 'calc(0.9 * var(--fa) + var(--fb))', marginBottom: 'calc(0.2 * var(--sa))' }}>
+                  {conv.title}
+                </h4>
+              </Link>
               <div className="text-gray-400" style={{ fontSize: 'calc(0.7 * var(--fa) + var(--fb))' }}>
                 {conv.author.name} &nbsp;|&nbsp; {conv.timeAgo} in {conv.category}
               </div>

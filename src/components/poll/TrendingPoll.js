@@ -1,4 +1,17 @@
-export default function TrendingPoll() {
+import Link from 'next/link';
+
+const SAMPLE = {
+  question: 'When a family adds a new asset class, how long before it appears in consolidated reporting?',
+  options: [
+    { label: 'Same month', percentage: '18%', highlighted: false },
+    { label: 'Within a quarter', percentage: '34%', highlighted: true },
+    { label: 'Two quarters or more', percentage: '27%', highlighted: false },
+    { label: 'It never fully does', percentage: '21%', highlighted: false },
+  ],
+};
+
+export default function TrendingPoll({ poll }) {
+  const shown = poll || SAMPLE;
   return (
     <div className="relative overflow-hidden" style={{ borderRadius: 'calc(1.2 * var(--sa))', marginBottom: 'calc(2 * var(--sa))', minHeight: 'calc(30 * var(--da) + var(--db))', boxShadow: '0 calc(0.4 * var(--sa)) calc(1.5 * var(--sa)) rgba(0,0,0,0.1)' }}>
       {/* Background Image */}
@@ -17,16 +30,11 @@ export default function TrendingPoll() {
         </div>
 
         <h2 className="font-semibold leading-tight" style={{ fontSize: 'calc(1.6 * var(--fa) + var(--fb))', marginBottom: 'calc(2.5 * var(--sa))', maxWidth: 'calc(35 * var(--da) + var(--db))' }}>
-          When a family adds a new asset class, how long before it appears in consolidated reporting?
+          {shown.topicId ? <Link href={`/conversations/${shown.topicId}`}>{shown.question}</Link> : shown.question}
         </h2>
 
         <div className="flex flex-col" style={{ gap: 'calc(0.7 * var(--sa))' }}>
-          {[
-            { label: 'Same month', pct: '18%', active: false },
-            { label: 'Within a quarter', pct: '34%', active: true },
-            { label: 'Two quarters or more', pct: '27%', active: false },
-            { label: 'It never fully does', pct: '21%', active: false }
-          ].map((opt, i) => (
+          {shown.options.map((o) => ({ label: o.label, pct: o.percentage, active: o.highlighted })).map((opt, i) => (
             <div
               key={i}
               className="relative flex items-center justify-between overflow-hidden cursor-pointer transition-colors"

@@ -52,7 +52,7 @@ Without `DISCOURSE_URL` the app runs on built-in demo data (`src/lib/discourse/m
 | Screen | Route | Discourse endpoint |
 | --- | --- | --- |
 | Start a Conversation (general) | `/conversations/new` → `POST /api/topics` | `POST /posts.json` |
-| Start a Conversation (poll) → Review → Post | `/conversations/new?type=poll` → `POST /api/topics` | `POST /posts.json` with `[poll]` markup and the `poll` tag |
+| Start a Conversation (poll) → Review → Post | `/conversations/new?type=poll` → `POST /api/topics` | `POST /posts.json` with `[poll]` markup, in the Polls category |
 | Save draft | `POST /api/drafts` | `POST /drafts.json` |
 | Attach image | `POST /api/uploads` | `POST /uploads.json` |
 | Individual Conversation | `/conversations/[id]` | `GET /t/{id}.json`, `GET /categories.json` |
@@ -62,7 +62,7 @@ Without `DISCOURSE_URL` the app runs on built-in demo data (`src/lib/discourse/m
 | Vote on a poll | `POST /api/polls/vote` | `PUT /polls/vote.json` |
 | Register for event | `POST /api/events/[id]/register` | `POST /discourse-post-event/events/{post_id}/invitees.json` (Calendar plugin) |
 
-Every poll topic is tagged `poll` because Discourse has no poll index endpoint; poll lists (latest, trending, closed) should query `/tag/poll.json`. Tagging must be enabled on the forum and the API user must be allowed to create tags.
+Polls are posted in, and listed from, the forum's Polls category (`/c/{slug}/{id}.json`).
 
 Sizes in the new screens are written as `calc(<figma px> * var(--px))`, where `--px` is one pixel of the 1440px Figma frame, so values can be checked directly against the design.
 

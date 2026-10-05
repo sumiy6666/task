@@ -32,7 +32,10 @@ export const getCurrentUser = cache(async () => {
 export async function getCategories() {
   if (!isDiscourseConfigured()) return mockCategories;
   const data = await discourseFetch('/categories.json');
-  const categories = (data.category_list?.categories || []).map(mapCategory);
+  // Staff-only and "Uncategorized" are not offered to members in the composer.
+  const categories = (data.category_list?.categories || [])
+    .filter((c) => !c.read_restricted && c.slug !== 'uncategorized')
+    .map(mapCategory);
   // The design treats "Poll" as a category that switches the composer into poll
   // mode. If the forum has no such category, offer it anyway; the poll is then
   // posted without a category.
@@ -45,10 +48,6 @@ export async function getTopic(id) {
   const [topic, categories] = await Promise.all([discourseFetch(`/t/${encodeURIComponent(id)}.json`), getCategories()]);
   return mapTopic(topic, new Map(categories.map((c) => [c.id, c])));
 }
-
-// Discourse has no poll index, so every poll topic carries this tag and the
-// polls pages list topics by it (see the API feasibility matrix).
-export const POLL_TAG = 'poll';
 
 export async function createTopic({ title, raw, categoryId, tags = [] }) {
   if (!isDiscourseConfigured()) {

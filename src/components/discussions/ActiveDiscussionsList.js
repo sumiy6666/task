@@ -16,7 +16,7 @@ export function ActiveDiscussionsList({ discussions }) {
             style={{ padding: 'calc(1.2 * var(--sa)) calc(2 * var(--sa))', borderRadius: 'calc(3 * var(--sa))', backgroundColor: '#eef3f7' }}
           >
             <div>
-              <Link href="#" className="no-underline text-inherit block" style={{ paddingRight: 'calc(2 * var(--sa))' }}>
+              <Link href={disc.id ? `/conversations/${disc.id}` : '#'} className="no-underline text-inherit block" style={{ paddingRight: 'calc(2 * var(--sa))' }}>
                 <h4 className="font-medium text-[#2d6896] hover:text-[#00A4E4] leading-snug" style={{ fontSize: 'calc(1 * var(--fa) + var(--fb))', marginBottom: 'calc(0.3 * var(--sa))' }}>
                   {disc.title}
                 </h4>
