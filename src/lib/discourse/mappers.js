@@ -34,6 +34,26 @@ export function mapPolls(post) {
   }));
 }
 
+// The page draws its own voting UI from `polls`, so Discourse's rendered poll
+// markup (a <div class="poll"> with nested divs) is cut out of the post body.
+function stripPollMarkup(html = '') {
+  const open = /<div class="poll"[^>]*>/g;
+  let out = '';
+  let from = 0;
+  let match;
+  while ((match = open.exec(html))) {
+    out += html.slice(from, match.index);
+    const tags = /<\/?div\b[^>]*>/g;
+    tags.lastIndex = match.index + match[0].length;
+    let depth = 1;
+    let tag;
+    while (depth > 0 && (tag = tags.exec(html))) depth += tag[0][1] === '/' ? -1 : 1;
+    from = tag ? tags.lastIndex : html.length;
+    open.lastIndex = from;
+  }
+  return out + html.slice(from);
+}
+
 function mapPost(post) {
   return {
     id: post.id,
@@ -44,7 +64,7 @@ function mapPost(post) {
       name: post.name || post.username,
       avatar: avatarUrl(post.avatar_template),
     },
-    html: post.cooked,
+    html: post.polls?.length ? stripPollMarkup(post.cooked) : post.cooked,
     createdAt: post.created_at,
     bookmarked: Boolean(post.bookmarked),
     liked: Boolean(post.actions_summary?.find((a) => a.id === 2)?.acted),
