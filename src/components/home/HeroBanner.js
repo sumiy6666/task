@@ -48,7 +48,7 @@ export function HeroBanner() {
     <div className={styles.heroWrapper}>
       <div className={styles.welcomeSection}>
         <div className={styles.welcomeText}>
-          <h1 className="rise-in">Welcome to <span className={styles.highlight}>AV Community</span></h1>
+          <h1 className="rise-in">Welcome to <span className={styles.highlight}>AV COMMUNITY</span></h1>
           <p className="rise-in" style={{ '--delay': '0.15s' }}>Connect, learn and grow with professionals around the world.</p>
         </div>
         <div className={styles.welcomeActions}>
