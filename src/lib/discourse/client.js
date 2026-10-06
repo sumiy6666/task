@@ -68,7 +68,9 @@ export async function discourseFetch(path, { method = 'GET', body, formData, use
   if (user) {
     headers['User-Api-Key'] = user.key;
     headers['User-Api-Client-Id'] = user.clientId;
-  } else if (API_KEY) {
+  } else if (API_KEY && !(SIGN_IN_ENABLED && requireUser)) {
+    // The site key reads for guests. It only posts on someone's behalf while
+    // sign-in is off; with sign-in on, members post as themselves.
     headers['Api-Key'] = API_KEY;
     headers['Api-Username'] = username || API_USERNAME;
   } else if (requireUser) {

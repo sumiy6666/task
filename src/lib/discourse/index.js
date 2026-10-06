@@ -22,7 +22,8 @@ export const getCurrentUser = cache(async () => {
       throw error;
     }
   }
-  if (hasAdminKey()) {
+  // With sign-in off, everyone acts as the site's API user.
+  if (!isSignInEnabled() && hasAdminKey()) {
     const data = await discourseFetch(`/u/${encodeURIComponent(actingUsername())}.json`);
     return mapUser(data.user);
   }
