@@ -4,10 +4,16 @@ import { ArticleContent } from '@/components/insights/ArticleContent';
 import { RelatedArticles } from '@/components/insights/RelatedArticleGridCard';
 import { CommentForm } from '@/components/insights/CommentForm';
 import styles from '@/components/insights/ArticleDetail.module.css';
+import topicStyles from '@/components/topic/Topic.module.css';
+import { notFound } from 'next/navigation';
+import { getTopic, isDiscourseConfigured } from '@/lib/discourse';
+import { DiscourseError } from '@/lib/discourse/client';
+import { timeAgo } from '@/lib/discourse/format';
+import { loadRelatedArticles } from '@/lib/discourse/lists';
 
 const DIVIDER = { border: 0, borderTop: '1px solid #e5e7eb' };
 
-// Mock Data for Detail Page
+// Sample article, shown when Discourse is not connected.
 const articleData = {
   id: '1',
   title: 'The engagement letter decides',
@@ -59,7 +65,29 @@ const relatedArticles = [
   }
 ];
 
-export default function InsightDetailPage() {
+// A forum article (a topic in the Articles category), or null to show the sample.
+async function loadArticle(id) {
+  if (!/^\d+$/.test(id) || !isDiscourseConfigured()) return null;
+  try {
+    const [topic, related] = await Promise.all([getTopic(id), loadRelatedArticles(id)]);
+    return { topic, related: related || [] };
+  } catch (error) {
+    if (error instanceof DiscourseError && (error.status === 404 || error.status === 403)) notFound();
+    throw error;
+  }
+}
+
+export async function generateMetadata({ params }) {
+  const { id } = await params;
+  const live = await loadArticle(id);
+  return { title: `${live ? live.topic.title : articleData.title} | AV Community` };
+}
+
+export default async function InsightDetailPage({ params }) {
+  const { id } = await params;
+  const live = await loadArticle(id);
+  if (live) return <LiveArticle topic={live.topic} related={live.related} />;
+
   return (
     <div className="container min-h-screen" style={{ paddingBottom: 'calc(2.5 * var(--sa))' }}>
       <Breadcrumb items={[
@@ -104,6 +132,47 @@ export default function InsightDetailPage() {
         <hr style={DIVIDER} />
         <RelatedArticles articles={relatedArticles} />
 
+      </div>
+    </div>
+  );
+}
+
+// The forum article: its title, author line and the post's own HTML, then the
+// comment box (posts a reply) and the other articles.
+function LiveArticle({ topic, related }) {
+  const post = topic.firstPost;
+  return (
+    <div className="container min-h-screen" style={{ paddingBottom: 'calc(2.5 * var(--sa))' }}>
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Articles', href: '/insights' },
+        { label: topic.title }
+      ]} className={styles.breadcrumb} />
+
+      <div className={`bg-white ${styles.card}`} style={{ borderRadius: 'calc(1.1 * var(--sa))', padding: 'calc(3 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(1 * var(--sa)) rgba(0,0,0,0.02)' }}>
+        <div className={styles.header} style={{ marginBottom: 'calc(2 * var(--sa))' }}>
+          <h1 className={`font-semibold text-gray-900 ${styles.title}`} style={{ fontSize: 'calc(3.2 * var(--fa) + var(--fb))', lineHeight: 1.2 }}>
+            {topic.title}
+          </h1>
+        </div>
+
+        <div className={`flex text-[#00A4E4] border-b border-gray-100 ${styles.meta}`} style={{ gap: 'calc(1 * var(--sa))', fontSize: 'calc(1 * var(--fa) + var(--fb))', marginBottom: 'calc(1.5 * var(--sa))', paddingBottom: 'calc(1 * var(--sa))' }}>
+          <span>{post?.author.name}</span>
+          <span className={`text-gray-300 ${styles.sep}`}>|</span>
+          <span>{timeAgo(post?.createdAt)}</span>
+          {topic.categoryName && (
+            <>
+              <span className={`text-gray-300 ${styles.sep}`}>|</span>
+              <span>{topic.categoryName}</span>
+            </>
+          )}
+        </div>
+
+        <div className={`${styles.content} ${topicStyles.cooked}`} dangerouslySetInnerHTML={{ __html: post?.html || '' }} />
+
+        <CommentForm topicId={topic.id} />
+        <hr style={DIVIDER} />
+        {related.length > 0 && <RelatedArticles articles={related} />}
       </div>
     </div>
   );

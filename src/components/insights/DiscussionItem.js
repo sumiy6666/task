@@ -9,6 +9,7 @@ export function DiscussionItem({ discussion, index = 0 }) {
     <SidebarListItem
       Icon={ICONS[index % ICONS.length]}
       title={discussion.title}
+      href={typeof discussion.id === 'number' ? `/conversations/${discussion.id}` : undefined}
       meta={<>{discussion.replies} replies<Separator />{discussion.timeAgo}</>}
     />
   );

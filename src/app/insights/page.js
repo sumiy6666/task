@@ -8,6 +8,7 @@ import { DiscussionItem } from '@/components/insights/DiscussionItem';
 import { RecommendedArticleItem } from '@/components/insights/RecommendedArticleItem';
 import { ExpertPerspectives } from '@/components/insights/ExpertPerspectiveCard';
 import { Reveal } from '@/components/ui/Reveal';
+import { loadInsights } from '@/lib/discourse/lists';
 
 const CARD = {
   borderRadius: 'calc(1.6 * var(--sa))',
@@ -24,21 +25,7 @@ const CARD_TITLE = {
   whiteSpace: 'nowrap'
 };
 
-// Mock Data
-const featuredArticle = {
-  id: 'featured-1',
-  title: 'Family offices and impact: Investing with purpose',
-  description: 'How family offices are aligning capital with values to drive meaningful change.',
-  image: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=1200&auto=format&fit=crop',
-  readTime: '10 min',
-  author: {
-    name: 'Poonam Shah',
-    avatar: 'https://i.pravatar.cc/100?img=5',
-  },
-  timeAgo: '2h ago',
-  category: 'Investment Insights'
-};
-
+// Sample data, shown when Discourse is not connected.
 const latestInsights = [
   {
     id: '1',
@@ -134,12 +121,24 @@ const recommendedArticles = [
   { id: 'r4', title: 'Impact investing: Beyond Trends', readTime: '5 min read' }
 ];
 
-export default function InsightsListingPage() {
+export default async function InsightsListingPage() {
+  // Articles come from the forum's Articles category when Discourse is connected.
+  const live = await loadInsights();
+  const featured = live?.featured.map((a) => ({ ...a, author: { name: a.author, avatar: a.authorAvatar } }));
+  const articles = live?.latest || latestInsights;
+  const discussions = live?.discussions.length ? live.discussions : relatedDiscussions;
+  const poll = live?.poll || relatedPolls;
+  const recommended = live?.recommended.length ? live.recommended : recommendedArticles;
+  // Contributor cards keep their designed headline and colour; names and counts are live.
+  const experts = live?.experts.length
+    ? live.experts.map((e, i) => ({ ...expertPerspectives[i % expertPerspectives.length], ...e }))
+    : expertPerspectives;
+
   return (
     <div className="container min-h-screen" style={{ paddingBottom: 'calc(2.5 * var(--sa))' }}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Insights' }]} />
 
-      <FeaturedInsight article={featuredArticle} />
+      <FeaturedInsight slides={featured} />
 
       <div className="flex flex-wrap" style={{ gap: 'calc(1.5 * var(--sa))' }}>
         {/* Main Content Column */}
@@ -150,7 +149,7 @@ export default function InsightsListingPage() {
             </Reveal>
 
             <Reveal stagger={120} delay={150} className="flex flex-col">
-              {latestInsights.map((article) => (
+              {articles.map((article) => (
                 <InsightListCard key={article.id} article={article} />
               ))}
             </Reveal>
@@ -165,7 +164,7 @@ export default function InsightsListingPage() {
             </div>
           </div>
 
-          <ExpertPerspectives experts={expertPerspectives} />
+          <ExpertPerspectives experts={experts} />
         </div>
 
         {/* Sidebar Column */}
@@ -175,7 +174,7 @@ export default function InsightsListingPage() {
               RELATED DISCUSSIONS
             </Reveal>
             <Reveal stagger={120} delay={350}>
-              {relatedDiscussions.map((discussion, i) => (
+              {discussions.map((discussion, i) => (
                 <DiscussionItem key={discussion.id} discussion={discussion} index={i} />
               ))}
             </Reveal>
@@ -183,9 +182,9 @@ export default function InsightsListingPage() {
 
           <Reveal delay={200}>
             <PollWidget
-              question={relatedPolls.question}
-              options={relatedPolls.options}
-              responsesText={relatedPolls.responsesText}
+              question={poll.question}
+              options={poll.options}
+              responsesText={poll.responsesText}
             />
           </Reveal>
 
@@ -194,7 +193,7 @@ export default function InsightsListingPage() {
               RECOMMENDED ARTICLES
             </Reveal>
             <Reveal stagger={120} delay={350}>
-              {recommendedArticles.map((article, i) => (
+              {recommended.map((article, i) => (
                 <RecommendedArticleItem key={article.id} article={article} index={i} />
               ))}
             </Reveal>

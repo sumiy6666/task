@@ -2,14 +2,19 @@ import React from 'react';
 import Link from 'next/link';
 import { Card } from '../ui/Card';
 import { Reveal } from '../ui/Reveal';
+import { compactNumber } from '@/lib/discourse/format';
 import styles from './CommunityPulse.module.css';
 
-export function CommunityPulse() {
+// Two digits, as in the design ("05"); larger numbers are shortened ("1.2K").
+const show = (n, sample) => (n == null ? sample : n < 10 ? `0${n}` : compactNumber(n));
+
+// `pulse` holds live forum counts; any missing number keeps its sample value.
+export function CommunityPulse({ pulse }) {
   const stats = [
-    { value: '18', label: 'Top Contributors', bg: '#3A97FF', href: '/members' },
-    { value: '05', label: 'Popular Topics', bg: '#1D79E0', href: '/discussions' },
-    { value: '1.2K', label: 'Active Members', bg: '#003ECF', href: '/members' },
-    { value: '03', label: 'Announcements', bg: '#5600CF', href: '/discussions' },
+    { value: show(pulse?.contributors, '18'), label: 'Top Contributors', bg: '#3A97FF', href: '/members' },
+    { value: show(pulse?.topics, '05'), label: 'Popular Topics', bg: '#1D79E0', href: '/discussions' },
+    { value: show(pulse?.members, '1.2K'), label: 'Active Members', bg: '#003ECF', href: '/members' },
+    { value: show(pulse?.announcements, '03'), label: 'Announcements', bg: '#5600CF', href: '/discussions' },
   ];
 
   return (

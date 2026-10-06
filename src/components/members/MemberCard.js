@@ -9,17 +9,23 @@ export default function MemberCard({ member, isActive, onClick }) {
         <div className={styles.rowName}>{member.name}</div>
         <div className={styles.rowRole}>
           {member.role}
-          <span className={styles.rowSep}>|</span>
-          {member.company}
+          {member.company && (
+            <>
+              <span className={styles.rowSep}>|</span>
+              {member.company}
+            </>
+          )}
         </div>
-        <div className={styles.rowExpertise}>
-          <span className={styles.rowExpertiseLabel}>Expertise:</span>
-          <span className={styles.tags}>
-            {member.expertise.map((tag) => (
-              <span key={tag} className={styles.tag}>{tag}</span>
-            ))}
-          </span>
-        </div>
+        {member.expertise.length > 0 && (
+          <div className={styles.rowExpertise}>
+            <span className={styles.rowExpertiseLabel}>Expertise:</span>
+            <span className={styles.tags}>
+              {member.expertise.map((tag) => (
+                <span key={tag} className={styles.tag}>{tag}</span>
+              ))}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

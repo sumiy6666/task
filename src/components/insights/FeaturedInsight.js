@@ -39,7 +39,10 @@ const categories = [
   'Technology and AI'
 ];
 
-export function FeaturedInsight({ article }) {
+export function FeaturedInsight({ slides }) {
+  // Live articles keep the designed banner photo, so the white text stays readable.
+  const banners = slides?.length ? slides.map((slide) => ({ ...slide, image: bannerSlides[0].image })) : bannerSlides;
+
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
@@ -47,10 +50,10 @@ export function FeaturedInsight({ article }) {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % bannerSlides.length);
+      setCurrentSlide((prev) => (prev + 1) % banners.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [banners.length]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -62,16 +65,16 @@ export function FeaturedInsight({ article }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % bannerSlides.length);
-  const prevSlide = () => setCurrentSlide((prev) => (prev === 0 ? bannerSlides.length - 1 : prev - 1));
-  const currentBanner = bannerSlides[currentSlide];
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % banners.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev === 0 ? banners.length - 1 : prev - 1));
+  const currentBanner = banners[currentSlide];
 
   return (
     <div className="relative overflow-visible" style={{ borderRadius: 'calc(1.1 * var(--sa))', marginBottom: 'calc(1.5 * var(--sa))', boxShadow: '0 calc(0.3 * var(--sa)) calc(1.5 * var(--sa)) rgba(0,0,0,0.05)' }}>
       {/* Main Banner Section - full width */}
       <div className="relative overflow-hidden" style={{ minHeight: 'calc(33.4 * var(--da) + var(--db))', borderRadius: 'calc(1.6 * var(--sa))' }}>
         {/* Background layers for smooth crossfade */}
-        {bannerSlides.map((slide, index) => (
+        {banners.map((slide, index) => (
           <div
             key={index}
             className="absolute inset-0 bg-cover bg-center"
@@ -101,13 +104,15 @@ export function FeaturedInsight({ article }) {
             {currentBanner.description}
           </p>
 
-          <div className="rise-in flex items-center" style={{ '--delay': '0.45s', gap: 'calc(1.15 * var(--sa))', marginBottom: 'calc(1.8 * var(--sa))', fontSize: 'calc(1 * var(--fa) + var(--fb))', fontWeight: 300 }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ width: 'calc(1.1 * var(--da) + var(--db))', height: 'calc(1.1 * var(--da) + var(--db))' }}>
-              <circle cx="12" cy="12" r="10" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" />
-            </svg>
-            {currentBanner.readTime} read
-          </div>
+          {currentBanner.readTime && (
+            <div className="rise-in flex items-center" style={{ '--delay': '0.45s', gap: 'calc(1.15 * var(--sa))', marginBottom: 'calc(1.8 * var(--sa))', fontSize: 'calc(1 * var(--fa) + var(--fb))', fontWeight: 300 }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ width: 'calc(1.1 * var(--da) + var(--db))', height: 'calc(1.1 * var(--da) + var(--db))' }}>
+                <circle cx="12" cy="12" r="10" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" />
+              </svg>
+              {currentBanner.readTime} read
+            </div>
+          )}
 
           <div className="rise-in flex items-center" style={{ '--delay': '0.6s', gap: 'calc(1.3 * var(--sa))', marginBottom: 'calc(2 * var(--sa))' }}>
             <img src={currentBanner.author.avatar} alt={currentBanner.author.name} className="rounded-full object-cover" style={{ width: 'calc(3.75 * var(--da) + var(--db))', height: 'calc(3.75 * var(--da) + var(--db))', border: '2px solid rgba(255,255,255,0.85)' }} />

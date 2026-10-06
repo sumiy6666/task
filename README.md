@@ -61,8 +61,16 @@ Without `DISCOURSE_URL` the app runs on built-in demo data (`src/lib/discourse/m
 | Bookmark | `POST /api/topics/[id]/bookmark` | `POST /bookmarks.json` |
 | Vote on a poll | `POST /api/polls/vote` | `PUT /polls/vote.json` |
 | Register for event | `POST /api/events/[id]/register` | `POST /discourse-post-event/events/{post_id}/invitees.json` (Calendar plugin) |
+| Home (poll, trending, pulse, AV team updates) | `/` | `GET /latest.json`, `GET /top.json`, `GET /about.json`, Polls and Articles categories |
+| Discussions | `/discussions` | `GET /latest.json`, `GET /top.json`, `GET /categories.json`, `GET /tags.json`, members (below) |
+| Polls, Closed polls | `/poll`, `/poll/closed` | Polls category, then `GET /t/{id}.json` per poll |
+| Members | `/members` | `GET /groups/trust_level_0/members.json`, `GET /u/{username}.json`, `GET /u/{username}/summary.json` |
+| Insights, Article | `/insights`, `/insights/[id]` | Articles category, `GET /t/{id}.json`; comments post a reply |
+| Feedback | `/feedback` → `POST /api/feedback` | `POST /uploads.json` (attachment), `POST /posts.json` in the Site Feedback category |
 
 Polls are posted in, and listed from, the forum's Polls category (`/c/{slug}/{id}.json`).
+
+Each list page falls back to its sample content when the forum is not connected. Site Feedback topics are left out of the public lists. The member directory (`/directory_items.json`) is used when the acting account may read it; otherwise members come from the all-members group.
 
 Sizes in the new screens are written as `calc(<figma px> * var(--px))`, where `--px` is one pixel of the 1440px Figma frame, so values can be checked directly against the design.
 

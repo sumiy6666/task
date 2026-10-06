@@ -43,7 +43,9 @@ export function actingUsername() {
 
 export const SIGN_IN_REQUIRED = 'Please sign in to continue.';
 
-export async function discourseFetch(path, { method = 'GET', body, formData, username, cache = 'no-store', requireUser = method !== 'GET' } = {}) {
+// `revalidate` (seconds) lets shared, non-personal reads be cached briefly;
+// it is ignored when a member's own key is in use.
+export async function discourseFetch(path, { method = 'GET', body, formData, username, cache = 'no-store', revalidate, requireUser = method !== 'GET' } = {}) {
   if (!isDiscourseConfigured()) {
     throw new DiscourseError('Discourse is not configured (set DISCOURSE_URL).', 503);
   }
@@ -69,7 +71,8 @@ export async function discourseFetch(path, { method = 'GET', body, formData, use
     payload = JSON.stringify(body);
   }
 
-  const res = await fetch(`${BASE_URL}${path}`, { method, headers, body: payload, cache });
+  const caching = revalidate && !user && method === 'GET' ? { next: { revalidate } } : { cache };
+  const res = await fetch(`${BASE_URL}${path}`, { method, headers, body: payload, ...caching });
   const text = await res.text();
   let data = null;
   try {

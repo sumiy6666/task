@@ -2,6 +2,7 @@
 import { useRef, useState } from 'react';
 import { ArrowRight, ArrowUpFromLine, FileText, Info, Lightbulb, MessageCircleMore } from 'lucide-react';
 import { Reveal } from '@/components/ui/Reveal';
+import { redirectIfSignedOut } from '@/lib/auth-client';
 import styles from './Feedback.module.css';
 
 const TYPES = [
@@ -16,8 +17,7 @@ const MAX_FILE_BYTES = 5 * 1024 * 1024;
 const FILE_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
 
 // Site feedback: pick a type, write a subject and details, optionally attach
-// a screenshot. Nothing is sent anywhere yet (there is no feedback endpoint),
-// so a valid submission only shows the thank-you state.
+// a screenshot. It is posted to the forum's Site Feedback category.
 export function FeedbackForm() {
   const [type, setType] = useState('issue');
   const [subject, setSubject] = useState('');
@@ -26,6 +26,7 @@ export function FeedbackForm() {
   const [errors, setErrors] = useState({});
   const [dragging, setDragging] = useState(false);
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
   const fileInput = useRef(null);
 
   const pickFile = (picked) => {
@@ -40,13 +41,33 @@ export function FeedbackForm() {
     }
   };
 
-  const submit = (event) => {
+  const submit = async (event) => {
     event.preventDefault();
+    if (sending) return;
     const next = {};
     if (!subject.trim()) next.subject = 'Please add a short subject.';
     if (!details.trim()) next.details = 'Please tell us a little more.';
     setErrors(next);
-    if (Object.keys(next).length === 0) setSent(true);
+    if (Object.keys(next).length > 0) return;
+
+    const body = new FormData();
+    body.append('type', type);
+    body.append('subject', subject.trim());
+    body.append('details', details.trim());
+    if (file) body.append('file', file);
+
+    setSending(true);
+    try {
+      const res = await fetch('/api/feedback', { method: 'POST', body });
+      if (redirectIfSignedOut(res)) return;
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not send your feedback. Please try again.');
+      setSent(true);
+    } catch (e) {
+      setErrors({ form: e.message });
+    } finally {
+      setSending(false);
+    }
   };
 
   const reset = () => {
@@ -155,8 +176,9 @@ export function FeedbackForm() {
         </div>
 
         <div className={styles.actions}>
-          <button type="submit" className={styles.submit}>
-            Submit feedback
+          {errors.form && <p className={styles.error} role="alert">{errors.form}</p>}
+          <button type="submit" className={styles.submit} disabled={sending}>
+            {sending ? 'Sending…' : 'Submit feedback'}
             <ArrowRight strokeWidth={1.6} aria-hidden="true" />
           </button>
         </div>

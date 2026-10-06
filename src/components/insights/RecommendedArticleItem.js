@@ -10,6 +10,7 @@ export function RecommendedArticleItem({ article, index = 0 }) {
     <SidebarListItem
       Icon={ICONS[index % ICONS.length]}
       title={article.title}
+      href={typeof article.id === 'number' ? `/insights/${article.id}` : undefined}
       meta={article.readTime}
     />
   );

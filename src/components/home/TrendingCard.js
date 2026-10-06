@@ -7,7 +7,7 @@ import { Reveal } from '../ui/Reveal';
 import styles from './TrendingCard.module.css';
 import { ArrowRight } from 'lucide-react';
 
-const tabs = [
+const sampleTabs = [
   { id: 'trending', icon: '/images/Trending.svg', title: "GIFT City's family fund route is open, and mostly unused by Indian families", desc: "Three years after the framework arrived, the first full registration went to a foreign structure. Indian families are still routing through Category III AIFs.", image: '/images/feature1.jpg', href: '/insights' },
   { id: 'mostactive', icon: '/images/MostActive.svg', title: "Most active discussions this week", desc: "A look at what the community is talking about right now.", image: '/images/herobanner1.jpg', href: '/discussions' },
   { id: 'latest', icon: '/images/LatestUpdates.svg', title: "Latest updates on platform features", desc: "Discover the new tools we've added to help you manage your family office better.", image: '/images/feature1.jpg', href: '/discussions' },
@@ -15,8 +15,14 @@ const tabs = [
   { id: 'polls', icon: '/images/RecentPolls.svg', title: "Recent polls on asset allocation", desc: "See how other family offices are adjusting their portfolios.", image: '/images/feature1.jpg', href: '/poll' }
 ];
 
-export function TrendingCard() {
+// `slides` holds live forum content per tab (trending, mostactive, latest,
+// insight, polls); a tab without it keeps its sample text and image.
+export function TrendingCard({ slides }) {
   const [activeTab, setActiveTab] = useState(0);
+  const tabs = sampleTabs.map((tab) => {
+    const live = slides?.[tab.id];
+    return live ? { ...tab, ...live, image: live.image || tab.image } : tab;
+  });
 
   return (
     <Card className={styles.trendingCard} style={{ backgroundImage: `linear-gradient(to bottom, #003ECF 0%, rgba(150, 196, 243, 0) 50%, rgba(12, 43, 74, 0) 100%), url('${tabs[activeTab].image}')` }}>

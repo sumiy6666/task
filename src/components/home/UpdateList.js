@@ -3,13 +3,16 @@ import Link from 'next/link';
 import { Card } from '../ui/Card';
 import styles from './UpdateList.module.css';
 
-export function UpdateList() {
-  const updates = [
-    { title: 'New feature update', desc: 'Enhancements to the reporting module are now live', href: '/discussions' },
-    { title: 'AV product roadmap webinar', desc: "Join us on June 12 at 4 to learn what's coming next", href: '/events' },
-    { title: 'Community guidelines update', desc: "Join us on June 12 at 4 to learn what's coming next", href: '/discussions' },
-    { title: 'New feature update', desc: 'Enhancements to the reporting module are now live', href: '/discussions' },
-  ];
+const SAMPLE_UPDATES = [
+  { title: 'New feature update', desc: 'Enhancements to the reporting module are now live', href: '/discussions' },
+  { title: 'AV product roadmap webinar', desc: "Join us on June 12 at 4 to learn what's coming next", href: '/events' },
+  { title: 'Community guidelines update', desc: "Join us on June 12 at 4 to learn what's coming next", href: '/discussions' },
+  { title: 'New feature update', desc: 'Enhancements to the reporting module are now live', href: '/discussions' },
+];
+
+// `updates` are the forum's pinned and staff-written topics.
+export function UpdateList({ updates: live }) {
+  const updates = live?.length ? live : SAMPLE_UPDATES;
 
   return (
     <Card className={styles.updateCard}>

@@ -1,6 +1,8 @@
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import ClosedPollsGrid from '@/components/poll/ClosedPollsGrid';
+import { loadPolls } from '@/lib/discourse/lists';
 
+// Sample data, shown when Discourse is not connected.
 const allClosedPollsData = [
   {
     id: 1,
@@ -136,7 +138,10 @@ const allClosedPollsData = [
   }
 ];
 
-export default function ClosedPollsPage() {
+export default async function ClosedPollsPage() {
+  const live = await loadPolls();
+  const polls = live ? live.closed : allClosedPollsData;
+
   return (
     <div className="container min-h-screen" style={{ paddingBottom: 'calc(4 * var(--sa))' }}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Poll', href: '/poll' }, { label: 'Closed Polls' }]} />
@@ -146,7 +151,11 @@ export default function ClosedPollsPage() {
           <h3 className="font-semibold text-[#132742] uppercase" style={{ fontSize: 'calc(0.9 * var(--fa) + var(--fb))', letterSpacing: '0.1em' }}>CLOSED POLLS</h3>
         </div>
 
-        <ClosedPollsGrid polls={allClosedPollsData} />
+        {polls.length > 0 ? (
+          <ClosedPollsGrid polls={polls} />
+        ) : (
+          <p className="text-[#6b7280]" style={{ fontSize: 'calc(0.85 * var(--fa) + var(--fb))' }}>No closed polls yet.</p>
+        )}
       </div>
     </div>
   );
