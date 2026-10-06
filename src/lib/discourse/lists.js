@@ -94,7 +94,8 @@ async function loadMemberProfiles(limit) {
         bio: about || user?.bio_excerpt || '',
         stats: {
           discussions: summary?.topic_count ?? 0,
-          contributions: summary?.post_count ?? 0,
+          // The summary's post count leaves out the posts that open a topic.
+          contributions: (summary?.topic_count ?? 0) + (summary?.post_count ?? 0),
           followers: summary?.likes_received ?? 0,
           followersLabel: 'LIKES\nRECEIVED',
         },
