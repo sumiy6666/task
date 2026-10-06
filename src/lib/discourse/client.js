@@ -1,5 +1,6 @@
 // Server-side Discourse API client. Never import this from a client component:
 // it reads API keys from the environment and the member's cookies.
+import { revalidateTag } from 'next/cache';
 import { getUserAuth } from './session';
 
 const BASE_URL = (process.env.DISCOURSE_URL || '').replace(/\/+$/, '');
@@ -43,9 +44,21 @@ export function actingUsername() {
 
 export const SIGN_IN_REQUIRED = 'Please sign in to continue.';
 
-// `revalidate` (seconds) lets shared, non-personal reads be cached briefly;
-// it is ignored when a member's own key is in use.
-export async function discourseFetch(path, { method = 'GET', body, formData, username, cache = 'no-store', revalidate, requireUser = method !== 'GET' } = {}) {
+// Shared reads (made with the site's API key, the same for every visitor) are
+// cached for this long, so page views do not each hit the forum: Discourse
+// rate-limits API keys per minute. Writes clear the cache straight away.
+const SHARED_READ_SECONDS = 30;
+const CACHE_TAG = 'discourse';
+// Writes that do not change what other pages show.
+const QUIET_WRITES = ['/drafts.json', '/uploads.json', '/user-api-key/revoke'];
+// A rate-limited read is retried once when Discourse asks for a short wait.
+const MAX_RETRY_WAIT_SECONDS = 4;
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// `revalidate` (seconds) overrides how long a shared read is cached. Reads made
+// with a member's own key are personal and never cached.
+export async function discourseFetch(path, { method = 'GET', body, formData, username, revalidate = SHARED_READ_SECONDS, requireUser = method !== 'GET' } = {}, attempt = 0) {
   if (!isDiscourseConfigured()) {
     throw new DiscourseError('Discourse is not configured (set DISCOURSE_URL).', 503);
   }
@@ -71,8 +84,11 @@ export async function discourseFetch(path, { method = 'GET', body, formData, use
     payload = JSON.stringify(body);
   }
 
-  const caching = revalidate && !user && method === 'GET' ? { next: { revalidate } } : { cache };
-  const res = await fetch(`${BASE_URL}${path}`, { method, headers, body: payload, ...caching });
+  const caching = !user && method === 'GET' ? { next: { revalidate, tags: [CACHE_TAG] } } : { cache: 'no-store' };
+  // A retry must reach the forum again: its own signal opts it out of Next's
+  // per-render memoization, which would otherwise replay the first answer.
+  const signal = attempt > 0 ? new AbortController().signal : undefined;
+  const res = await fetch(`${BASE_URL}${path}`, { method, headers, body: payload, signal, ...caching });
   const text = await res.text();
   let data = null;
   try {
@@ -82,6 +98,11 @@ export async function discourseFetch(path, { method = 'GET', body, formData, use
   }
 
   if (!res.ok) {
+    const wait = Number(data?.extras?.wait_seconds ?? res.headers.get('retry-after'));
+    if (res.status === 429 && method === 'GET' && attempt === 0 && wait > 0 && wait <= MAX_RETRY_WAIT_SECONDS) {
+      await sleep(wait * 1000);
+      return discourseFetch(path, { method, body, formData, username, revalidate, requireUser }, 1);
+    }
     // A revoked or expired member key comes back as 403 "invalid_access".
     if (user && (res.status === 401 || (res.status === 403 && data?.error_type === 'invalid_access'))) {
       throw new DiscourseError(SIGN_IN_REQUIRED, 401);
@@ -89,6 +110,8 @@ export async function discourseFetch(path, { method = 'GET', body, formData, use
     const errors = data?.errors || (data?.error ? [data.error] : []);
     throw new DiscourseError(errors[0] || `Discourse request failed (${res.status})`, res.status, errors);
   }
+  // Something changed on the forum: the next page view loads fresh lists.
+  if (method !== 'GET' && !QUIET_WRITES.includes(path)) revalidateTag(CACHE_TAG, { expire: 0 });
   return data;
 }
 

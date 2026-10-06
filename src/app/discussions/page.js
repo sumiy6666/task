@@ -10,10 +10,11 @@ import { ActiveMembersList } from '@/components/discussions/ActiveMembersList';
 import { PopularTagsList } from '@/components/discussions/PopularTagsList';
 import { loadDiscussions } from '@/lib/discourse/lists';
 
-// Sample data, shown when Discourse is not connected.
+// Sample data, shown when Discourse is not connected. Sample ids are not
+// numbers, so they never link to a real forum topic.
 const latestConversations = [
   {
-    id: 101,
+    id: 'sample-101',
     title: 'Best practices for managing liquid investments in family portfolios?',
     author: { name: 'Priya Mehta', avatar: 'https://i.pravatar.cc/100?img=5' },
     timeAgo: '2h ago',
@@ -23,7 +24,7 @@ const latestConversations = [
     likes: 15
   },
   {
-    id: 102,
+    id: 'sample-102',
     title: 'How do yo approach next-gen engagement in your family office?',
     author: { name: 'Rohan Kapoor', avatar: 'https://i.pravatar.cc/100?img=11' },
     timeAgo: '5h ago',
@@ -33,7 +34,7 @@ const latestConversations = [
     likes: 9
   },
   {
-    id: 103,
+    id: 'sample-103',
     title: 'Views on direct indexing for concentrated portfolios',
     author: { name: 'Arvind Rajan', avatar: 'https://i.pravatar.cc/100?img=8' },
     timeAgo: '1d ago',
@@ -43,7 +44,7 @@ const latestConversations = [
     likes: 7
   },
   {
-    id: 104,
+    id: 'sample-104',
     title: 'Using AI for research and portfolio monitoring',
     author: { name: 'Neha Shah', avatar: 'https://i.pravatar.cc/100?img=9' },
     timeAgo: '2d ago',
@@ -148,7 +149,7 @@ export default async function DiscussionPage() {
     <div className="container min-h-screen" style={{ paddingBottom: 'calc(4 * var(--sa))' }}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Discussion' }]} />
 
-      <EventBanner />
+      <EventBanner topic={live?.trending[0]} />
 
       <div className="flex max-lg:flex-col" style={{ gap: 'calc(1.5 * var(--sa))', marginBottom: 'calc(1.5 * var(--sa))' }}>
         <div className="flex-[1_1_67%] min-w-0">

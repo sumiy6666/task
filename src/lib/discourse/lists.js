@@ -39,6 +39,9 @@ async function loadCategories() {
   return (data.category_list?.categories || []).filter((c) => !c.read_restricted && c.slug !== 'uncategorized');
 }
 
+// Profiles and site stats change slowly; cache them longer to spare the rate limit.
+const PROFILE_SECONDS = 300;
+
 const findCategory = (categories, pattern) => categories.find((c) => pattern.test(c.name));
 const categoryPath = (c) => `/c/${encodeURIComponent(c.slug)}/${c.id}.json`;
 const topicsOf = (list) => (list?.topic_list?.topics || []).filter((t) => !isAboutTopic(t));
@@ -72,14 +75,14 @@ const mapList = (list, categoriesById) =>
 // Members: the directory is closed to non-staff accounts on this forum, so
 // fall back to the "all members" group and each member's profile summary.
 async function loadMemberProfiles(limit) {
-  const group = await discourseFetch(`/groups/trust_level_0/members.json?limit=${limit}&order=last_posted_at&asc=false`, { revalidate: 60 });
+  const group = await discourseFetch(`/groups/trust_level_0/members.json?limit=${limit}&order=last_posted_at&asc=false`, { revalidate: PROFILE_SECONDS });
   const members = (group.members || []).filter((m) => m.id > 0);
   const profiles = await Promise.all(
     members.map(async (m) => {
       const name = encodeURIComponent(m.username);
       const [user, summary] = await Promise.all([
-        discourseFetch(`/u/${name}.json`, { revalidate: 60 }).then((d) => d.user).catch(() => null),
-        discourseFetch(`/u/${name}/summary.json`, { revalidate: 60 }).then((d) => d.user_summary).catch(() => null),
+        discourseFetch(`/u/${name}.json`, { revalidate: PROFILE_SECONDS }).then((d) => d.user).catch(() => null),
+        discourseFetch(`/u/${name}/summary.json`, { revalidate: PROFILE_SECONDS }).then((d) => d.user_summary).catch(() => null),
       ]);
       const about = Object.values(user?.user_fields || {}).find((v) => typeof v === 'string' && v.trim());
       return {
@@ -105,9 +108,18 @@ async function loadMemberProfiles(limit) {
   return profiles.sort((a, b) => b.stats.contributions - a.stats.contributions);
 }
 
+// The directory is closed to non-staff accounts. A refusal is not cached by
+// fetch, so remember it rather than asking again on every page view.
+let directoryClosed = false;
+
 async function loadTopMembers(limit) {
   // Prefer the directory when this account may read it; otherwise use profiles.
-  const directory = await discourseFetch('/directory_items.json?period=all&order=post_count', { revalidate: 60 }).catch(() => null);
+  const directory = directoryClosed
+    ? null
+    : await discourseFetch('/directory_items.json?period=all&order=post_count', { revalidate: PROFILE_SECONDS }).catch((error) => {
+        if (error?.status === 403) directoryClosed = true;
+        return null;
+      });
   if (directory?.directory_items?.length) {
     return directory.directory_items.slice(0, limit).map((item) => ({
       name: item.user?.name || item.user?.username,
@@ -212,7 +224,7 @@ export function loadHome() {
       discourseFetch('/latest.json?order=created'),
       discourseFetch('/latest.json'),
       discourseFetch('/top.json?period=all'),
-      discourseFetch('/about.json', { revalidate: 60 }).catch(() => null),
+      discourseFetch('/about.json', { revalidate: PROFILE_SECONDS }).catch(() => null),
       fetchPolls(categories, 6).catch(() => []),
       articles ? discourseFetch(categoryPath(articles)).catch(() => null) : null,
     ]);

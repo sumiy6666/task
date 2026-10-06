@@ -28,7 +28,7 @@ const CARD_TITLE = {
 // Sample data, shown when Discourse is not connected.
 const latestInsights = [
   {
-    id: '1',
+    id: 'sample-1',
     title: 'The Future of family governance: Principles for sustainable legacy',
     description: 'Exploring governance frameworks that help families stay aligned across generations.',
     image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=400&auto=format&fit=crop',
@@ -38,7 +38,7 @@ const latestInsights = [
     readTime: '5 min'
   },
   {
-    id: '2',
+    id: 'sample-2',
     title: 'AI in investment research: From analysis to action',
     description: 'How AI tools are transforming research workflows and enabling faster, smarter decisions.',
     image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=400&auto=format&fit=crop',
@@ -48,7 +48,7 @@ const latestInsights = [
     readTime: '8 min'
   },
   {
-    id: '3',
+    id: 'sample-3',
     title: 'Year-end accounting checklist for family office',
     description: 'A practical checklist to close the year with accuracy and confidence.',
     image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=400&auto=format&fit=crop',
@@ -58,7 +58,7 @@ const latestInsights = [
     readTime: '4 min'
   },
   {
-    id: '4',
+    id: 'sample-4',
     title: 'Global tax updates families need to know in 2024',
     description: 'Key changes in tax regulations and what they mean for multi-jurisdiction family offices.',
     image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=400&auto=format&fit=crop',
