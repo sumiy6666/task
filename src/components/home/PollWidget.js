@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Card } from '../ui/Card';
+import { Reveal } from '../ui/Reveal';
 import styles from './PollWidget.module.css';
 
 export function PollWidget() {
@@ -19,8 +20,8 @@ export function PollWidget() {
           <img src="/images/Icon3.svg" alt="Polls" style={{ width: '24px', height: '24px' }} />
         </div>
         <div className={styles.titleSection}>
-          <span className={styles.tag}>POLLS</span>
-          <h3><Link href="/poll">When a family adds a new asset class, how long before it appears in consolidated reporting?</Link></h3>
+          <Reveal as="span" className={styles.tag}>POLLS</Reveal>
+          <Reveal as="h3" delay={150}><Link href="/poll">When a family adds a new asset class, how long before it appears in consolidated reporting?</Link></Reveal>
         </div>
         <Link href="/poll" className={styles.learnMore}>
           LEARN MORE <ArrowRight size={14} />
@@ -29,7 +30,7 @@ export function PollWidget() {
 
       <div className={styles.pollResults}>
         {pollData.map((item, index) => (
-          <div key={index} className={styles.pollBarWrapper}>
+          <Reveal key={index} delay={300 + index * 120} className={styles.pollBarWrapper}>
             <div className={styles.pollBarBg}>
               <div 
                 className={styles.pollBarFill} 
@@ -39,7 +40,7 @@ export function PollWidget() {
               </div>
             </div>
             <span className={styles.labelText}>{item.label}</span>
-          </div>
+          </Reveal>
         ))}
       </div>
     </Card>

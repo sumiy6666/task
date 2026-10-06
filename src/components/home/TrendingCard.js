@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
+import { Reveal } from '../ui/Reveal';
 import styles from './TrendingCard.module.css';
 import { ArrowRight } from 'lucide-react';
 
@@ -35,15 +36,15 @@ export function TrendingCard() {
       </div>
 
       <div className={styles.content}>
-        <div className={styles.header}>
+        <Reveal className={styles.header}>
           <span className={styles.tag}>TRENDING</span>
           <Button href={tabs[activeTab].href} variant="outline" size="sm" icon={<ArrowRight size={16} />} iconPosition="right" className={styles.readMoreBtn} style={{ background: 'transparent', border: '1px solid white', color: 'white', display: 'flex', alignItems: 'center', gap: '8px', padding: '0.1rem 0.3rem 0.1rem 1rem', borderRadius: '24px', fontSize: '11px' }}>
             READ MORE
           </Button>
-        </div>
+        </Reveal>
 
-        <h2 className={styles.title}><Link href={tabs[activeTab].href}>{tabs[activeTab].title}</Link></h2>
-        <p className={styles.desc}>{tabs[activeTab].desc}</p>
+        <Reveal as="h2" delay={150} className={styles.title}><Link href={tabs[activeTab].href}>{tabs[activeTab].title}</Link></Reveal>
+        <Reveal as="p" delay={300} className={styles.desc}>{tabs[activeTab].desc}</Reveal>
 
         <button
           className={styles.nextBtn}

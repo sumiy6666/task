@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import TrendingPoll from '@/components/poll/TrendingPoll';
-import RecentPollsList from '@/components/poll/RecentPollsList';
+import RecentPollsList, { ViewAllLink } from '@/components/poll/RecentPollsList';
 import TakePollDetail from '@/components/poll/TakePollDetail';
 import PollResultCard from '@/components/poll/PollResultCard';
+import { Reveal } from '@/components/ui/Reveal';
+import pollStyles from '@/components/poll/Poll.module.css';
 
 // Sample data, shown when Discourse is not connected.
 const recentPollsData = [
@@ -126,41 +127,37 @@ export default function PollPageView({ recentPolls = recentPollsData, closedPoll
 
       {/* Recent Polls + Take Poll side-by-side */}
       <div className="flex max-lg:flex-col" style={{ gap: 'calc(1.5 * var(--sa))', marginBottom: 'calc(2 * var(--sa))' }}>
-        <div className="flex-[1_1_58%]" style={{ minWidth: 'min(100%, calc(40 * var(--da) + var(--db)))' }}>
+        <div className="flex-[1_1_56%] min-w-0">
           <RecentPollsList
             polls={recentPolls}
             activePollId={activePoll?.id}
             onPollSelect={setActivePoll}
           />
         </div>
-        <div className="flex-[1_1_42%]" style={{ minWidth: 'min(100%, calc(28 * var(--da) + var(--db)))' }}>
+        <div className="flex-[1_1_44%] min-w-0">
           <TakePollDetail key={activePoll?.id} poll={activePoll} />
         </div>
       </div>
 
       {/* Closed Polls */}
-      <div style={{ backgroundColor: '#eef1f5', padding: 'calc(3.5 * var(--sa)) calc(4 * var(--sa))', borderRadius: 'calc(1.2 * var(--sa))', marginTop: 'calc(1 * var(--sa))' }}>
-        <div className="flex justify-between items-center" style={{ marginBottom: 'calc(3 * var(--sa))' }}>
-          <h3 className="font-semibold text-[#132742] uppercase" style={{ fontSize: 'calc(0.9 * var(--fa) + var(--fb))', letterSpacing: '0.1em' }}>CLOSED POLLS</h3>
-          <Link href="/poll/closed" className="text-[#00A4E4] font-medium hover:underline flex items-center" style={{ gap: 'calc(0.4 * var(--sa))', fontSize: 'calc(0.75 * var(--fa) + var(--fb))' }}>
-            VIEW ALL
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 'calc(0.8 * var(--da) + var(--db))', height: 'calc(0.8 * var(--da) + var(--db))' }}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </Link>
+      <div className={pollStyles.closed}>
+        <div className={pollStyles.closedHeader}>
+          <Reveal as="h3" className={pollStyles.panelTitle}>CLOSED POLLS</Reveal>
+          <ViewAllLink href="/poll/closed" />
         </div>
 
-        {/* One row on desktop; two columns on tablets and a single column on phones. */}
-        <div className="flex max-lg:flex-wrap max-sm:flex-col" style={{ gap: 'calc(2 * var(--sa))' }}>
-          {closedPolls.length === 0 && (
-            <p className="text-[#6b7280]" style={{ fontSize: 'calc(0.85 * var(--fa) + var(--fb))' }}>No closed polls yet.</p>
-          )}
-          {closedPolls.map((poll) => (
-            <div key={poll.id} className="flex-1 min-w-0 max-lg:basis-[calc(50%-1rem)] border-r border-[#d1d5db] last:border-r-0 max-lg:border-r-0" style={{ padding: '0 calc(2 * var(--sa))' }}>
-              <PollResultCard question={poll.question} options={poll.options} />
-            </div>
-          ))}
-        </div>
+        {closedPolls.length === 0 ? (
+          <p className={pollStyles.meta}>No closed polls yet.</p>
+        ) : (
+          /* Three across on desktop; two on tablets and one on phones. */
+          <Reveal stagger={150} className={pollStyles.closedGrid}>
+            {closedPolls.map((poll) => (
+              <div key={poll.id} className={`min-w-0 ${pollStyles.closedCol}`}>
+                <PollResultCard question={poll.question} options={poll.options} />
+              </div>
+            ))}
+          </Reveal>
+        )}
       </div>
     </div>
   );

@@ -1,0 +1,160 @@
+/* Poll pages. Desktop sizes follow the window up to the 1300px page
+   container, then hold, keeping the design's proportions to the container.
+   Tablets and phones use fixed pixels. (Spacing can't use Tailwind classes:
+   the global `* { padding: 0; margin: 0 }` reset outranks them.) */
+
+/* ---- Trending poll answers (inside the page banner) ---- */
+
+.heroOptions { display: flex; flex-direction: column; gap: min(0.54vw, 7px); max-width: min(22.54vw, 293px); }
+
+.heroOption {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: min(2.85vw, 37px);
+  padding: 0 min(2.62vw, 34px) 0 min(1.08vw, 14px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 999px;
+  font-size: min(1.08vw, 14px);
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  overflow: hidden;
+}
+
+.heroOption > span:not(.heroFill) { position: relative; }
+
+/* The chosen answer is filled up to the percentage column. */
+.heroFill { position: absolute; inset: 0 auto 0 0; width: 73%; background: #2788ff; border-radius: 999px; }
+
+/* ---- Recent polls and Take poll panels ---- */
+
+.panel { background: #fff; border-radius: min(1.85vw, 24px); box-shadow: 0 min(0.31vw, 4px) min(1.54vw, 20px) rgba(0, 62, 207, 0.06); }
+
+.panelHeader { display: flex; align-items: center; justify-content: space-between; padding: min(4.15vw, 54px) min(3vw, 39px) min(1.69vw, 22px); }
+.panelTitle { font-size: min(1.08vw, 14px); font-weight: 400; color: #111; text-transform: uppercase; }
+.viewAll { display: inline-flex; align-items: center; gap: min(1.54vw, 20px); font-size: min(0.77vw, 10px); color: #11a0db; text-transform: uppercase; }
+.viewAll svg { width: min(1vw, 13px); height: min(1vw, 13px); }
+.viewAll:hover { text-decoration: underline; }
+
+.recentRow {
+  position: relative;
+  padding: min(2vw, 26px) min(3vw, 39px) min(1.69vw, 22px);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.recentRow::after { content: ''; position: absolute; left: min(3vw, 39px); right: min(3vw, 39px); bottom: 0; border-bottom: 1px solid #ddd; }
+.recentRow:last-child::after { display: none; }
+.recentRow:hover { background: #f6f8fa; }
+.recentRowActive, .recentRowActive:hover { background: #e9eef2; box-shadow: 0 min(0.46vw, 6px) min(1.08vw, 14px) rgba(0, 0, 0, 0.08); }
+.recentRowActive::after { display: none; }
+.recentQuestion { font-size: min(1.15vw, 15px); font-weight: 400; line-height: 1.4; color: #111; margin-bottom: min(0.62vw, 8px); }
+.meta { font-size: min(1.04vw, 13.5px); color: #aaa; }
+.metaSep { margin: 0 min(1.38vw, 18px); }
+
+.take { padding: min(4.23vw, 55px) min(2.46vw, 32px) min(3.69vw, 48px) min(3.69vw, 48px); }
+.takeLabel { font-size: min(1.04vw, 13.5px); font-weight: 400; color: #11a0db; text-transform: uppercase; margin-bottom: min(2.31vw, 30px); }
+.takeQuestion { font-size: min(1.31vw, 17px); font-weight: 400; line-height: 1.45; color: #111; max-width: min(26.15vw, 340px); margin: 0 0 min(2.31vw, 30px) min(0.46vw, 6px); }
+.takeOptions { display: flex; flex-direction: column; gap: min(1.08vw, 14px); }
+.takeOption {
+  display: flex;
+  align-items: center;
+  height: min(3.08vw, 40px);
+  padding: 0 min(1.69vw, 22px) 0 min(2.46vw, 32px);
+  border-radius: 999px;
+  background: #e9eef2;
+  color: #385e87;
+  font-size: min(1.15vw, 15px);
+  box-shadow: 0 min(0.15vw, 2px) min(0.46vw, 6px) rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.takeOption:hover { background: #dde6ec; }
+.takeLetter { width: min(4.77vw, 62px); }
+.takeText { flex: 1; }
+.takePct { font-size: min(1.23vw, 16px); }
+
+/* ---- Closed polls ---- */
+
+.closed {
+  background: #e9eef2;
+  border-radius: min(1.85vw, 24px);
+  box-shadow: 0 min(0.46vw, 6px) min(1.69vw, 22px) rgba(0, 0, 0, 0.08);
+  padding: min(4.31vw, 56px) min(2.31vw, 30px) min(4vw, 52px) min(3.08vw, 40px);
+  margin-top: min(2vw, 26px);
+}
+.closedHeader { display: flex; align-items: center; justify-content: space-between; margin-bottom: min(4.92vw, 64px); }
+.closedGrid { display: grid; grid-template-columns: repeat(3, 1fr); }
+.closedCol { padding: 0 min(3.08vw, 40px); border-left: 1px solid #c9d1d9; }
+.closedCol:first-child { padding-left: 0; border-left: 0; }
+
+.resultQuestion { font-size: min(1.19vw, 15.5px); font-weight: 400; line-height: 1.45; color: #111; min-height: min(3.54vw, 46px); margin-bottom: min(2vw, 26px); }
+.resultOptions { display: flex; flex-direction: column; gap: min(1.15vw, 15px); max-width: min(26vw, 338px); }
+.resultOption {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: min(2.31vw, 30px);
+  padding: 0 min(2.46vw, 32px) 0 min(3.23vw, 42px);
+  border-radius: 999px;
+  background: #fff;
+  color: #385e87;
+  font-size: min(1vw, 13px);
+  overflow: hidden;
+}
+.resultOption > span:not(.resultFill) { position: relative; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.resultOptionChosen > span:nth-of-type(2) { color: #fff; }
+/* The chosen answer is filled up to the percentage column. */
+.resultFill { position: absolute; inset: 0 auto 0 0; width: 78%; background: #11a0db; border-radius: 999px; }
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .heroOptions { gap: 8px; max-width: 320px; }
+  .heroOption { height: 38px; padding: 0 30px 0 16px; font-size: 14px; }
+
+  .panel { border-radius: 20px; }
+  .panelHeader { padding: 32px 28px 18px; }
+  .panelTitle { font-size: 14px; }
+  .viewAll { font-size: 11px; gap: 10px; }
+  .viewAll svg { width: 13px; height: 13px; }
+  .recentRow { padding: 20px 28px 18px; }
+  .recentRow::after { left: 28px; right: 28px; }
+  .recentQuestion { font-size: 15px; margin-bottom: 6px; }
+  .meta { font-size: 13px; }
+  .metaSep { margin: 0 12px; }
+
+  .take { padding: 32px 28px; }
+  .takeLabel { font-size: 13px; margin-bottom: 18px; }
+  .takeQuestion { font-size: 17px; max-width: none; margin: 0 0 22px; }
+  .takeOptions { gap: 10px; }
+  .takeOption { height: 42px; padding: 0 20px 0 24px; font-size: 15px; }
+  .takeLetter { width: 44px; }
+  .takePct { font-size: 15px; }
+
+  .closed { border-radius: 20px; padding: 32px 28px; margin-top: 20px; }
+  .closedHeader { margin-bottom: 28px; }
+  .closedGrid { grid-template-columns: repeat(2, 1fr); row-gap: 32px; }
+  .closedCol { padding: 0 20px; }
+  .closedCol:nth-child(2n + 1) { padding-left: 0; border-left: 0; }
+  .resultQuestion { font-size: 15px; min-height: 0; margin-bottom: 16px; }
+  .resultOptions { gap: 10px; max-width: none; }
+  .resultOption { height: 34px; padding: 0 20px 0 22px; font-size: 13px; }
+}
+
+/* Phones */
+@media (max-width: 640px) {
+  .heroOptions { max-width: none; }
+
+  .panelHeader { padding: 24px 20px 14px; }
+  .recentRow { padding: 16px 20px; }
+  .recentRow::after { left: 20px; right: 20px; }
+
+  .take { padding: 24px 20px; }
+  .takeOption { padding: 0 16px 0 18px; font-size: 14px; }
+  .takeLetter { width: 32px; }
+
+  .closed { padding: 24px 20px; }
+  .closedGrid { grid-template-columns: 1fr; }
+  .closedCol, .closedCol:nth-child(2n + 1) { padding: 0; border-left: 0; }
+}

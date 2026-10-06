@@ -4,7 +4,7 @@
 /* Page layout */
 .page { padding-bottom: 4vw; }
 .columns { display: flex; gap: 1.5vw; margin-bottom: 2vw; }
-.column { flex: 1 1 50%; min-width: 35vw; }
+.column { flex: 1 1 50%; min-width: 0; }
 
 /* Hero */
 .hero {
@@ -51,56 +51,86 @@
 .arrow { width: 2.5vw; height: 2.5vw; background-color: #00A4E4; border: none; color: white; }
 .arrow svg { width: 1.2vw; height: 1.2vw; }
 
+/* Desktop sizes below follow the window up to the 1300px page container,
+   then hold, so they keep the design's proportions to the container. */
 /* Upcoming events list */
-.panel { border-radius: 1.2vw; box-shadow: 0 0.2vw 0.8vw rgba(0, 0, 0, 0.06); }
-.listHeader { padding: 2vw 2.5vw; }
-.listTitle { font-size: 0.85vw; letter-spacing: 0.1em; }
-.viewMore { padding: 1.5vw 2.5vw; border-top: 1px solid #e5e7eb; }
-.viewMoreLink { gap: 0.4vw; font-size: 0.7vw; }
-.viewMoreLink svg { width: 0.8vw; height: 0.8vw; }
+.panel { border-radius: min(1.91vw, 24.9px); box-shadow: 0 min(0.36vw, 4.6px) min(1.79vw, 23.3px) rgba(0, 62, 207, 0.06); }
+.listHeader { padding: min(4.67vw, 60.5px) min(3.35vw, 43.4px) min(1.91vw, 24.9px); }
+.listTitle { font-size: min(1.19vw, 15.5px); font-weight: 400; }
+.viewMore { padding: min(3.46vw, 45px) min(3.35vw, 43.4px) min(4.19vw, 54.3px); }
+.viewMoreLink { gap: min(0.72vw, 9.3px); font-size: min(1.14vw, 14.7px); font-weight: 400; letter-spacing: 0.03em; }
+.viewMoreLink svg { width: min(1.14vw, 14.7px); height: min(1.14vw, 14.7px); }
 
-/* Event card */
-.card { padding: 1.8vw 2vw; border-bottom: 1px solid #e5e7eb; gap: 1.5vw; }
-.thumb { width: 8vw; height: 5.5vw; border-radius: 0.6vw; }
-.date { width: 3.5vw; }
-.month { font-size: 0.7vw; }
-.day { font-size: 1.8vw; line-height: 1; }
-.weekday { font-size: 0.6vw; }
-.cardBody { gap: 0.5vw; min-width: 0; }
-.cardTitle { font-size: 0.85vw; line-height: 1.4; }
-.cardMeta { gap: 1.2vw; font-size: 0.7vw; }
-.cardMetaItem { gap: 0.3vw; }
-.cardMetaItem svg { width: 0.9vw; height: 0.9vw; flex-shrink: 0; }
-.cardCategory { font-size: 0.7vw; }
+/* Event card: the active one gets a full-width tint; the rest are split by
+   an inset rule. */
+.card { position: relative; padding: min(2.58vw, 33.4px) min(3.35vw, 43.4px); gap: min(2.22vw, 28.7px); }
+.card::after {
+  content: '';
+  position: absolute;
+  left: min(3.35vw, 43.4px);
+  right: min(3.35vw, 43.4px);
+  bottom: 0;
+  border-bottom: 1px solid #ddd;
+}
+.cardActive { background-color: #e9eef2; }
+.cardActive::after { display: none; }
+.thumb { width: min(14.36vw, 186.3px); height: min(7.95vw, 103.3px); border-radius: min(0.96vw, 12.4px); box-shadow: 0 min(0.6vw, 7.8px) min(1.19vw, 15.5px) rgba(0, 0, 0, 0.2); }
+.date { width: min(3.59vw, 46.6px); margin-right: min(1.19vw, 15.5px); }
+.month { font-size: min(1.08vw, 14px); font-weight: 400; }
+.day { font-size: min(2.51vw, 32.6px); font-weight: 400; line-height: 1.2; }
+.weekday { font-size: min(1.08vw, 14px); font-weight: 400; }
+.cardBody { gap: min(0.3vw, 3.9px); min-width: 0; }
+.cardTitle { font-size: min(1.44vw, 18.7px); font-weight: 400; line-height: 1.43; max-width: min(25.11vw, 326px); }
+.cardMeta { flex-wrap: wrap; gap: min(0.3vw, 4px) min(3.1vw, 40.4px); font-size: min(1.11vw, 14.4px); font-weight: 300; }
+.cardMetaItem { gap: min(0.72vw, 9.3px); white-space: nowrap; }
+.cardMetaItem svg { width: min(1.26vw, 16.3px); height: min(1.26vw, 16.3px); flex-shrink: 0; }
+.cardCategory { font-size: min(1.11vw, 14.4px); font-weight: 400; margin-top: min(0.42vw, 5.4px); }
 
 /* Event detail */
-.detailHead { background-color: #f0f4f8; padding: 2.5vw 3vw; border-bottom: 1px solid #e5e7eb; }
-.detailCategory { font-size: 0.75vw; letter-spacing: 0.1em; margin-bottom: 1.2vw; display: block; }
-.detailIntro { gap: 2vw; margin-bottom: 2vw; }
-.detailTitle { font-size: 1.1vw; line-height: 1.4; margin-bottom: 1vw; }
-.detailDesc { font-size: 0.75vw; line-height: 1.6; }
-.detailImage { width: 8vw; height: 6vw; border-radius: 0.6vw; }
-.detailTable { padding: 0 3vw 2.5vw; }
-.detailRow { padding: 1.5vw 0; border-top: 1px solid #e5e7eb; gap: 2vw; }
-.detailLabel { font-size: 0.75vw; width: 7vw; white-space: pre-line; }
-.detailValueWrap { gap: 1vw; }
-.detailAvatar { width: 2.5vw; height: 2.5vw; }
-.detailValues { gap: 0.2vw; }
-.detailValue { font-size: 0.75vw; line-height: 1.5; }
-.detailSub { font-size: 0.7vw; }
-.detailRegister { font-size: 0.65vw; padding: 0.4vw 1.2vw; border: 1px solid #00A4E4; border-radius: 2vw; background: none; }
-.detailLink { gap: 0.3vw; font-size: 0.7vw; background: none; }
-.detailLink svg { width: 0.7vw; height: 0.7vw; }
+.detailHead { background-color: #e9eef2; padding: min(3.23vw, 42px) min(3.71vw, 48.1px) min(2.4vw, 31.1px) min(4.06vw, 52.8px); }
+.detailCategory { font-size: min(1.14vw, 14.7px); font-weight: 400; margin-bottom: min(1.19vw, 15.5px); display: block; }
+.detailIntro { gap: min(1.44vw, 18.7px); }
+.detailTitle { font-size: min(1.5vw, 19.3px); font-weight: 400; line-height: 1.36; margin-bottom: min(0.72vw, 9.3px); }
+.detailDesc { font-size: min(1.26vw, 16.3px); font-weight: 400; line-height: 1.33; }
+.detailImage { width: min(15.55vw, 201.8px); height: min(10.77vw, 139.7px); border-radius: min(0.96vw, 12.4px); box-shadow: 0 min(0.6vw, 7.8px) min(1.19vw, 15.5px) rgba(0, 0, 0, 0.2); }
+.detailTable { padding: min(0.72vw, 9.3px) min(3.71vw, 48.1px) min(1.79vw, 23.3px) min(4.06vw, 52.8px); }
+.detailRow { padding: min(2.22vw, 28.7px) 0 min(1.91vw, 24.9px); border-top: 1px solid #ddd; gap: min(1.44vw, 18.7px); }
+.detailRow:first-child { border-top: 0; }
+.detailLabel { font-size: min(1.14vw, 14.7px); font-weight: 400; width: min(8.73vw, 113.3px); white-space: pre-line; line-height: 1.35; }
+.detailValueWrap { gap: min(2.09vw, 27.2px); }
+.detailAvatar { width: min(3.46vw, 45px); height: min(3.46vw, 45px); }
+.detailValues { gap: 0; }
+.detailValue { font-size: min(1.26vw, 16.3px); font-weight: 400; line-height: 1.45; }
+.detailName { font-weight: 500; }
+.detailSub { font-size: min(1.26vw, 16.3px); }
+.detailRegister {
+  font-size: min(1.14vw, 14.7px);
+  padding: min(0.3vw, 3.9px) min(0.54vw, 7px);
+  border-radius: 999px;
+  background: #11a0db;
+}
+.detailLink { gap: min(1.08vw, 14px); font-size: min(1.08vw, 14px); font-weight: 400; background: none; }
+.detailLink svg { width: min(1.14vw, 14.7px); height: min(1.14vw, 14.7px); }
+.calendarLink { gap: min(1.08vw, 14px); font-size: min(0.83vw, 10.9px); }
+.calendarLink svg { width: min(1.26vw, 16.3px); height: min(1.26vw, 16.3px); }
 
 /* Community banner */
 .banner {
-  background: linear-gradient(135deg, #0c2b4a 0%, #00A4E4 100%);
-  border-radius: 1.2vw;
-  padding: 2.5vw 4vw;
+  background: linear-gradient(90deg, #474e87 0%, #2f72a8 55%, #11a0db 100%);
+  border-radius: min(1.55vw, 20.1px);
+  padding: min(2.4vw, 31.1px) min(4.31vw, 55.9px) min(2.4vw, 31.1px) min(3.35vw, 43.4px);
+  box-shadow: 0 min(0.72vw, 9.3px) min(1.79vw, 23.3px) rgba(0, 0, 0, 0.12);
 }
-.bannerTitle { font-size: 0.8vw; letter-spacing: 0.1em; margin-bottom: 0.6vw; }
-.bannerText { font-size: 0.85vw; }
-.bannerLink { gap: 0.6vw; padding: 0.7vw 2vw; border-radius: 2vw; font-size: 0.85vw; white-space: nowrap; }
+.bannerTitle { font-size: min(1.08vw, 14px); font-weight: 400; margin-bottom: min(0.96vw, 12.4px); }
+.bannerText { font-size: min(1.14vw, 14.7px); font-weight: 300; }
+.bannerLink {
+  gap: min(0.72vw, 9.3px);
+  padding: min(0.3vw, 3.9px) min(0.6vw, 7.8px);
+  border-radius: 999px;
+  font-size: min(1.14vw, 14.7px);
+  white-space: nowrap;
+  box-shadow: 0 min(0.24vw, 3.1px) min(0.72vw, 9.3px) rgba(0, 0, 0, 0.12);
+}
 
 /* Tablets */
 @media (max-width: 1024px) {
@@ -143,6 +173,11 @@
   .viewMoreLink svg { width: 12px; height: 12px; }
 
   .card { padding: 20px 28px; gap: 18px; }
+  .card::after { left: 28px; right: 28px; }
+  .date { margin-right: 0; }
+  .cardTitle { max-width: none; }
+  .calendarLink { font-size: 11px; }
+  .calendarLink svg { width: 15px; height: 15px; }
   .thumb { width: 120px; height: 84px; border-radius: 10px; }
   .date { width: 44px; }
   .month { font-size: 12px; }
@@ -169,14 +204,14 @@
   .detailValues { gap: 2px; }
   .detailValue { font-size: 13px; }
   .detailSub { font-size: 12px; }
-  .detailRegister { font-size: 12px; padding: 6px 16px; border-radius: 999px; }
+  .detailRegister { font-size: 12px; padding: 6px 12px; border-radius: 999px; }
   .detailLink { gap: 5px; font-size: 12px; }
   .detailLink svg { width: 12px; height: 12px; }
 
   .banner { border-radius: 20px; padding: 28px 32px; gap: 20px; }
   .bannerTitle { font-size: 12px; margin-bottom: 6px; }
   .bannerText { font-size: 14px; }
-  .bannerLink { gap: 8px; padding: 10px 22px; border-radius: 999px; font-size: 14px; }
+  .bannerLink { gap: 8px; padding: 8px 16px; border-radius: 999px; font-size: 14px; }
 }
 
 /* Phones */
@@ -205,6 +240,7 @@
   .viewMore { padding: 16px 20px; }
 
   .card { padding: 16px 20px; gap: 12px; }
+  .card::after { left: 20px; right: 20px; }
   .thumb { width: 72px; height: 60px; }
   .date { width: 36px; }
   .day { font-size: 24px; }

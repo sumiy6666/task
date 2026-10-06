@@ -1,3 +1,22 @@
+const fieldStyle = {
+  height: 'calc(2.6 * var(--da) + var(--db))',
+  padding: '0 calc(2.8 * var(--sa)) 0 calc(1.1 * var(--sa))',
+  borderRadius: '999px',
+  fontSize: 'calc(0.75 * var(--fa) + var(--fb))',
+  border: 'none',
+  boxShadow: '0 calc(0.2 * var(--sa)) calc(0.8 * var(--sa)) rgba(0, 0, 0, 0.12)'
+};
+
+const iconStyle = {
+  right: 'calc(1.1 * var(--sa))',
+  top: '50%',
+  transform: 'translateY(-50%)',
+  width: 'calc(1.2 * var(--da) + var(--db))',
+  height: 'calc(1.2 * var(--da) + var(--db))'
+};
+
+const labelStyle = { fontSize: 'calc(0.85 * var(--fa) + var(--fb))' };
+
 export default function MemberDirectoryFilters() {
   const dropdowns = [
     { label: 'Role', placeholder: 'All roles' },
@@ -8,73 +27,50 @@ export default function MemberDirectoryFilters() {
   ];
 
   return (
-    <div style={{ background: 'linear-gradient(90deg, #0033cc 0%, #00A4E4 100%)', borderRadius: 'calc(1.2 * var(--sa))', padding: 'calc(2.5 * var(--sa)) calc(3 * var(--sa)) calc(2 * var(--sa))', marginBottom: 'calc(2 * var(--sa))' }}>
+    <div style={{ background: 'linear-gradient(90deg, #0033cc 0%, #0A63D6 50%, #11A0DB 100%)', borderRadius: 'calc(1.4 * var(--sa))', padding: 'calc(3 * var(--sa)) calc(3 * var(--sa)) calc(3 * var(--sa))', marginBottom: 'calc(2 * var(--sa))', boxShadow: '0 calc(0.4 * var(--sa)) calc(1.5 * var(--sa)) rgba(0, 51, 204, 0.15)' }}>
       {/* Title */}
-      <h2 className="text-white font-semibold uppercase" style={{ fontSize: 'calc(0.9 * var(--fa) + var(--fb))', letterSpacing: '0.1em', marginBottom: 'calc(1.8 * var(--sa))' }}>
-        MEMBER DIRECTORY
+      <h2 className="rise-in text-white uppercase" style={{ fontSize: 'calc(0.85 * var(--fa) + var(--fb))', fontWeight: 400, marginBottom: 'calc(2.8 * var(--sa))' }}>
+        SEARCH MEMBER DIRECTORY
       </h2>
 
-      {/* Filter labels (desktop); smaller screens show each label above its field */}
-      <div className="flex items-end max-lg:hidden" style={{ gap: 'calc(1 * var(--sa))', marginBottom: 'calc(0.6 * var(--sa))' }}>
-        <div style={{ flex: '1 1 0' }}>
-          <span className="text-white font-medium" style={{ fontSize: 'calc(0.75 * var(--fa) + var(--fb))' }}>Name</span>
-        </div>
-        {dropdowns.map((d) => (
-          <div key={d.label} style={{ flex: '1 1 0' }}>
-            <span className="text-white font-medium" style={{ fontSize: 'calc(0.75 * var(--fa) + var(--fb))' }}>{d.label}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Filter inputs */}
-      <div className="flex max-lg:grid max-lg:grid-cols-3 max-sm:grid-cols-2" style={{ gap: 'calc(1 * var(--sa))', marginBottom: 'calc(1.8 * var(--sa))' }}>
-        {/* Search input */}
-        <div style={{ flex: '1 1 0' }}>
-          <span className="hidden max-lg:block text-white font-medium" style={{ fontSize: 'calc(0.75 * var(--fa) + var(--fb))', marginBottom: 'calc(0.6 * var(--sa))' }}>Name</span>
-          <div className="relative">
-          <input
-            type="text"
-            placeholder="Search by name"
-            className="w-full bg-white text-[#132742] outline-none"
-            style={{ padding: 'calc(0.7 * var(--sa)) calc(2.5 * var(--sa)) calc(0.7 * var(--sa)) calc(1.2 * var(--sa))', borderRadius: 'calc(2 * var(--sa))', fontSize: 'calc(0.75 * var(--fa) + var(--fb))', border: 'none' }}
-          />
-          <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" className="absolute" style={{ right: 'calc(1 * var(--sa))', top: '50%', transform: 'translateY(-50%)', width: 'calc(1 * var(--da) + var(--db))', height: 'calc(1 * var(--da) + var(--db))' }}>
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.3-4.3" />
-          </svg>
-          </div>
-        </div>
+      {/* Each label sits above its field */}
+      <div className="grid grid-cols-6 max-lg:grid-cols-3 max-sm:grid-cols-1" style={{ columnGap: 'calc(1 * var(--sa))', rowGap: 'calc(1.5 * var(--sa))', marginBottom: 'calc(3.5 * var(--sa))' }}>
+        {/* Name search */}
+        <label className="rise-in flex flex-col" style={{ '--delay': '0.15s', gap: 'calc(1.2 * var(--sa))' }}>
+          <span className="text-white" style={labelStyle}>Name</span>
+          <span className="relative">
+            <input
+              type="text"
+              placeholder="Search by name"
+              className="w-full bg-white text-[#132742] placeholder:text-[#6b7280] outline-none"
+              style={fieldStyle}
+            />
+            <svg viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="1.5" className="absolute pointer-events-none" style={iconStyle}>
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          </span>
+        </label>
 
         {/* Dropdown filters */}
-        {dropdowns.map((d) => (
-          <div key={d.label} style={{ flex: '1 1 0' }}>
-            <span className="hidden max-lg:block text-white font-medium" style={{ fontSize: 'calc(0.75 * var(--fa) + var(--fb))', marginBottom: 'calc(0.6 * var(--sa))' }}>{d.label}</span>
-            <div className="relative">
-            <select
-              className="w-full bg-white text-[#6b7280] appearance-none outline-none cursor-pointer"
-              style={{ padding: 'calc(0.7 * var(--sa)) calc(2.5 * var(--sa)) calc(0.7 * var(--sa)) calc(1.2 * var(--sa))', borderRadius: 'calc(2 * var(--sa))', fontSize: 'calc(0.75 * var(--fa) + var(--fb))', border: 'none' }}
-            >
-              <option>{d.placeholder}</option>
-            </select>
-            <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" className="absolute pointer-events-none" style={{ right: 'calc(1 * var(--sa))', top: '50%', transform: 'translateY(-50%)', width: 'calc(1 * var(--da) + var(--db))', height: 'calc(1 * var(--da) + var(--db))' }}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-            </div>
-          </div>
+        {dropdowns.map((d, i) => (
+          <label key={d.label} className="rise-in flex flex-col" style={{ '--delay': `${0.27 + i * 0.12}s`, gap: 'calc(1.2 * var(--sa))' }}>
+            <span className="text-white" style={labelStyle}>{d.label}</span>
+            <span className="relative">
+              <select className="w-full bg-white text-[#6b7280] appearance-none outline-none cursor-pointer" style={fieldStyle}>
+                <option>{d.placeholder}</option>
+              </select>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="1.5" className="absolute pointer-events-none" style={iconStyle}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </span>
+          </label>
         ))}
       </div>
 
       {/* Bottom row */}
-      <div className="flex justify-between items-center">
-        <button className="flex items-center text-white hover:text-white/80 transition-colors cursor-pointer bg-transparent" style={{ gap: 'calc(0.5 * var(--sa))', fontSize: 'calc(0.75 * var(--fa) + var(--fb))', border: 'none', padding: 0 }}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 'calc(1 * var(--da) + var(--db))', height: 'calc(1 * var(--da) + var(--db))' }}>
-            <line x1="4" y1="6" x2="20" y2="6" />
-            <line x1="4" y1="12" x2="14" y2="12" />
-            <line x1="4" y1="18" x2="10" y2="18" />
-          </svg>
-          More Filters
-        </button>
-        <button className="text-white hover:text-white/80 transition-colors cursor-pointer bg-transparent" style={{ fontSize: 'calc(0.75 * var(--fa) + var(--fb))', border: 'none', padding: 0 }}>
+      <div className="rise-in flex justify-end" style={{ '--delay': '0.9s' }}>
+        <button type="button" className="text-white hover:text-white/80 transition-colors cursor-pointer bg-transparent" style={{ fontSize: 'calc(0.85 * var(--fa) + var(--fb))', border: 'none', padding: 0 }}>
           Clear All
         </button>
       </div>

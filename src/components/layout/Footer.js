@@ -48,13 +48,13 @@ export function Footer() {
         <div className={styles.bottomBar}>
           <p>&copy; 2026 AV CIRCLE. All rights reserved.</p>
           <div className={styles.legalLinks}>
-            <a href="#">Privacy Policy</a>
+            <a href="/privacy">Privacy Policy</a>
             <span className={styles.separator}>|</span>
-            <a href="#">Terms of use</a>
+            <a href="/terms">Terms of use</a>
             <span className={styles.separator}>|</span>
-            <a href="#">Community Guidelines</a>
+            <a href="/guidelines">Community Guidelines</a>
             <span className={styles.separator}>|</span>
-            <a href="#">Site Feedback</a>
+            <a href="/feedback">Site Feedback</a>
             <span className={styles.separator}>|</span>
             <a href="#">Help Center</a>
           </div>

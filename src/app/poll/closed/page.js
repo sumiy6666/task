@@ -1,5 +1,5 @@
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
-import PollResultCard from '@/components/poll/PollResultCard';
+import ClosedPollsGrid from '@/components/poll/ClosedPollsGrid';
 
 const allClosedPollsData = [
   {
@@ -67,6 +67,72 @@ const allClosedPollsData = [
       { label: '31-50 staff', percentage: '19%', highlighted: false },
       { label: '50+', percentage: '14%', highlighted: false }
     ]
+  },
+  {
+    id: 7,
+    question: 'Which asset class are you most likely to increase allocation to next year?',
+    options: [
+      { label: 'Private equity', percentage: '29%', highlighted: true },
+      { label: 'Private credit', percentage: '24%', highlighted: false },
+      { label: 'Real estate', percentage: '15%', highlighted: false },
+      { label: 'Public equities', percentage: '18%', highlighted: false },
+      { label: 'Fixed income', percentage: '14%', highlighted: false }
+    ]
+  },
+  {
+    id: 8,
+    question: 'How often does your family office review its investment policy statement?',
+    options: [
+      { label: 'Quarterly', percentage: '11%', highlighted: false },
+      { label: 'Twice a year', percentage: '19%', highlighted: false },
+      { label: 'Annually', percentage: '42%', highlighted: true },
+      { label: 'Every 2-3 years', percentage: '17%', highlighted: false },
+      { label: 'Ad hoc', percentage: '11%', highlighted: false }
+    ]
+  },
+  {
+    id: 9,
+    question: 'Are you currently using AI tools in your investment or operations workflow?',
+    options: [
+      { label: 'Yes, extensively', percentage: '9%', highlighted: false },
+      { label: 'Yes, in a few areas', percentage: '34%', highlighted: true },
+      { label: 'Piloting', percentage: '27%', highlighted: false },
+      { label: 'Planning to', percentage: '18%', highlighted: false },
+      { label: 'No plans', percentage: '12%', highlighted: false }
+    ]
+  },
+  {
+    id: 10,
+    question: 'What is your primary approach to succession planning?',
+    options: [
+      { label: 'Formal written plan', percentage: '23%', highlighted: false },
+      { label: 'Family governance council', percentage: '31%', highlighted: true },
+      { label: 'Informal discussions', percentage: '26%', highlighted: false },
+      { label: 'External advisors lead', percentage: '12%', highlighted: false },
+      { label: 'Not yet addressed', percentage: '8%', highlighted: false }
+    ]
+  },
+  {
+    id: 11,
+    question: 'How do you primarily source direct investment opportunities?',
+    options: [
+      { label: 'Personal network', percentage: '38%', highlighted: true },
+      { label: 'Co-investment with funds', percentage: '22%', highlighted: false },
+      { label: 'Family office peer clubs', percentage: '17%', highlighted: false },
+      { label: 'Investment banks', percentage: '13%', highlighted: false },
+      { label: 'Deal platforms', percentage: '10%', highlighted: false }
+    ]
+  },
+  {
+    id: 12,
+    question: 'Which area are you prioritising for cybersecurity investment?',
+    options: [
+      { label: 'Staff training', percentage: '26%', highlighted: false },
+      { label: 'Identity and access', percentage: '30%', highlighted: true },
+      { label: 'Device security', percentage: '15%', highlighted: false },
+      { label: 'Vendor risk', percentage: '16%', highlighted: false },
+      { label: 'Incident response', percentage: '13%', highlighted: false }
+    ]
   }
 ];
 
@@ -80,25 +146,7 @@ export default function ClosedPollsPage() {
           <h3 className="font-semibold text-[#132742] uppercase" style={{ fontSize: 'calc(0.9 * var(--fa) + var(--fb))', letterSpacing: '0.1em' }}>CLOSED POLLS</h3>
         </div>
 
-        <div className="grid grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1" style={{ rowGap: 'calc(4 * var(--sa))' }}>
-          {allClosedPollsData.map((poll, idx) => {
-            const isRightColumn = (idx + 1) % 3 === 0;
-            const isMiddleColumn = idx % 3 === 1;
-            return (
-              <div
-                key={poll.id}
-                style={{
-                  ...(isMiddleColumn ? { paddingLeft: 'calc(3 * var(--sa))', paddingRight: 'calc(3 * var(--sa))' } : {}),
-                  ...(!isRightColumn && !isMiddleColumn ? { paddingRight: 'calc(3 * var(--sa))' } : {}),
-                  ...(isRightColumn ? { paddingLeft: 'calc(3 * var(--sa))' } : {}),
-                  ...(!isRightColumn ? { borderRight: '1px solid #d1d5db' } : {})
-                }}
-              >
-                <PollResultCard question={poll.question} options={poll.options} />
-              </div>
-            );
-          })}
-        </div>
+        <ClosedPollsGrid polls={allClosedPollsData} />
       </div>
     </div>
   );

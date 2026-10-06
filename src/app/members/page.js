@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
-import { EventBanner } from '@/components/discussions/EventBanner';
 import MemberDirectoryFilters from '@/components/members/MemberDirectoryFilters';
 import MembersList from '@/components/members/MembersList';
 import MemberDetail from '@/components/members/MemberDetail';
@@ -92,20 +91,18 @@ export default function MembersPage() {
     <div className="container min-h-screen" style={{ paddingBottom: 'calc(4 * var(--sa))' }}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Member Directory' }]} />
 
-      <EventBanner />
-
       <MemberDirectoryFilters />
 
       {/* Members List + Detail side-by-side */}
       <div className="flex max-lg:flex-col" style={{ gap: 'calc(1.5 * var(--sa))' }}>
-        <div className="flex-[1_1_55%]" style={{ minWidth: 'min(100%, calc(40 * var(--da) + var(--db)))' }}>
+        <div className="flex-[1_1_58%] min-w-0">
           <MembersList
             members={membersData}
             activeMemberId={activeMember.id}
             onMemberSelect={setActiveMember}
           />
         </div>
-        <div className="flex-[1_1_45%]" style={{ minWidth: 'min(100%, calc(32 * var(--da) + var(--db)))' }}>
+        <div className="flex-[1_1_42%] min-w-0">
           <MemberDetail member={activeMember} />
         </div>
       </div>

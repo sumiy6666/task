@@ -14,7 +14,7 @@
   --color-text-muted: #6b7280;    /* Gray text */
   --color-border: #e5e7eb;
 
-  --font-sans: 'Avenir', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-sans: 'Avenir', 'Avenir Next', var(--font-avenir-fallback), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -73,7 +73,7 @@ img {
 .container {
   max-width: 1300px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  /* padding: 0 1.5rem; */
 }
 
 @media (max-width: 768px) {
@@ -115,5 +115,27 @@ img {
     --db: 6px;
     --sa: 7.5px;
     --split: 100%;
+  }
+}
+
+/* Entrance animation: add .rise-in to fade an element up on mount. Stagger
+   siblings with --delay; a parent can add --base to push a whole group back.
+   Re-key the parent to replay it (e.g. when a banner changes slide). */
+/* Only `from` is set, so each element ends at its own opacity/transform. */
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+.rise-in {
+  animation: riseIn 0.8s cubic-bezier(0.2, 0.65, 0.3, 1) both;
+  animation-delay: calc(var(--base, 0s) + var(--delay, 0s));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise-in {
+    animation: none;
   }
 }

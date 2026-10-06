@@ -1,0 +1,224 @@
+/* Bottom of an insight article: the comment box and Related Articles.
+   Sizes are from the design. (Spacing can't use Tailwind classes here: the
+   global `* { padding: 0; margin: 0 }` reset outranks them.) */
+
+/* ---- Leave your comments ---- */
+
+.comments {
+  margin: 20px 0 70px;
+  background: #e9eef2;
+  border-radius: 14px;
+  padding: 50px 60px 48px 33px;
+}
+
+.commentsTitle {
+  font-size: 18px;
+  font-weight: 500;
+  color: #111;
+  margin-bottom: 30px;
+}
+
+/* Three ruled lines to write on; the text sits on the lines. */
+.commentsInput {
+  display: block;
+  width: 100%;
+  height: 90px;
+  margin-left: 4px;
+  border: 0;
+  outline: none;
+  resize: none;
+  font: inherit;
+  font-size: 17px;
+  line-height: 30px;
+  color: #111;
+  background: transparent repeating-linear-gradient(to bottom, transparent 0, transparent 29px, #9aa3ad 29px, #9aa3ad 30px);
+  background-attachment: local;
+}
+
+.commentsInput::placeholder {
+  color: #9aa3ad;
+}
+
+.submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 44px 0 0 4px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: #111;
+  font-size: 17px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.submit:hover {
+  color: #00a4e4;
+}
+
+.submit svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---- Related Articles ---- */
+
+.related {
+  padding-top: 55px;
+}
+
+.relatedTitle {
+  font-size: 23px;
+  font-weight: 400;
+  color: #111;
+  margin-bottom: 44px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+}
+
+.cardImage {
+  width: 100%;
+  aspect-ratio: 320 / 216;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+  margin-bottom: 40px;
+}
+
+.cardTitle {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #111;
+  margin-bottom: 14px;
+}
+
+.cardText {
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.45;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+/* Pinned to the bottom so the links line up across cards. */
+.readMore {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 32px;
+  font-size: 14px;
+  color: #11a0db;
+}
+
+.card:hover .readMore {
+  text-decoration: underline;
+}
+
+.readMore svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Laptop: the page container caps at 1300px, so step the sizes down. */
+@media (max-width: 1500px) {
+  .comments {
+    margin: 20px 0 52px;
+    padding: 40px 44px 38px 30px;
+  }
+
+  .relatedTitle {
+    font-size: 21px;
+    margin-bottom: 32px;
+  }
+
+  .grid {
+    gap: 20px;
+  }
+
+  .cardImage {
+    margin-bottom: 26px;
+  }
+
+  .cardTitle {
+    margin-bottom: 10px;
+  }
+
+  .cardText {
+    margin-bottom: 22px;
+  }
+
+  .readMore {
+    gap: 20px;
+  }
+}
+
+/* Tablet: two cards per row. */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 36px;
+  }
+}
+
+/* Phone: one card per row, tighter box. */
+@media (max-width: 640px) {
+  .comments {
+    margin: 20px 0 36px;
+    padding: 26px 20px 26px;
+    border-radius: 12px;
+  }
+
+  .commentsTitle {
+    font-size: 17px;
+    margin-bottom: 20px;
+  }
+
+  .commentsInput {
+    font-size: 15px;
+    margin-left: 0;
+  }
+
+  .submit {
+    margin: 30px 0 0;
+    font-size: 15px;
+  }
+
+  .related {
+    padding-top: 40px;
+  }
+
+  .relatedTitle {
+    font-size: 19px;
+    margin-bottom: 24px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    row-gap: 32px;
+  }
+
+  .cardImage {
+    margin-bottom: 18px;
+  }
+
+  .cardTitle {
+    font-size: 18px;
+  }
+
+  .cardText {
+    font-size: 15px;
+    margin-bottom: 16px;
+  }
+}

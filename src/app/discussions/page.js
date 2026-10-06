@@ -1,5 +1,6 @@
 import React from 'react';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { Reveal } from '@/components/ui/Reveal';
 import { EventBanner } from '@/components/discussions/EventBanner';
 import { ConversationList } from '@/components/discussions/ConversationList';
 import { CategoryList } from '@/components/discussions/CategoryList';
@@ -150,25 +151,25 @@ export default async function DiscussionPage() {
       <EventBanner />
 
       <div className="flex max-lg:flex-col" style={{ gap: 'calc(1.5 * var(--sa))', marginBottom: 'calc(1.5 * var(--sa))' }}>
-        <div className="flex-[1_1_70%]" style={{ minWidth: 'min(100%, calc(45 * var(--da) + var(--db)))' }}>
+        <div className="flex-[1_1_67%] min-w-0">
           <ConversationList title="LATEST CONVERSATIONS" conversations={data.latest} showViewAll={true} />
         </div>
-        <div className="flex-[1_1_30%]" style={{ minWidth: 'min(100%, calc(22 * var(--da) + var(--db)))' }}>
+        <div className="flex-[1_1_33%] min-w-0">
           <CategoryList categories={data.categories} />
         </div>
       </div>
 
       <div className="flex max-lg:flex-col" style={{ gap: 'calc(1.5 * var(--sa))' }}>
-        <div className="flex-[1_1_70%] flex flex-col" style={{ minWidth: 'min(100%, calc(45 * var(--da) + var(--db)))', gap: 'calc(1.5 * var(--sa))' }}>
+        <div className="flex-[1_1_67%] min-w-0 flex flex-col" style={{ gap: 'calc(1.5 * var(--sa))' }}>
           <ActiveDiscussionsList discussions={data.recentlyActive} />
           <TrendingDiscussions conversations={data.trending} />
           
-          <div className="rounded-2xl overflow-hidden" style={{ height: 'calc(18 * var(--da) + var(--db))', marginTop: 'calc(1 * var(--sa))' }}>
+          <Reveal className="rounded-2xl overflow-hidden" style={{ height: 'calc(18 * var(--da) + var(--db))', marginTop: 'calc(1 * var(--sa))' }}>
              <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=1200&auto=format&fit=crop" className="w-full h-full object-cover" alt="Discussion bottom banner" />
-          </div>
+          </Reveal>
         </div>
         
-        <div className="flex-[1_1_30%] flex flex-col" style={{ minWidth: 'min(100%, calc(22 * var(--da) + var(--db)))', gap: 'calc(1.5 * var(--sa))' }}>
+        <div className="flex-[1_1_33%] min-w-0 flex flex-col" style={{ gap: 'calc(1.5 * var(--sa))' }}>
           <ActiveMembersList members={data.members} />
           <PopularTagsList tags={data.tags} />
         </div>

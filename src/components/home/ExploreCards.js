@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Card } from '../ui/Card';
+import { Reveal } from '../ui/Reveal';
 import styles from './ExploreCards.module.css';
 
 export function ExploreCards() {
@@ -36,7 +37,8 @@ export function ExploreCards() {
       <h3 className={styles.title}>EXPLORE THE COMMUNITY</h3>
       <div className={styles.cardsList}>
         {cards.map((card, index) => (
-          <Link key={index} href={card.href} style={{ display: 'block' }}>
+          <Reveal key={index} delay={index * 150}>
+          <Link href={card.href} style={{ display: 'block' }}>
           <Card variant={card.variant} className={styles.exploreCard} style={{ backgroundColor: card.bg }}>
             <div className={styles.cardContent}>
               <h4>{card.title}</h4>
@@ -47,6 +49,7 @@ export function ExploreCards() {
             </div>
           </Card>
           </Link>
+          </Reveal>
         ))}
       </div>
     </Card>

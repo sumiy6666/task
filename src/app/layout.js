@@ -3,16 +3,14 @@ import { Header } from '@/components/layout/Header';
 import { SignInNotice } from '@/components/layout/SignInNotice';
 import { getCurrentUser, isSignInEnabled } from '@/lib/discourse';
 import { Footer } from '@/components/layout/Footer';
-import { Geist, Geist_Mono } from "next/font/google";
+import { Nunito_Sans } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// The site font is Avenir (see --font-sans in globals.css). Avenir is a paid
+// font that ships with macOS but not Windows or Android, so Nunito Sans, a
+// close free match, stands in where Avenir is not installed.
+const avenirFallback = Nunito_Sans({
+  variable: "--font-avenir-fallback",
   subsets: ["latin"],
 });
 
@@ -29,8 +27,8 @@ export default async function RootLayout({ children }) {
   });
 
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={avenirFallback.variable}>
+      <body>
         <Header user={user} canSignIn={isSignInEnabled()} />
         <Suspense fallback={null}>
           <SignInNotice />

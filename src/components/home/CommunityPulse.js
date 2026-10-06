@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Card } from '../ui/Card';
+import { Reveal } from '../ui/Reveal';
 import styles from './CommunityPulse.module.css';
 
 export function CommunityPulse() {
@@ -17,10 +18,12 @@ export function CommunityPulse() {
       
       <div className={styles.statsGrid}>
         {stats.map((stat, index) => (
-          <Link key={index} href={stat.href} className={styles.statItem} style={{ backgroundColor: stat.bg }}>
-            <span className={styles.statValue}>{stat.value}</span>
-            <span className={styles.statLabel}>{stat.label}</span>
-          </Link>
+          <Reveal key={index} delay={index * 150} className={styles.statCell}>
+            <Link href={stat.href} className={styles.statItem} style={{ backgroundColor: stat.bg }}>
+              <span className={styles.statValue}>{stat.value}</span>
+              <span className={styles.statLabel}>{stat.label}</span>
+            </Link>
+          </Reveal>
         ))}
       </div>
     </Card>

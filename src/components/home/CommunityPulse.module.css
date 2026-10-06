@@ -96,3 +96,12 @@
     font-weight: 400;
   }
 }
+
+/* Reveal wrapper around each stat box; keeps boxes equal height. */
+.statCell {
+  display: flex;
+}
+
+.statCell > .statItem {
+  flex: 1;
+}

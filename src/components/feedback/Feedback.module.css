@@ -1,0 +1,148 @@
+/* Site Feedback form. Desktop sizes follow the window up to the 1300px page
+   container, then hold; tablets and phones use fixed pixels. (Spacing can't
+   use Tailwind classes: the global `* { padding: 0; margin: 0 }` reset
+   outranks them.) */
+
+.page { padding-bottom: min(3.08vw, 40px); }
+
+.card { background: #fff; border-radius: min(1.85vw, 24px); box-shadow: 0 min(0.46vw, 6px) min(1.69vw, 22px) rgba(0, 62, 207, 0.07); padding: min(4.92vw, 64px) min(2.92vw, 38px) min(3.08vw, 40px); }
+
+.title { font-size: min(2vw, 26px); font-weight: 400; color: #111; margin-bottom: min(0.77vw, 10px); }
+.intro { font-size: min(1.04vw, 13.5px); color: #777; margin-bottom: min(4.15vw, 54px); }
+
+.label { display: block; font-size: min(1.23vw, 16px); font-weight: 400; color: #111; margin-bottom: min(1.46vw, 19px); }
+.field { margin-bottom: min(3.08vw, 40px); }
+
+/* ---- Feedback type ---- */
+
+.types { display: grid; grid-template-columns: repeat(4, 1fr); gap: min(3.15vw, 41px); border: 0; }
+.type {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: min(13.08vw, 170px);
+  padding: min(1.54vw, 20px) min(1.23vw, 16px);
+  border: 1.5px solid transparent;
+  border-radius: min(0.85vw, 11px);
+  background: #e9eef2;
+  color: #111;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.type:hover { background: #e0e8ee; }
+.typeActive, .typeActive:hover { background: #eaf6fb; border-color: #11a0db; }
+.type input { position: absolute; opacity: 0; pointer-events: none; }
+.type:has(input:focus-visible) { outline: 2px solid #11a0db; outline-offset: 2px; }
+.typeIcon { width: min(2.92vw, 38px); height: min(2.92vw, 38px); margin-bottom: min(1.54vw, 20px); color: #111; }
+.typeActive .typeIcon { color: #11a0db; }
+.typeTitle { font-size: min(1.31vw, 17px); font-weight: 600; margin-bottom: min(0.46vw, 6px); }
+.typeText { font-size: min(1.04vw, 13.5px); line-height: 1.35; max-width: min(11.54vw, 150px); }
+
+/* ---- Text fields ---- */
+
+.input, .textarea {
+  display: block;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: min(0.62vw, 8px);
+  background: #fff;
+  font: inherit;
+  font-size: min(1.04vw, 13.5px);
+  color: #111;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input { height: min(3.23vw, 42px); padding: 0 min(1.62vw, 21px); }
+.textarea { height: min(8.62vw, 112px); padding: min(1.38vw, 18px) min(1.62vw, 21px); resize: vertical; }
+.input::placeholder, .textarea::placeholder { color: #888; }
+.input:focus, .textarea:focus { border-color: #11a0db; }
+.invalid { border-color: #d93025; }
+.counter { margin-top: min(1.69vw, 22px); text-align: right; font-size: min(0.92vw, 12px); color: #999; }
+.error { margin-top: min(0.62vw, 8px); font-size: min(0.96vw, 12.5px); color: #d93025; }
+
+/* ---- Screenshot drop zone ---- */
+
+.drop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: min(2.15vw, 28px);
+  min-height: min(6.15vw, 80px);
+  padding: min(1.08vw, 14px) min(1.54vw, 20px);
+  border: 1px dashed #11a0db;
+  border-radius: min(0.62vw, 8px);
+  background: #eaf6fb;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.drop:hover, .dropActive { background: #dcf0f9; }
+.dropIcon { width: min(3.23vw, 42px); height: min(3.23vw, 42px); color: #11a0db; flex-shrink: 0; }
+.dropText { font-size: min(1.08vw, 14px); color: #777; }
+.dropLink { color: #11a0db; }
+.dropHint { margin-top: min(0.46vw, 6px); font-size: min(0.96vw, 12.5px); color: #777; }
+.file { display: inline-flex; align-items: center; gap: min(0.77vw, 10px); font-size: min(1.08vw, 14px); color: #111; }
+.fileRemove { color: #11a0db; font-size: min(1vw, 13px); text-decoration: underline; }
+
+.actions { display: flex; justify-content: flex-end; margin-top: min(2.15vw, 28px); }
+.submit {
+  display: inline-flex;
+  align-items: center;
+  gap: min(1.69vw, 22px);
+  height: min(2.77vw, 36px);
+  padding: 0 min(1.69vw, 22px);
+  border-radius: 999px;
+  background: #11a0db;
+  color: #fff;
+  font-size: min(1.04vw, 13.5px);
+  font-weight: 300;
+  text-transform: uppercase;
+  transition: background-color 0.2s;
+}
+.submit:hover { background: #0e8ec4; }
+.submit svg { width: min(1.38vw, 18px); height: min(1.38vw, 18px); }
+
+.thanks { text-align: center; padding: min(3.08vw, 40px) 0; }
+.thanksTitle { font-size: min(1.69vw, 22px); color: #111; margin-bottom: min(0.77vw, 10px); }
+.thanksText { font-size: min(1.08vw, 14px); color: #777; margin-bottom: min(2vw, 26px); }
+.again { color: #11a0db; font-size: min(1.08vw, 14px); text-decoration: underline; }
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .page { padding-bottom: 32px; }
+  .card { border-radius: 20px; padding: 36px 28px 32px; }
+  .title { font-size: 24px; }
+  .intro { font-size: 14px; margin-bottom: 32px; }
+  .label { font-size: 16px; margin-bottom: 14px; }
+  .field { margin-bottom: 28px; }
+  .types { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .type { min-height: 150px; border-radius: 12px; }
+  .typeIcon { width: 34px; height: 34px; margin-bottom: 14px; }
+  .typeTitle { font-size: 16px; }
+  .typeText { font-size: 14px; max-width: 220px; }
+  .input, .textarea { font-size: 15px; border-radius: 8px; }
+  .input { height: 46px; padding: 0 16px; }
+  .textarea { height: 130px; padding: 14px 16px; }
+  .counter { margin-top: 10px; font-size: 12px; }
+  .error { font-size: 13px; }
+  .drop { gap: 18px; min-height: 84px; border-radius: 8px; }
+  .dropIcon { width: 38px; height: 38px; }
+  .dropText, .file { font-size: 14px; }
+  .dropHint { font-size: 13px; }
+  .actions { margin-top: 24px; }
+  .submit { height: 44px; padding: 0 22px; gap: 14px; font-size: 14px; }
+  .submit svg { width: 18px; height: 18px; }
+}
+
+/* Phones */
+@media (max-width: 640px) {
+  .card { padding: 28px 18px 24px; }
+  .title { font-size: 22px; }
+  .types { gap: 10px; }
+  .type { min-height: 130px; padding: 16px 10px; }
+  .typeText { font-size: 13px; }
+  .drop { flex-direction: column; text-align: center; gap: 10px; padding: 18px 14px; }
+  .actions { justify-content: stretch; }
+  .submit { width: 100%; justify-content: center; }
+}

@@ -29,7 +29,7 @@
 .title {
   font-size: calc(30 * var(--px));
   line-height: calc(43 * var(--px));
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-link-blue);
   max-width: calc(540 * var(--px));
 }
@@ -59,7 +59,7 @@
   object-fit: cover;
   flex-shrink: 0;
 }
-.authorName { font-size: calc(17 * var(--px)); color: #111; margin-top: calc(6 * var(--px)); }
+.authorName { font-size: calc(17 * var(--px)); color: #111; font-weight: 400; margin-top: calc(6 * var(--px)); }
 .authorMeta { font-size: calc(15 * var(--px)); color: #a3a3a3; margin-top: calc(2 * var(--px)); }
 .tags { display: flex; flex-wrap: wrap; gap: calc(4 * var(--px)); margin-top: calc(10 * var(--px)); font-size: calc(14 * var(--px)); color: var(--color-primary); }
 
@@ -111,7 +111,7 @@ button.stat:hover svg { color: var(--color-primary); }
   object-fit: cover;
   flex-shrink: 0;
 }
-.replyName { font-size: calc(18 * var(--px)); color: #111; }
+.replyName { font-size: calc(18 * var(--px)); color: #111; font-weight: 400; }
 .replyBody {
   margin-top: calc(6 * var(--px));
   font-size: calc(13.5 * var(--px));
@@ -190,10 +190,9 @@ button.stat:hover svg { color: var(--color-primary); }
 }
 /* Fills the space above the list, so the first item sits where the design has it. */
 .relatedHeading {
-  font-size: calc(15 * var(--px));
+  font-size: calc(13.5 * var(--px));
   line-height: calc(20 * var(--px));
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  font-weight: 400;
   text-transform: uppercase;
   color: #111;
   margin-bottom: calc(50 * var(--px));
@@ -207,7 +206,7 @@ button.stat:hover svg { color: var(--color-primary); }
 .relatedHeading + .relatedItem { padding-top: 0; }
 .relatedItem + .relatedItem { border-top: 1px solid #e3e6ea; padding-top: calc(28 * var(--px)); }
 .relatedItem .avatarLg { box-shadow: 0 calc(4 * var(--px)) calc(10 * var(--px)) rgba(0, 0, 0, 0.18); }
-.relatedTitle { font-size: calc(18 * var(--px)); line-height: calc(25 * var(--px)); color: #111; }
+.relatedTitle { font-size: calc(18 * var(--px)); line-height: calc(25 * var(--px)); color: #111; font-weight: 400; }
 .relatedItem:hover .relatedTitle { color: var(--color-link-blue); }
 
 /* Poll voting */

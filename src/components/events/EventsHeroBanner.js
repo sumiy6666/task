@@ -12,7 +12,7 @@ const slides = [
     date: 'Wednesday, 12 June 2026',
     time: '4:00-5:00 PM',
     location: 'Virtual event',
-    image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1600&auto=format&fit=crop'
+    image: '/images/eventbanner.png'
   },
   {
     label: 'UPCOMING EVENT',
@@ -20,7 +20,7 @@ const slides = [
     date: 'Wednesday, 18 June 2026',
     time: '11:00 AM - 12:30 PM',
     location: 'Virtual event',
-    image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1600&auto=format&fit=crop'
+    image: '/images/eventbanner.png'
   },
   {
     label: 'UPCOMING EVENT',
@@ -28,7 +28,7 @@ const slides = [
     date: 'Wednesday, 21 June 2026',
     time: '4:00 PM - 5:30 PM',
     location: 'Webinar',
-    image: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=1600&auto=format&fit=crop'
+    image: '/images/eventbanner.png'
   }
 ];
 
@@ -59,23 +59,24 @@ export default function EventsHeroBanner({ onFilterChange, onRegister }) {
       <div
         className="absolute inset-0 bg-cover bg-center transition-all duration-700 ease-in-out"
         style={{
-          backgroundImage: `linear-gradient(to right, rgba(21, 75, 175, 0.95) 0%, rgba(21, 75, 175, 0.8) 40%, rgba(0,0,0,0) 100%), url('${slide.image}')`,
+          backgroundImage: `linear-gradient(to right, rgba(21, 75, 175, 0) 0%, rgba(21, 75, 175, 0) 40%, rgba(0,0,0,0) 100%), url('${slide.image}')`,
           zIndex: 1
         }}
       />
       <div className={styles.heroShade} aria-hidden />
 
       {/* Left Content */}
-      <div className={`relative flex flex-col justify-center h-full text-white ${styles.heroContent}`} style={{ zIndex: 2 }}>
-        <div className={`uppercase font-medium ${styles.heroLabel}`}>
+      {/* Keyed by slide so the text animates in one by one on every change. */}
+      <div key={currentSlide} className={`relative flex flex-col justify-center h-full text-white ${styles.heroContent}`} style={{ zIndex: 2 }}>
+        <div className={`rise-in uppercase font-medium ${styles.heroLabel}`}>
           {slide.label}
         </div>
 
-        <h2 className={`font-semibold leading-tight transition-all duration-500 ${styles.heroTitle}`}>
+        <h2 className={`rise-in font-semibold leading-tight ${styles.heroTitle}`} style={{ '--delay': '0.15s' }}>
           {slide.title}
         </h2>
 
-        <div className={`flex flex-col ${styles.heroMeta}`}>
+        <div className={`rise-in flex flex-col ${styles.heroMeta}`} style={{ '--delay': '0.3s' }}>
           {[slide.date, slide.time, slide.location].map((text, i) => (
             <div key={i} className={`flex items-center ${styles.heroMetaItem}`}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.heroIcon}>
@@ -87,7 +88,7 @@ export default function EventsHeroBanner({ onFilterChange, onRegister }) {
           ))}
         </div>
 
-        <div>
+        <div className="rise-in" style={{ '--delay': '0.45s' }}>
           <button type="button" onClick={() => onRegister?.(slides[currentSlide].title)} className={`inline-flex items-center text-white bg-transparent hover:bg-white/10 transition-colors cursor-pointer ${styles.registerBtn}`}>
             REGISTER NOW
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.heroIcon}>

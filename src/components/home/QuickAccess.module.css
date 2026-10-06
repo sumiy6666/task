@@ -11,51 +11,25 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
-.actionsContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.mainAction {
+/* The row's size must not depend on which action is open: the home page
+   columns are sized from their content, so any change here would shift
+   the whole card. One circle is always 4rem and one label always 11rem. */
+.actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
-}
-
-.mainAction span {
-  font-size: 0.9rem;
-  font-weight: 400;
-}
-
-.actionBtn {
-  width: 4rem;
-  height: 4rem;
-  border-radius: 50%;
-  background-color: var(--color-primary);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s;
-  box-shadow: 0 4px 15px rgba(0, 164, 228, 0.3);
-}
-
-.actionBtn:hover {
-  transform: scale(1.05);
-}
-
-.actionBtn svg {
-  width: 2rem;
-  height: 2rem;
-}
-
-.iconActions {
-  display: flex;
+  flex-wrap: nowrap;
   gap: 0.6rem;
+  height: 4rem;
 }
 
-.smallActionBtn {
+.action {
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.circle {
+  flex-shrink: 0;
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;
@@ -64,28 +38,86 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s;
+  transition: width 0.35s ease, height 0.35s ease, background-color 0.35s ease,
+    color 0.35s ease, box-shadow 0.35s ease;
 }
 
-.smallActionBtn:hover {
-  transform: scale(1.05);
+.icon {
+  width: 22px;
+  height: 22px;
+  background-color: currentColor;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
 }
 
-.smallActionBtn svg {
-  width: 1.5rem;
-  height: 1.5rem;
+.label {
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  font-size: 1rem;
+  transform: translateX(-8px);
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding-left: 0;
+  transition: width 0.35s ease, padding 0.35s ease, opacity 0.25s ease,
+    transform 0.35s ease;
 }
 
-@media (max-width: 768px) {
-  .actionsContainer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2rem;
-  }
+.active .circle {
+  width: 4rem;
+  height: 4rem;
+  background-color: var(--color-primary);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 164, 228, 0.3);
 }
+
+.active .label {
+  width: 11rem;
+  padding-left: 1rem;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Phones show the active label on its own line under the icons. */
+.caption {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .quickAccessCard {
     margin-bottom: 1.5rem;
     padding: 1.75rem 1.5rem;
+  }
+
+  .actions {
+    height: 3.5rem;
+  }
+
+  .circle {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .active .circle {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .label,
+  .active .label {
+    display: none;
+  }
+
+  .caption {
+    display: block;
+    margin-top: 0.75rem;
+    height: 1.5rem;
+    font-size: 0.95rem;
+    color: white;
   }
 }
