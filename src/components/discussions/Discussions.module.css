@@ -1,0 +1,219 @@
+/* Discussions page. Desktop sizes follow the window up to the 1300px page
+   container, then hold, keeping the design's proportions to the container.
+   Tablets and phones use fixed pixels. (Spacing can't use Tailwind classes:
+   the global `* { padding: 0; margin: 0 }` reset outranks them.) */
+
+/* ---- Shared card ---- */
+
+.card { background: #fff; border-radius: min(1.85vw, 24px); box-shadow: 0 min(0.31vw, 4px) min(1.54vw, 20px) rgba(0, 62, 207, 0.06); padding: min(3.85vw, 50px) min(2.92vw, 38px) min(2.46vw, 32px); height: 100%; }
+.cardHeader { display: flex; align-items: center; justify-content: space-between; margin-bottom: min(1.69vw, 22px); }
+.cardTitle { font-size: min(1.08vw, 14px); font-weight: 400; color: #111; text-transform: uppercase; }
+/* Some cards rule off their title with a line, as in the design. */
+.cardTitleRuled { padding-bottom: min(2.62vw, 34px); border-bottom: 1px solid #ddd; margin-bottom: min(2.31vw, 30px); }
+
+.viewAll {
+  display: inline-flex;
+  align-items: center;
+  gap: min(1.23vw, 16px);
+  height: min(2.15vw, 28px);
+  padding: 0 min(1.08vw, 14px);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 min(0.15vw, 2px) min(0.62vw, 8px) rgba(0, 0, 0, 0.08);
+  font-size: min(0.81vw, 10.5px);
+  color: #555;
+  text-transform: uppercase;
+}
+.viewAll:hover { color: #00a4e4; }
+.viewAll svg { width: min(1vw, 13px); height: min(1vw, 13px); }
+
+.meta { color: #999; }
+.metaSep { margin: 0 min(1.38vw, 18px); }
+
+/* Icon + count, as used for replies, likes and views. */
+.stats { display: flex; align-items: center; gap: min(2.31vw, 30px); flex-shrink: 0; color: #999; }
+.stat { display: flex; align-items: center; gap: min(0.62vw, 8px); font-size: min(0.96vw, 12.5px); min-width: min(3.54vw, 46px); }
+.stat svg { width: min(1.85vw, 24px); height: min(1.85vw, 24px); flex-shrink: 0; }
+.bookmark { width: min(1.69vw, 22px); height: min(1.69vw, 22px); color: #999; cursor: pointer; }
+.bookmark:hover { color: #00a4e4; }
+
+.avatar { flex-shrink: 0; border-radius: 50%; object-fit: cover; box-shadow: 0 min(0.38vw, 5px) min(0.92vw, 12px) rgba(0, 0, 0, 0.2); }
+
+/* ---- Latest conversations ---- */
+
+.convRow { display: flex; align-items: center; gap: min(2.77vw, 36px); padding: min(1.69vw, 22px) 0; border-bottom: 1px solid #ddd; }
+.convRow:last-child { border-bottom: 0; }
+.convAvatar { width: min(6vw, 78px); height: min(6vw, 78px); }
+.convTitle { font-size: min(1.35vw, 17.5px); font-weight: 400; line-height: 1.42; color: #111; max-width: min(23.08vw, 300px); margin-bottom: min(0.46vw, 6px); }
+.convTitle:hover { color: #00a4e4; }
+.convTitleFirst { color: #0047cc; }
+.convMeta { font-size: min(1.08vw, 14px); }
+.convMetaFirst { color: #333; }
+
+/* ---- Categories ---- */
+
+.categoryRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: min(4.77vw, 62px);
+  margin: 0 min(0.38vw, 5px);
+  padding: 0 min(2.15vw, 28px);
+  border-bottom: 1px solid #ddd;
+  font-size: min(1.08vw, 14px);
+  color: #111;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.categoryRow:hover { color: #0047cc; }
+.categoryRow:last-child { border-bottom: 0; }
+.categoryActive, .categoryActive:hover {
+  height: min(3.23vw, 42px);
+  margin: 0 0 min(0.46vw, 6px);
+  padding: 0 min(2.15vw, 28px);
+  border-bottom: 0;
+  border-radius: 999px;
+  background: #0040d0;
+  color: #fff;
+}
+
+/* ---- Recently active discussions ---- */
+
+.activeList { display: flex; flex-direction: column; gap: min(0.77vw, 10px); }
+.activeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: min(1.54vw, 20px);
+  min-height: min(6.31vw, 82px);
+  padding: min(1.08vw, 14px) min(2.31vw, 30px);
+  border-radius: 999px;
+  background: #e9eef2;
+}
+.activeTitle { font-size: min(1.35vw, 17.5px); font-weight: 400; line-height: 1.35; color: #2d6896; margin-bottom: min(0.31vw, 4px); }
+.activeTitle:hover { color: #00a4e4; }
+.activeMeta { font-size: min(1.04vw, 13.5px); color: #111; }
+.activeArrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: min(2vw, 26px);
+  height: min(2vw, 26px);
+  border-radius: 50%;
+  background: #11a0db;
+  color: #fff;
+}
+.activeArrow svg { width: min(1.08vw, 14px); height: min(1.08vw, 14px); }
+
+/* ---- Trending discussions ---- */
+
+.tabs { display: flex; flex-wrap: wrap; gap: min(0.92vw, 12px) min(3.38vw, 44px); margin-bottom: min(1.23vw, 16px); }
+.tab {
+  height: min(2.85vw, 37px);
+  padding: 0 min(2.46vw, 32px);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 min(0.23vw, 3px) min(0.77vw, 10px) rgba(0, 0, 0, 0.08);
+  font-size: min(1.08vw, 14px);
+  color: #111;
+  text-transform: uppercase;
+  transition: background-color 0.2s, color 0.2s;
+}
+.tab:hover { background: #f4f6f9; }
+.tabActive, .tabActive:hover { background: #0040d0; color: #fff; box-shadow: 0 min(0.23vw, 3px) min(0.77vw, 10px) rgba(0, 64, 208, 0.35); }
+
+.trendRow { display: flex; align-items: center; gap: min(1vw, 13px); padding: min(1.15vw, 15px) 0; border-bottom: 1px solid #ddd; }
+.trendAvatar { width: min(4.08vw, 53px); height: min(4.08vw, 53px); }
+.trendTitle { font-size: min(1.23vw, 16px); font-weight: 400; line-height: 1.4; color: #111; margin-bottom: min(0.31vw, 4px); cursor: pointer; }
+.trendTitle:hover { color: #00a4e4; }
+.trendMeta { font-size: min(1.04vw, 13.5px); }
+.trendStats .stat { font-size: min(1.08vw, 14px); }
+
+/* ---- Most active members ---- */
+
+.memberList { display: flex; flex-direction: column; gap: min(1.69vw, 22px); }
+.memberRow { display: flex; align-items: center; gap: min(2.31vw, 30px); }
+.memberAvatar { width: min(4.08vw, 53px); height: min(4.08vw, 53px); }
+.memberName { font-size: min(1.23vw, 16px); font-weight: 400; color: #111; }
+.memberMeta { font-size: min(1.04vw, 13.5px); color: #999; }
+.follow { margin-left: auto; color: #999; flex-shrink: 0; }
+.follow:hover { color: #00a4e4; }
+.follow svg { width: min(1.69vw, 22px); height: min(1.69vw, 22px); }
+
+/* ---- Popular tags ---- */
+
+.tagList { display: flex; flex-direction: column; gap: min(1.85vw, 24px); }
+.tagRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: min(2.92vw, 38px);
+  padding: 0 min(2.46vw, 32px);
+  border-radius: 999px;
+  background: #e8f0fb;
+  font-size: min(1.08vw, 14px);
+  color: #0047cc;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.tagRow:hover { background: #dbe7f8; }
+
+/* Tablets: the columns stack, so each card gets the full width. */
+@media (max-width: 1024px) {
+  .card { border-radius: 20px; padding: 28px 28px 20px; }
+  .cardHeader { margin-bottom: 14px; }
+  .cardTitle { font-size: 14px; }
+  .cardTitleRuled { padding-bottom: 18px; margin-bottom: 18px; }
+  .viewAll { height: 30px; padding: 0 14px; gap: 10px; font-size: 11px; }
+  .viewAll svg { width: 13px; height: 13px; }
+  .metaSep { margin: 0 10px; }
+  .stats { gap: 18px; }
+  .stat { gap: 6px; font-size: 13px; min-width: 0; }
+  .stat svg { width: 20px; height: 20px; }
+  .bookmark { width: 20px; height: 20px; }
+
+  .convRow { gap: 20px; padding: 18px 0; }
+  .convAvatar { width: 60px; height: 60px; }
+  .convTitle { font-size: 16px; max-width: none; }
+  .convMeta { font-size: 13px; }
+
+  .categoryRow { height: 52px; padding: 0 20px; font-size: 14px; }
+  .categoryActive, .categoryActive:hover { height: 42px; padding: 0 20px; }
+
+  .activeList { gap: 10px; }
+  .activeRow { min-height: 72px; padding: 12px 24px; gap: 16px; }
+  .activeTitle { font-size: 16px; }
+  .activeMeta { font-size: 13px; }
+  .activeArrow { width: 30px; height: 30px; }
+  .activeArrow svg { width: 15px; height: 15px; }
+
+  .tabs { gap: 10px 16px; margin-bottom: 12px; }
+  .tab { height: 38px; padding: 0 22px; font-size: 13px; }
+  .trendRow { gap: 12px; padding: 14px 0; }
+  .trendAvatar { width: 46px; height: 46px; }
+  .trendTitle { font-size: 15px; }
+  .trendMeta { font-size: 13px; }
+  .trendStats .stat { font-size: 13px; }
+
+  .memberList { gap: 16px; }
+  .memberRow { gap: 18px; }
+  .memberAvatar { width: 48px; height: 48px; }
+  .memberName { font-size: 15px; }
+  .memberMeta { font-size: 13px; }
+  .follow svg { width: 22px; height: 22px; }
+
+  .tagList { gap: 12px; }
+  .tagRow { height: 40px; padding: 0 22px; font-size: 14px; }
+}
+
+/* Phones */
+@media (max-width: 640px) {
+  .card { padding: 22px 18px 16px; }
+  .convRow, .trendRow { flex-wrap: wrap; }
+  .convAvatar { width: 48px; height: 48px; }
+  .stats { width: 100%; justify-content: flex-end; }
+  .activeRow { border-radius: 24px; padding: 12px 18px; }
+  .tabs { gap: 8px; }
+  .tab { padding: 0 16px; font-size: 12px; }
+}

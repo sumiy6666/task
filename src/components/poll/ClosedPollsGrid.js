@@ -36,8 +36,8 @@ export default function ClosedPollsGrid({ polls }) {
           <button
             type="button"
             onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
-            className="bg-black hover:bg-[#333] text-white font-medium rounded-full transition-colors"
-            style={{ fontSize: 'calc(0.85 * var(--fa) + var(--fb))', padding: 'calc(0.8 * var(--sa)) calc(2.4 * var(--sa))' }}
+            className="text-white font-medium rounded-full transition-opacity hover:opacity-85"
+            style={{ backgroundColor: '#000', fontSize: 'calc(0.85 * var(--fa) + var(--fb))', padding: 'calc(0.8 * var(--sa)) calc(2.4 * var(--sa))' }}
           >
             Load more
           </button>

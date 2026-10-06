@@ -1,0 +1,102 @@
+/* Photo banner at the top of a page (About, Discussions, Poll). Desktop sizes
+   follow the window up to the 1300px page container, then hold; tablets and
+   phones use fixed pixels. (Spacing can't use Tailwind classes: the global
+   `* { padding: 0; margin: 0 }` reset outranks them.) */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: min(1.85vw, 24px);
+  min-height: min(36.15vw, 470px);
+  margin-bottom: min(2vw, 26px);
+  box-shadow: 0 min(0.46vw, 6px) min(1.85vw, 24px) rgba(0, 0, 0, 0.1);
+  background-size: cover;
+  background-position: center;
+}
+
+.content { position: relative; z-index: 2; color: #fff; padding: min(4vw, 52px) min(3vw, 39px) min(3.85vw, 50px); }
+.label { font-size: min(1.08vw, 14px); font-weight: 400; text-transform: uppercase; margin-bottom: min(1.69vw, 22px); }
+.title { font-size: min(2.38vw, 31px); font-weight: 400; line-height: 1.37; max-width: var(--title-width, none); margin-bottom: min(2.62vw, 34px); }
+.text { font-size: min(1.15vw, 15px); font-weight: 300; line-height: 1.45; max-width: min(28.46vw, 370px); margin: max(-0.46vw, -6px) 0 min(3.08vw, 40px); font-variation-settings: 'wght' 300; }
+
+/* Discussions: the design spreads label, title and button further apart. */
+.spacious .label { margin-bottom: min(4.46vw, 58px); }
+.spacious .title { margin-bottom: min(6.92vw, 90px); }
+
+/* Short banner (Site Feedback): less height, medium-weight title. */
+.compact.hero { min-height: min(21.5vw, 280px); }
+.compact .title { font-weight: 500; font-variation-settings: normal; margin-bottom: min(1.85vw, 24px); }
+.compact .text { max-width: min(22vw, 286px); font-size: min(1.04vw, 13.5px); margin-bottom: 0; }
+
+/* The image already has its rounded corners, shadow and blue wash. */
+.framed.hero { border-radius: 0; box-shadow: none; background-color: transparent; background-size: 100% 100%; }
+
+/* Buttons: outline pill, and solid blue pill. */
+.actions { display: flex; flex-direction: column; align-items: flex-start; gap: min(0.92vw, 12px); }
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: min(1.23vw, 16px);
+  min-width: min(17.77vw, 231px);
+  height: min(2.77vw, 36px);
+  padding: 0 min(1.08vw, 14px);
+  border-radius: 999px;
+  font-size: min(1.04vw, 13.5px);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-variation-settings: 'wght' 300;
+  color: #fff;
+  transition: background-color 0.2s;
+}
+.button svg { width: min(1.08vw, 14px); height: min(1.08vw, 14px); }
+.outline { border: 1px solid rgba(255, 255, 255, 0.9); }
+.outline:hover { background: rgba(255, 255, 255, 0.1); }
+.solid { background: #11a0db; }
+.solid:hover { background: #0e8ec4; }
+/* A lone outline button sizes to its text. */
+.button.single { min-width: 0; }
+
+.arrows { position: absolute; z-index: 3; right: min(3.54vw, 46px); bottom: min(3.54vw, 46px); display: flex; gap: min(0.62vw, 8px); }
+.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(1.92vw, 25px);
+  height: min(1.92vw, 25px);
+  border-radius: 50%;
+  background: #11a0db;
+  color: #fff;
+}
+.arrow:hover { opacity: 0.9; }
+.arrow svg { width: min(1.08vw, 14px); height: min(1.08vw, 14px); }
+
+@media (max-width: 1024px) {
+  .hero { border-radius: 20px; min-height: 400px; margin-bottom: 20px; }
+  .content { padding: 44px 36px 80px; }
+  .label { font-size: 13px; margin-bottom: 16px; }
+  .title { font-size: 27px; max-width: 520px; margin-bottom: 24px; }
+  .text { font-size: 15px; max-width: 460px; margin: -4px 0 28px; }
+  .spacious .label { margin-bottom: 28px; }
+  .spacious .title { margin-bottom: 40px; }
+  .compact.hero { min-height: 260px; }
+  .compact .text { max-width: 420px; font-size: 14px; }
+  .actions { gap: 10px; }
+  .button { min-width: 240px; height: 40px; padding: 0 18px; gap: 12px; font-size: 13px; }
+  .button.single { min-width: 0; }
+  .button svg { width: 16px; height: 16px; }
+  .arrows { right: 24px; bottom: 24px; }
+  .arrow { width: 32px; height: 32px; }
+  .arrow svg { width: 16px; height: 16px; }
+}
+
+@media (max-width: 640px) {
+  .hero { border-radius: 16px; min-height: 0; }
+  .framed.hero { border-radius: 16px; background-size: cover; }
+  /* The text spans the full width here, so wash the whole photo to keep it readable. */
+  .hero::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to bottom, rgba(21, 75, 200, 0.55), rgba(21, 75, 200, 0.8)); }
+  .content { padding: 32px 20px 72px; }
+  .title { font-size: 22px; max-width: none; }
+  .text { max-width: none; }
+}

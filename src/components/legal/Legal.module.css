@@ -1,0 +1,110 @@
+/* Legal pages (Terms of Use and similar): one white card of two-column
+   sections. Desktop sizes follow the window up to the 1300px page container,
+   then hold; tablets and phones use fixed pixels. (Spacing can't use
+   Tailwind classes: the global `* { padding: 0; margin: 0 }` reset outranks
+   them.) */
+
+.page { padding-bottom: min(3.08vw, 40px); }
+
+.card {
+  background: #fff;
+  border-radius: min(1.85vw, 24px);
+  box-shadow: 0 min(0.46vw, 6px) min(1.69vw, 22px) rgba(0, 62, 207, 0.07);
+  padding: min(6vw, 78px) min(8.08vw, 105px) min(5.08vw, 66px) min(8.31vw, 108px);
+  margin-top: min(2.77vw, 36px);
+}
+
+.title { font-size: min(3.69vw, 48px); font-weight: 400; line-height: 1.15; color: #000; margin-bottom: min(2.92vw, 38px); }
+
+/* Two columns: lead text on the left, detail on the right. */
+.columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: min(3.08vw, 40px) min(8.92vw, 116px); }
+
+.text { font-size: min(1.15vw, 15px); font-weight: 300; line-height: 1.45; color: #111; }
+.text + .text { margin-top: min(0.92vw, 12px); }
+.updated { margin-top: min(2.31vw, 30px); font-size: min(0.96vw, 12.5px); font-weight: 300; color: #aaa; }
+
+.image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1349 / 480;
+  object-fit: cover;
+  border-radius: min(1.08vw, 14px);
+  margin: min(3.38vw, 44px) 0 min(4.31vw, 56px);
+}
+
+.section { padding: min(4vw, 52px) 0 min(4.15vw, 54px); border-top: 1px solid #ddd; }
+.section:first-child { border-top: 0; padding-top: 0; }
+.sectionTitle { font-size: min(1.46vw, 19px); font-weight: 400; color: #000; margin-bottom: min(2.46vw, 32px); }
+
+.list { margin-top: min(1.69vw, 22px); padding-left: min(1.69vw, 22px); list-style: disc; }
+.list li { font-size: min(1.15vw, 15px); font-weight: 300; line-height: 1.45; color: #111; padding-left: min(0.31vw, 4px); }
+.after { margin-top: min(1.69vw, 22px); }
+.after .text + .text { margin-top: min(1.23vw, 16px); }
+.subtitle { font-size: min(1.08vw, 14px); font-weight: 400; color: #111; margin: min(0.31vw, 4px) 0 min(1.38vw, 18px); }
+
+/* Community Guidelines: the page title is a section-sized heading. */
+.smallTitle { margin-bottom: min(1.69vw, 22px); }
+
+.gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: min(1.23vw, 16px); }
+/* The card images come with their own rounded corners and shadow. */
+.galleryImage { display: block; width: 100%; aspect-ratio: 291 / 208; object-fit: contain; margin-bottom: min(0.62vw, 8px); }
+.galleryText { font-size: min(1vw, 13px); font-weight: 300; line-height: 1.45; color: #111; }
+
+.contact {
+  display: flex;
+  align-items: center;
+  gap: min(1.69vw, 22px);
+  padding: min(2vw, 26px) min(3.08vw, 40px) min(2vw, 26px) min(3.69vw, 48px);
+  border-radius: min(0.69vw, 9px);
+  background: #e9eef2;
+}
+.contactIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: min(2.92vw, 38px);
+  height: min(2.92vw, 38px);
+  border-radius: 50%;
+  background: #11a0db;
+  color: #fff;
+}
+.contactIcon svg { width: min(1.54vw, 20px); height: min(1.54vw, 20px); }
+.contactEmail { font-size: min(1.15vw, 15px); font-weight: 300; color: #111; }
+.contactEmail:hover { color: #11a0db; text-decoration: underline; }
+.contactNote { margin-top: min(0.46vw, 6px); font-size: min(1.15vw, 15px); font-weight: 300; color: #111; }
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .page { padding-bottom: 32px; }
+  .card { border-radius: 20px; padding: 44px 36px 36px; margin-top: 16px; }
+  .title { font-size: 40px; margin-bottom: 26px; }
+  .columns { gap: 20px 40px; }
+  .text, .list li { font-size: 15px; }
+  .updated { margin-top: 20px; font-size: 13px; }
+  .image { border-radius: 8px; margin: 32px 0 36px; }
+  .section { padding: 32px 0; }
+  .sectionTitle { font-size: 19px; margin-bottom: 18px; }
+  .list { margin-top: 14px; padding-left: 20px; }
+  .after { margin-top: 14px; }
+  .gallery { grid-template-columns: repeat(2, 1fr); gap: 20px 16px; }
+  .galleryImage { margin-bottom: 4px; }
+  .galleryText { font-size: 14px; }
+  .subtitle { font-size: 15px; margin: 4px 0 14px; }
+  .contact { gap: 16px; padding: 20px 24px; border-radius: 10px; }
+  .contactIcon { width: 38px; height: 38px; }
+  .contactIcon svg { width: 20px; height: 20px; }
+  .contactEmail, .contactNote { font-size: 15px; }
+}
+
+/* Phones: one column. */
+@media (max-width: 640px) {
+  .card { border-radius: 16px; padding: 28px 18px 24px; }
+  .title { font-size: 32px; }
+  .columns { grid-template-columns: 1fr; gap: 14px; }
+  .image { aspect-ratio: 16 / 9; margin: 24px 0 28px; }
+  .section { padding: 26px 0; }
+  .sectionTitle { font-size: 18px; margin-bottom: 14px; }
+  .contact { align-items: flex-start; padding: 18px; }
+  .contactEmail { overflow-wrap: anywhere; }
+}

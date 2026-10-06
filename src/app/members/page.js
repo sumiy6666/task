@@ -95,14 +95,14 @@ export default function MembersPage() {
 
       {/* Members List + Detail side-by-side */}
       <div className="flex max-lg:flex-col" style={{ gap: 'calc(1.5 * var(--sa))' }}>
-        <div className="flex-[1_1_55%]" style={{ minWidth: 'min(100%, calc(40 * var(--da) + var(--db)))' }}>
+        <div className="flex-[1_1_58%] min-w-0">
           <MembersList
             members={membersData}
             activeMemberId={activeMember.id}
             onMemberSelect={setActiveMember}
           />
         </div>
-        <div className="flex-[1_1_45%]" style={{ minWidth: 'min(100%, calc(32 * var(--da) + var(--db)))' }}>
+        <div className="flex-[1_1_42%] min-w-0">
           <MemberDetail member={activeMember} />
         </div>
       </div>

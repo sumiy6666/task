@@ -59,16 +59,16 @@ export default function EventDetail({ event, onRegister }) {
     <div className={`bg-white flex flex-col h-full overflow-hidden ${styles.panel}`}>
       {/* Header */}
       <Reveal className={styles.detailHead}>
-        <span className={`text-[#00A4E4] font-semibold uppercase ${styles.detailCategory}`}>
+        <span className={`text-[#11A0DB] uppercase ${styles.detailCategory}`}>
           {event.category}
         </span>
 
         <div className={`flex ${styles.detailIntro}`}>
           <div className="flex-1">
-            <h2 className={`font-semibold text-[#132742] ${styles.detailTitle}`}>
+            <h2 className={`text-[#111] ${styles.detailTitle}`}>
               {event.title}
             </h2>
-            <p className={`text-[#6b7280] ${styles.detailDesc}`}>
+            <p className={`text-[#111] ${styles.detailDesc}`}>
               {event.description}
             </p>
           </div>
@@ -82,7 +82,7 @@ export default function EventDetail({ event, onRegister }) {
       <Reveal stagger={100} delay={200} className={`flex flex-col ${styles.detailTable}`}>
         {details.map((detail, idx) => (
           <div key={idx} className={`flex items-start ${styles.detailRow}`}>
-            <span className={`font-semibold text-[#132742] flex-shrink-0 ${styles.detailLabel}`}>
+            <span className={`text-[#111] flex-shrink-0 ${styles.detailLabel}`}>
               {detail.label}
             </span>
 
@@ -91,32 +91,33 @@ export default function EventDetail({ event, onRegister }) {
                 <img src={detail.avatar} alt="" className={`rounded-full flex-shrink-0 object-cover ${styles.detailAvatar}`} />
               )}
               <div className={`flex flex-col ${styles.detailValues}`}>
-                <span className={`text-[#4b5563] whitespace-pre-line ${styles.detailValue}`}>
+                <span className={`text-[#777] whitespace-pre-line ${styles.detailValue} ${detail.subValue ? styles.detailName : ''}`}>
                   {detail.value}
                 </span>
                 {detail.subValue && (
-                  <span className={`text-[#9ca3af] ${styles.detailSub}`}>{detail.subValue}</span>
+                  <span className={`text-[#777] whitespace-pre-line ${styles.detailValue}`}>{detail.subValue}</span>
                 )}
               </div>
             </div>
 
             <div className="flex-shrink-0">
               {detail.actionIcon === 'button' ? (
-                <button type="button" onClick={onRegister} className={`text-[#00A4E4] font-medium cursor-pointer hover:bg-[#00A4E4] hover:text-white transition-colors ${styles.detailRegister}`}>
+                <button type="button" onClick={onRegister} className={`text-white uppercase cursor-pointer hover:bg-[#0088be] transition-colors ${styles.detailRegister}`}>
                   {detail.action}
                 </button>
               ) : detail.actionIcon === 'calendar' ? (
-                <button type="button" onClick={() => downloadIcs(event)} className={`text-[#00A4E4] font-medium hover:underline flex items-center whitespace-nowrap cursor-pointer ${styles.detailLink}`}>
-                  {detail.action}
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                <button type="button" onClick={() => downloadIcs(event)} className={`text-[#11A0DB] hover:underline flex items-center whitespace-nowrap cursor-pointer ${styles.detailLink} ${styles.calendarLink}`}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="16" rx="2" />
+                    <path strokeLinecap="round" d="M16 3v4M8 3v4M3 10h18" />
                   </svg>
+                  {detail.action}
                 </button>
               ) : (
-                <Link href={detail.href || '#'} className={`text-[#00A4E4] font-medium hover:underline flex items-center whitespace-nowrap ${styles.detailLink}`}>
+                <Link href={detail.href || '#'} className={`text-[#11A0DB] hover:underline flex items-center whitespace-nowrap ${styles.detailLink}`}>
                   {detail.action}
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
                   </svg>
                 </Link>
               )}

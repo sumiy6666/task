@@ -1,0 +1,72 @@
+/* Phone layout for the insight article page, from the mobile design.
+   Desktop is untouched: every rule sits in the phone media query. The
+   elements are styled inline (vw-based), so these overrides need !important. */
+
+@media (max-width: 640px) {
+  .breadcrumb {
+    font-size: 13px !important;
+    line-height: 1.45;
+    margin: 28px 0 0 !important;
+  }
+
+  .breadcrumb ol {
+    flex-wrap: wrap;
+  }
+
+  /* No white card on phones: the article sits on the page background. */
+  .card {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 46px 15px 0 !important;
+  }
+
+  .header {
+    margin-bottom: 22px !important;
+  }
+
+  .title {
+    font-size: 21px !important;
+    font-weight: 500 !important;
+    line-height: 1.35 !important;
+  }
+
+  .hero {
+    max-height: none !important;
+    aspect-ratio: 390 / 226;
+    border-radius: 14px !important;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+    margin-bottom: 56px !important;
+  }
+
+  .meta {
+    font-size: 12px !important;
+    gap: 20px !important;
+    border: 0 !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 30px !important;
+    color: #11a0db !important;
+  }
+
+  .meta .sep {
+    color: #9fb4c4 !important;
+  }
+
+  .content > div {
+    padding-top: 0 !important;
+  }
+
+  .content h2,
+  .content h3 {
+    font-size: 17px !important;
+    font-weight: 500 !important;
+    line-height: 1.4 !important;
+    color: #111 !important;
+    margin-bottom: 10px !important;
+  }
+
+  .content p {
+    font-size: 14.5px !important;
+    line-height: 1.5 !important;
+    color: #333 !important;
+  }
+}

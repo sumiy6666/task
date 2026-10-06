@@ -74,6 +74,12 @@ export function AccordionMenu() {
         </Link>
       </li>
       <li className={styles.menuItem}>
+        <Link href="/about" className={styles.menuItemHeader}>
+          <span>About Us</span>
+          <span className={styles.expandIcon}>+</span>
+        </Link>
+      </li>
+      <li className={styles.menuItem}>
         <div className={styles.menuItemHeader} onClick={() => toggleItem('My Dashboard')}>
           <span>My Dashboard</span>
           <span className={styles.expandIcon}>{expandedItem === 'My Dashboard' ? '-' : '+'}</span>

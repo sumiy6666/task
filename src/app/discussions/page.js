@@ -140,16 +140,16 @@ export default function DiscussionPage() {
       <EventBanner />
 
       <div className="flex max-lg:flex-col" style={{ gap: 'calc(1.5 * var(--sa))', marginBottom: 'calc(1.5 * var(--sa))' }}>
-        <div className="flex-[1_1_70%]" style={{ minWidth: 'min(100%, calc(45 * var(--da) + var(--db)))' }}>
+        <div className="flex-[1_1_67%] min-w-0">
           <ConversationList title="LATEST CONVERSATIONS" conversations={latestConversations} showViewAll={true} />
         </div>
-        <div className="flex-[1_1_30%]" style={{ minWidth: 'min(100%, calc(22 * var(--da) + var(--db)))' }}>
+        <div className="flex-[1_1_33%] min-w-0">
           <CategoryList categories={categories} />
         </div>
       </div>
 
       <div className="flex max-lg:flex-col" style={{ gap: 'calc(1.5 * var(--sa))' }}>
-        <div className="flex-[1_1_70%] flex flex-col" style={{ minWidth: 'min(100%, calc(45 * var(--da) + var(--db)))', gap: 'calc(1.5 * var(--sa))' }}>
+        <div className="flex-[1_1_67%] min-w-0 flex flex-col" style={{ gap: 'calc(1.5 * var(--sa))' }}>
           <ActiveDiscussionsList discussions={activeDiscussions} />
           <TrendingDiscussions conversations={trendingConversations} />
           
@@ -158,7 +158,7 @@ export default function DiscussionPage() {
           </Reveal>
         </div>
         
-        <div className="flex-[1_1_30%] flex flex-col" style={{ minWidth: 'min(100%, calc(22 * var(--da) + var(--db)))', gap: 'calc(1.5 * var(--sa))' }}>
+        <div className="flex-[1_1_33%] min-w-0 flex flex-col" style={{ gap: 'calc(1.5 * var(--sa))' }}>
           <ActiveMembersList members={activeMembers} />
           <PopularTagsList tags={popularTags} />
         </div>

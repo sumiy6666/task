@@ -12,7 +12,7 @@ const slides = [
     date: 'Wednesday, 12 June 2026',
     time: '4:00-5:00 PM',
     location: 'Virtual event',
-    image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1600&auto=format&fit=crop'
+    image: '/images/eventbanner.png'
   },
   {
     label: 'UPCOMING EVENT',
@@ -20,7 +20,7 @@ const slides = [
     date: 'Wednesday, 18 June 2026',
     time: '11:00 AM - 12:30 PM',
     location: 'Virtual event',
-    image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1600&auto=format&fit=crop'
+    image: '/images/eventbanner.png'
   },
   {
     label: 'UPCOMING EVENT',
@@ -28,7 +28,7 @@ const slides = [
     date: 'Wednesday, 21 June 2026',
     time: '4:00 PM - 5:30 PM',
     location: 'Webinar',
-    image: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=1600&auto=format&fit=crop'
+    image: '/images/eventbanner.png'
   }
 ];
 
@@ -59,7 +59,7 @@ export default function EventsHeroBanner({ onFilterChange, onRegister }) {
       <div
         className="absolute inset-0 bg-cover bg-center transition-all duration-700 ease-in-out"
         style={{
-          backgroundImage: `linear-gradient(to right, rgba(21, 75, 175, 0.95) 0%, rgba(21, 75, 175, 0.8) 40%, rgba(0,0,0,0) 100%), url('${slide.image}')`,
+          backgroundImage: `linear-gradient(to right, rgba(21, 75, 175, 0) 0%, rgba(21, 75, 175, 0) 40%, rgba(0,0,0,0) 100%), url('${slide.image}')`,
           zIndex: 1
         }}
       />

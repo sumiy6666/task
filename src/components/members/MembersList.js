@@ -2,6 +2,7 @@
 import { Reveal } from '@/components/ui/Reveal';
 import { useState } from 'react';
 import MemberCard from './MemberCard';
+import styles from './Members.module.css';
 
 export default function MembersList({ members, activeMemberId, onMemberSelect }) {
   const [query, setQuery] = useState('');
@@ -9,10 +10,10 @@ export default function MembersList({ members, activeMemberId, onMemberSelect })
   const visibleMembers = term ? members.filter((m) => m.name.toLowerCase().includes(term)) : members;
 
   return (
-    <div className="bg-white flex flex-col h-full overflow-hidden" style={{ borderRadius: 'calc(1.2 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(0.8 * var(--sa)) rgba(0,0,0,0.06)' }}>
+    <div className={`flex flex-col h-full overflow-hidden ${styles.panel}`}>
       {/* header */}
-      <div className="flex justify-between items-center" style={{ padding: 'calc(2 * var(--sa)) calc(2.5 * var(--sa))' }}>
-        <Reveal as="h3" className="font-semibold text-[#132742] uppercase" style={{ fontSize: 'calc(0.85 * var(--fa) + var(--fb))', letterSpacing: '0.1em' }}>MEMBERS</Reveal>
+      <div className={`flex justify-between items-center ${styles.listHeader}`}>
+        <Reveal as="h3" className={`uppercase ${styles.listTitle}`}>MEMBERS</Reveal>
         <label className="relative flex items-center bg-white" style={{ width: 'calc(8.5 * var(--da) + var(--db))', borderRadius: '999px', boxShadow: '0 calc(0.2 * var(--sa)) calc(0.8 * var(--sa)) rgba(0,0,0,0.1)' }}>
           <input
             type="search"
@@ -31,9 +32,9 @@ export default function MembersList({ members, activeMemberId, onMemberSelect })
       </div>
 
       {/* list */}
-      <Reveal stagger={120} className="flex flex-col flex-1 overflow-y-auto">
+      <Reveal stagger={120} className={`flex flex-col flex-1 overflow-y-auto ${styles.list}`}>
         {visibleMembers.length === 0 && (
-          <p className="text-[#6b7280]" style={{ padding: 'calc(2 * var(--sa)) calc(2.5 * var(--sa))', fontSize: 'calc(0.75 * var(--fa) + var(--fb))' }}>
+          <p className={styles.empty}>
             No members match &ldquo;{query}&rdquo;.
           </p>
         )}
@@ -48,27 +49,27 @@ export default function MembersList({ members, activeMemberId, onMemberSelect })
       </Reveal>
 
       {/* footer */}
-      <div className="flex justify-end items-center" style={{ padding: 'calc(1.5 * var(--sa)) calc(2.5 * var(--sa))', borderTop: '1px solid #e5e7eb' }}>
+      <div className="flex justify-end items-center" style={{ padding: 'calc(1.2 * var(--sa)) calc(3 * var(--sa)) calc(2 * var(--sa))' }}>
         {/* Pagination */}
         <div className="flex items-center" style={{ gap: 'calc(0.4 * var(--sa))' }}>
           {[1, 2, 3].map((n) => (
             <button
               key={n}
-              className={`flex items-center justify-center cursor-pointer font-medium ${n === 1 ? 'text-white' : 'text-[#6b7280] hover:text-[#132742]'}`}
+              className={`flex items-center justify-center cursor-pointer ${n === 1 ? 'text-white' : 'text-[#11A0DB] hover:underline'}`}
               style={{
                 width: 'calc(1.8 * var(--da) + var(--db))',
                 height: 'calc(1.8 * var(--da) + var(--db))',
                 borderRadius: '50%',
                 fontSize: 'calc(0.7 * var(--fa) + var(--fb))',
                 border: 'none',
-                backgroundColor: n === 1 ? '#00A4E4' : 'transparent'
+                backgroundColor: n === 1 ? '#11A0DB' : 'transparent'
               }}
             >
               {n}
             </button>
           ))}
-          <span className="text-[#9ca3af]" style={{ fontSize: 'calc(0.7 * var(--fa) + var(--fb))' }}>.....</span>
-          <button className="flex items-center justify-center cursor-pointer font-medium text-[#00A4E4] hover:underline bg-transparent" style={{ fontSize: 'calc(0.7 * var(--fa) + var(--fb))', border: 'none' }}>
+          <span className="text-[#11A0DB]" style={{ fontSize: 'calc(0.7 * var(--fa) + var(--fb))' }}>.......</span>
+          <button className="flex items-center justify-center cursor-pointer text-[#11A0DB] hover:underline bg-transparent" style={{ fontSize: 'calc(0.7 * var(--fa) + var(--fb))', border: 'none' }}>
             42
           </button>
           <button className="flex items-center justify-center cursor-pointer text-[#00A4E4] hover:text-[#0088be] bg-transparent" style={{ border: 'none' }}>

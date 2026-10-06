@@ -1,23 +1,37 @@
 import React from 'react';
 import Link from 'next/link';
+import styles from './ArticleFooter.module.css';
 
 export function RelatedArticleGridCard({ article }) {
   return (
-    <Link href={`/insights/${article.id}`} className="no-underline text-inherit block">
-      <div className="flex flex-col h-full" style={{ gap: 'calc(0.6 * var(--sa))' }}>
-        <img
-          src={article.image || 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=400&auto=format&fit=crop'}
-          alt={article.title}
-          className="w-full object-cover"
-          style={{ height: 'calc(11 * var(--da) + var(--db))', borderRadius: 'calc(0.8 * var(--sa))', marginBottom: 'calc(0.5 * var(--sa))' }}
-        />
-        <h4 className="text-gray-900 leading-snug" style={{ fontSize: 'calc(1.05 * var(--fa) + var(--fb))', fontWeight: 500, marginBottom: 'calc(0.3 * var(--sa))' }}>
-          {article.title}
-        </h4>
-        <p className="text-gray-500 leading-relaxed" style={{ fontSize: 'calc(1 * var(--fa) + var(--fb))' }}>
-          {article.description}
-        </p>
-      </div>
+    <Link href={`/insights/${article.id}`} className={`no-underline ${styles.card}`}>
+      <img
+        src={article.image || 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=400&auto=format&fit=crop'}
+        alt={article.title}
+        className={styles.cardImage}
+      />
+      <h4 className={styles.cardTitle}>{article.title}</h4>
+      <p className={styles.cardText}>{article.description}</p>
+      <span className={styles.readMore}>
+        Read More
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      </span>
     </Link>
+  );
+}
+
+// The Related Articles section: title and a row of cards.
+export function RelatedArticles({ articles }) {
+  return (
+    <section className={styles.related}>
+      <h3 className={styles.relatedTitle}>Related Articles</h3>
+      <div className={styles.grid}>
+        {articles.map((article) => (
+          <RelatedArticleGridCard key={article.id} article={article} />
+        ))}
+      </div>
+    </section>
   );
 }

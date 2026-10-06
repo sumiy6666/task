@@ -1,0 +1,159 @@
+/* Fixed spacing from the design. (Spacing here can't use Tailwind classes:
+   the global `* { padding: 0; margin: 0 }` reset outranks them.)
+   The section sits in the main column, whose width varies a lot with the
+   window, so card sizes follow the section's own width (container queries). */
+
+.section {
+  container-type: inline-size;
+  background: #fff;
+  border-radius: 30px;
+  box-shadow: 0 6px 28px rgba(0, 62, 207, 0.06);
+  padding: 50px 35px 40px;
+}
+
+.title {
+  font-weight: 400;
+  font-size: calc(1 * var(--fa) + var(--fb)); /* same as the other section titles */
+  line-height: 1.2;
+  color: #000;
+  margin-bottom: 40px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  border-radius: 26px;
+  padding: 46px 38px 52px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.name {
+  font-size: 23px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.contributions {
+  font-size: 17px;
+  font-weight: 300;
+  opacity: 0.9;
+}
+
+.cardTitle {
+  flex-grow: 1;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.35;
+  margin-bottom: 30px;
+}
+
+.readMore {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 12px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: opacity 0.2s;
+}
+
+.readMore:hover {
+  opacity: 0.8;
+}
+
+.readMore svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* The section's own padding can't follow its container, so it steps with
+   the window: the main column is narrow on laptop-sized screens. */
+@media (max-width: 1500px) {
+  .section {
+    padding: 48px 32px 44px;
+  }
+
+  .title {
+    margin-bottom: 28px;
+  }
+}
+
+/* Narrower section: tighter cards, smaller type. */
+@container (max-width: 860px) {
+  .grid {
+    gap: 16px;
+  }
+
+  .card {
+    border-radius: 20px;
+    padding: 28px 22px 30px;
+  }
+
+  .head {
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .avatar {
+    width: 56px;
+    height: 56px;
+  }
+
+  .name {
+    font-size: 19px;
+  }
+
+  .contributions {
+    font-size: 14px;
+  }
+
+  .cardTitle {
+    font-size: 17px;
+    margin-bottom: 20px;
+  }
+
+  .readMore {
+    font-size: 15px;
+  }
+}
+
+/* Too narrow for three across: stack the cards. */
+@container (max-width: 700px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 28px 16px;
+    border-radius: 20px;
+  }
+}

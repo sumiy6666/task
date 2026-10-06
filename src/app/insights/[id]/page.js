@@ -1,9 +1,11 @@
 import React from 'react';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { ArticleContent } from '@/components/insights/ArticleContent';
-import { RelatedArticleGridCard } from '@/components/insights/RelatedArticleGridCard';
-import { PollWidget } from '@/components/ui/PollWidget';
-import { JoinDiscussionForm } from '@/components/insights/JoinDiscussionForm';
+import { RelatedArticles } from '@/components/insights/RelatedArticleGridCard';
+import { CommentForm } from '@/components/insights/CommentForm';
+import styles from '@/components/insights/ArticleDetail.module.css';
+
+const DIVIDER = { border: 0, borderTop: '1px solid #e5e7eb' };
 
 // Mock Data for Detail Page
 const articleData = {
@@ -57,16 +59,6 @@ const relatedArticles = [
   }
 ];
 
-const articlePoll = {
-  question: 'When a family adds a new asset class, how long before it appears in consolidated reporting?',
-  options: [
-    { label: 'Same month', percentage: 46, color: '#3eb0ff' },
-    { label: 'Within a quarter', percentage: 28, color: '#0056b3' },
-    { label: 'Two quarters or more', percentage: 16, color: '#00a4e4' },
-    { label: 'It never fully does', percentage: 10, color: '#0078d4' }
-  ]
-};
-
 export default function InsightDetailPage() {
   return (
     <div className="container min-h-screen" style={{ paddingBottom: 'calc(2.5 * var(--sa))' }}>
@@ -74,63 +66,43 @@ export default function InsightDetailPage() {
         { label: 'Home', href: '/' },
         { label: 'Articles', href: '/insights' },
         { label: 'The engagement letter decides what the family keeps' }
-      ]} />
+      ]} className={styles.breadcrumb} />
 
-      <div className="bg-white" style={{ borderRadius: 'calc(1.1 * var(--sa))', padding: 'calc(3 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(1 * var(--sa)) rgba(0,0,0,0.02)' }}>
+      <div className={`bg-white ${styles.card}`} style={{ borderRadius: 'calc(1.1 * var(--sa))', padding: 'calc(3 * var(--sa))', boxShadow: '0 calc(0.2 * var(--sa)) calc(1 * var(--sa)) rgba(0,0,0,0.02)' }}>
 
         {/* Article Header - left aligned */}
-        <div style={{ marginBottom: 'calc(2 * var(--sa))' }}>
-          <h1 className="font-semibold text-gray-900" style={{ fontSize: 'calc(3.2 * var(--fa) + var(--fb))', lineHeight: 1.2, marginBottom: 'calc(0.3 * var(--sa))' }}>
+        <div className={styles.header} style={{ marginBottom: 'calc(2 * var(--sa))' }}>
+          <h1 className={`font-semibold text-gray-900 ${styles.title}`} style={{ fontSize: 'calc(3.2 * var(--fa) + var(--fb))', lineHeight: 1.2, marginBottom: 'calc(0.3 * var(--sa))' }}>
             {articleData.title}
           </h1>
-          <h1 className="font-semibold text-[#00A4E4]" style={{ fontSize: 'calc(3.2 * var(--fa) + var(--fb))', lineHeight: 1.2 }}>
+          <h1 className={`font-semibold text-[#00A4E4] ${styles.title}`} style={{ fontSize: 'calc(3.2 * var(--fa) + var(--fb))', lineHeight: 1.2 }}>
             {articleData.titleHighlight}
           </h1>
         </div>
 
         {/* Article Hero Image */}
-        <div className="overflow-hidden" style={{ borderRadius: 'calc(0.8 * var(--sa))', marginBottom: 'calc(1.2 * var(--sa))', maxHeight: 'calc(30 * var(--da) + var(--db))' }}>
+        <div className={`overflow-hidden ${styles.hero}`} style={{ borderRadius: 'calc(0.8 * var(--sa))', marginBottom: 'calc(1.2 * var(--sa))', maxHeight: 'calc(30 * var(--da) + var(--db))' }}>
           <img src={articleData.image} alt={articleData.title} className="w-full h-full object-cover" />
         </div>
 
         {/* Article Meta */}
-        <div className="flex text-[#00A4E4] border-b border-gray-100" style={{ gap: 'calc(1 * var(--sa))', fontSize: 'calc(1 * var(--fa) + var(--fb))', marginBottom: 'calc(1.5 * var(--sa))', paddingBottom: 'calc(1.2 * var(--sa))' }}>
+        <div className={`flex text-[#00A4E4] border-b border-gray-100 ${styles.meta}`} style={{ gap: 'calc(1 * var(--sa))', fontSize: 'calc(1 * var(--fa) + var(--fb))', marginBottom: 'calc(1.5 * var(--sa))', paddingBottom: 'calc(1.2 * var(--sa))' }}>
           <span>{articleData.author}</span>
-          <span className="text-gray-300">|</span>
+          <span className={`text-gray-300 ${styles.sep}`}>|</span>
           <span>{articleData.timeAgo}</span>
-          <span className="text-gray-300">|</span>
+          <span className={`text-gray-300 ${styles.sep}`}>|</span>
           <span>{articleData.category}</span>
         </div>
 
         {/* Article Body */}
-        <ArticleContent content={articleData.content} />
-
-        {/* Related Articles Section */}
-        <div style={{ marginBottom: 'calc(2.5 * var(--sa))' }}>
-          <h3 className="font-semibold text-gray-800" style={{ fontSize: 'calc(1.5 * var(--fa) + var(--fb))', marginBottom: 'calc(1.2 * var(--sa))' }}>Related Articles</h3>
-          <div className="grid grid-cols-4 max-lg:grid-cols-2" style={{ gap: 'calc(1.5 * var(--sa))' }}>
-            {relatedArticles.map(article => (
-              <RelatedArticleGridCard key={article.id} article={article} />
-            ))}
-          </div>
+        <div className={styles.content}>
+          <ArticleContent content={articleData.content} />
         </div>
 
-        {/* Divider */}
-        <hr className="border-0" style={{ borderTop: 'calc(0.05 * var(--sa)) solid #eaeaea', margin: 'calc(2 * var(--sa)) 0' }} />
-
-        {/* Footer Area: Poll & Discussion */}
-        <div className="grid grid-cols-2 max-sm:grid-cols-1" style={{ gap: 'calc(2 * var(--sa))' }}>
-          <div>
-            <PollWidget
-              question={articlePoll.question}
-              options={articlePoll.options}
-              title="RELATED POLL"
-            />
-          </div>
-          <div>
-            <JoinDiscussionForm />
-          </div>
-        </div>
+        {/* The article body ends with its own divider. */}
+        <CommentForm />
+        <hr style={DIVIDER} />
+        <RelatedArticles articles={relatedArticles} />
 
       </div>
     </div>
