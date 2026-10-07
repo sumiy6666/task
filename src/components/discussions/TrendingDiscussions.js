@@ -36,7 +36,7 @@ export function TrendingDiscussions({ conversations }) {
             <img src={conv.author.avatar} alt={conv.author.name} className={`${styles.avatar} ${styles.trendAvatar}`} />
             <div className="flex-1 min-w-0">
               <h4 className={styles.trendTitle}>
-                {typeof conv.id === 'number' ? <Link href={`/conversations/${conv.id}`}>{conv.title}</Link> : conv.title}
+                {typeof conv.id === 'number' ? <Link prefetch={false} href={`/conversations/${conv.id}`}>{conv.title}</Link> : conv.title}
               </h4>
               <div className={`${styles.meta} ${styles.trendMeta}`}>
                 {conv.author.name}

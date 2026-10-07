@@ -25,7 +25,7 @@ export function UpdateList({ updates: live }) {
               <h4>{update.title}</h4>
               <p>{update.desc}</p>
             </div>
-            <Link href={update.href} className={styles.arrowBtn} aria-label={`View ${update.title}`}>
+            <Link prefetch={false} href={update.href} className={styles.arrowBtn} aria-label={`View ${update.title}`}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
             </Link>
           </div>

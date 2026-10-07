@@ -15,14 +15,14 @@ export function ActiveDiscussionsList({ discussions }) {
         {discussions.map((disc) => (
           <div key={disc.id ?? disc.title} className={styles.activeRow}>
             <div className="min-w-0">
-              <Link href={hrefFor(disc)} className={`block ${styles.activeTitle}`}>{disc.title}</Link>
+              <Link prefetch={false} href={hrefFor(disc)} className={`block ${styles.activeTitle}`}>{disc.title}</Link>
               <div className={styles.activeMeta}>
                 {disc.author}
                 <span className={styles.metaSep}>|</span>
                 {disc.timeAgo} in {disc.category}
               </div>
             </div>
-            <Link href={hrefFor(disc)} className={styles.activeArrow} aria-label={`Open: ${disc.title}`}>
+            <Link prefetch={false} href={hrefFor(disc)} className={styles.activeArrow} aria-label={`Open: ${disc.title}`}>
               <ArrowIcon />
             </Link>
           </div>

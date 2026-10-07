@@ -125,7 +125,7 @@ export function FeaturedInsight({ slides }) {
           </div>
 
           <div className="rise-in" style={{ '--delay': '0.75s' }}>
-            <Link href={`/insights/${currentBanner.id}`} className="inline-flex items-center text-white no-underline hover:bg-white/10 transition-all" style={{ gap: 'calc(0.9 * var(--sa))', height: 'calc(2.6 * var(--da) + var(--db))', padding: '0 calc(0.95 * var(--sa))', border: '1.5px solid rgba(255,255,255,0.9)', borderRadius: '999px', fontSize: 'calc(1.05 * var(--fa) + var(--fb))', fontWeight: 300 }}>
+            <Link prefetch={false} href={`/insights/${currentBanner.id}`} className="inline-flex items-center text-white no-underline hover:bg-white/10 transition-all" style={{ gap: 'calc(0.9 * var(--sa))', height: 'calc(2.6 * var(--da) + var(--db))', padding: '0 calc(0.95 * var(--sa))', border: '1.5px solid rgba(255,255,255,0.9)', borderRadius: '999px', fontSize: 'calc(1.05 * var(--fa) + var(--fb))', fontWeight: 300 }}>
               READ MORE
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ width: 'calc(1 * var(--da) + var(--db))', height: 'calc(1 * var(--da) + var(--db))' }}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />

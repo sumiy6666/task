@@ -31,6 +31,7 @@ export function Replies({ topicId, replies, currentUser }) {
   const [replyTo, setReplyTo] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const inputRef = useRef(null);
 
   const startReply = (post) => {
@@ -44,6 +45,7 @@ export function Replies({ topicId, replies, currentUser }) {
     if (!text.trim()) return setError('Write a reply first.');
     setBusy(true);
     setError('');
+    setNotice('');
     try {
       const res = await fetch(`/api/topics/${topicId}/replies`, {
         method: 'POST',
@@ -55,6 +57,7 @@ export function Replies({ topicId, replies, currentUser }) {
       if (!res.ok) throw new Error(data.error || 'Could not post your reply.');
       setText('');
       setReplyTo(null);
+      if (data.pending) setNotice('Thanks! Your reply will appear once a moderator approves it.');
       router.refresh();
     } catch (err) {
       setError(err.message);
@@ -111,6 +114,7 @@ export function Replies({ topicId, replies, currentUser }) {
             </button>
           </div>
           {error && <span className={styles.error} role="alert">{error}</span>}
+          {notice && <span role="status">{notice}</span>}
         </div>
       </form>
       )}

@@ -15,7 +15,7 @@ export const getCurrentUser = cache(async () => {
   if (!isDiscourseConfigured()) return mockUser;
   if (isSignInEnabled() && (await getUserAuth())) {
     try {
-      const data = await discourseFetch('/session/current.json');
+      const data = await discourseFetch('/session/current.json', { personal: true });
       return data?.current_user ? mapUser(data.current_user) : null;
     } catch (error) {
       if (error instanceof DiscourseError && [401, 403, 404].includes(error.status)) return null;
@@ -46,7 +46,8 @@ export async function getCategories() {
 
 export async function getTopic(id) {
   if (!isDiscourseConfigured()) return mockGetTopic((await loadDemo()).store, id);
-  const [topic, categories] = await Promise.all([discourseFetch(`/t/${encodeURIComponent(id)}.json`), getCategories()]);
+  // Read as the member, so their own votes, likes and bookmark show.
+  const [topic, categories] = await Promise.all([discourseFetch(`/t/${encodeURIComponent(id)}.json`, { personal: true }), getCategories()]);
   return mapTopic(topic, new Map(categories.map((c) => [c.id, c])));
 }
 
@@ -60,7 +61,8 @@ export async function createTopic({ title, raw, categoryId, tags = [] }) {
   if (categoryId) body.category = categoryId;
   if (tags.length) body.tags = tags;
   const post = await discourseFetch('/posts.json', { method: 'POST', body });
-  return { topicId: post.topic_id };
+  // Posts from new members may wait for a moderator ("enqueued"): no topic yet.
+  return post?.topic_id ? { topicId: post.topic_id } : { pending: true };
 }
 
 export async function createReply(topicId, { raw, replyToPostNumber }) {
@@ -71,7 +73,7 @@ export async function createReply(topicId, { raw, replyToPostNumber }) {
   const body = { topic_id: Number(topicId), raw };
   if (replyToPostNumber) body.reply_to_post_number = replyToPostNumber;
   const post = await discourseFetch('/posts.json', { method: 'POST', body });
-  return { postId: post.id };
+  return post?.id ? { postId: post.id } : { pending: true };
 }
 
 export async function saveDraft({ data, sequence = 0 }) {

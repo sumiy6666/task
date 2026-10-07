@@ -13,7 +13,7 @@ export function InsightListCard({ article }) {
         style={{ width: 'calc(15.2 * var(--da) + var(--db))', height: 'calc(8.2 * var(--da) + var(--db))', borderRadius: 'calc(0.75 * var(--sa))', boxShadow: '0 calc(0.5 * var(--sa)) calc(1 * var(--sa)) rgba(0, 0, 0, 0.2)' }}
       />
       <div className="flex-1 min-w-0 flex flex-col justify-center">
-        <Link href={`/insights/${article.id}`} className="no-underline text-inherit">
+        <Link prefetch={false} href={`/insights/${article.id}`} className="no-underline text-inherit">
           <h3 className="text-[#111] hover:text-[#00A4E4] transition-colors max-lg:max-w-none!" style={{ fontSize: 'calc(1.15 * var(--fa) + var(--fb))', fontWeight: 500, lineHeight: 1.36, marginBottom: 'calc(0.4 * var(--sa))', maxWidth: 'calc(20 * var(--da) + var(--db))' }}>
             {article.title}
           </h3>

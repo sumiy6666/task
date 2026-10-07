@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { isTopicHref } from '@/lib/links';
 import styles from './Reveal.module.css';
 
 // Fades its content up into place the first time it scrolls into view.
@@ -11,6 +12,7 @@ import styles from './Reveal.module.css';
 // `stagger` ms after the last, so a list can animate without wrapping items.
 export function Reveal({ as = 'div', delay = 0, stagger, className = '', style, children, ...props }) {
   const Tag = props.href ? Link : as;
+  if (isTopicHref(props.href)) props.prefetch = false;
   const ref = useRef(null);
   const [shown, setShown] = useState(false);
 

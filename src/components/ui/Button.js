@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { isTopicHref } from '@/lib/links';
 import styles from './Button.module.css';
 
 
@@ -27,7 +28,7 @@ export function Button({
   // With `href` the button navigates, rendered as a link so it stays valid HTML.
   if (href) {
     return (
-      <Link href={href} className={rootClass} {...props}>
+      <Link href={href} prefetch={isTopicHref(href) ? false : undefined} className={rootClass} {...props}>
         {content}
       </Link>
     );

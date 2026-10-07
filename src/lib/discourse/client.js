@@ -56,15 +56,22 @@ const MAX_RETRY_WAIT_SECONDS = 4;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+
 // `revalidate` (seconds) overrides how long a shared read is cached. Reads made
 // with a member's own key are personal and never cached.
-export async function discourseFetch(path, { method = 'GET', body, formData, username, revalidate = SHARED_READ_SECONDS, requireUser = method !== 'GET' } = {}, attempt = 0) {
+//
+// Member keys are rate-limited far more tightly than the site key, so a
+// signed-in member's key is only used for writes and for `personal` reads
+// (who they are, their own votes and likes). Everything else is read with the
+// site key and shared through the cache.
+export async function discourseFetch(path, { method = 'GET', body, formData, username, revalidate = SHARED_READ_SECONDS, personal = false, requireUser = method !== 'GET' } = {}, attempt = 0) {
   if (!isDiscourseConfigured()) {
     throw new DiscourseError('Discourse is not configured (set DISCOURSE_URL).', 503);
   }
 
   const headers = { Accept: 'application/json' };
-  const user = SIGN_IN_ENABLED ? await getUserAuth() : null;
+  const member = SIGN_IN_ENABLED ? await getUserAuth() : null;
+  const user = member && (method !== 'GET' || personal || !API_KEY) ? member : null;
   if (user) {
     headers['User-Api-Key'] = user.key;
     headers['User-Api-Client-Id'] = user.clientId;
@@ -103,7 +110,7 @@ export async function discourseFetch(path, { method = 'GET', body, formData, use
     const wait = Number(data?.extras?.wait_seconds ?? res.headers.get('retry-after'));
     if (res.status === 429 && method === 'GET' && attempt === 0 && wait > 0 && wait <= MAX_RETRY_WAIT_SECONDS) {
       await sleep(wait * 1000);
-      return discourseFetch(path, { method, body, formData, username, revalidate, requireUser }, 1);
+      return discourseFetch(path, { method, body, formData, username, revalidate, personal, requireUser }, 1);
     }
     // A revoked or expired member key comes back as 403 "invalid_access".
     if (user && (res.status === 401 || (res.status === 403 && data?.error_type === 'invalid_access'))) {

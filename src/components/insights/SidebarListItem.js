@@ -11,7 +11,7 @@ export function SidebarListItem({ Icon, title, meta, href }) {
       </div>
       <div className="min-w-0">
         <h4 className="text-[#111] max-lg:max-w-none!" style={{ fontSize: 'calc(1.15 * var(--fa) + var(--fb))', fontWeight: 500, lineHeight: 1.36, marginBottom: 'calc(0.3 * var(--sa))', maxWidth: 'calc(15.5 * var(--da) + var(--db))' }}>
-          {href ? <Link href={href} className="hover:text-[#00A4E4]">{title}</Link> : title}
+          {href ? <Link prefetch={false} href={href} className="hover:text-[#00A4E4]">{title}</Link> : title}
         </h4>
         <div className="text-[#4b5563]" style={{ fontSize: 'calc(1 * var(--fa) + var(--fb))' }}>
           {meta}

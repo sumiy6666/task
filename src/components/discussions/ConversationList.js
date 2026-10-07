@@ -12,7 +12,7 @@ export function ConversationItem({ conversation, isFirst }) {
       <img src={conversation.author.avatar} alt={conversation.author.name} className={`${styles.avatar} ${styles.convAvatar}`} />
 
       <div className="flex-1 min-w-0">
-        <Link href={href} className={`block ${styles.convTitle} ${isFirst ? styles.convTitleFirst : ''}`}>
+        <Link prefetch={false} href={href} className={`block ${styles.convTitle} ${isFirst ? styles.convTitleFirst : ''}`}>
           {conversation.title}
         </Link>
         <div className={`${styles.meta} ${styles.convMeta} ${isFirst ? styles.convMetaFirst : ''}`}>

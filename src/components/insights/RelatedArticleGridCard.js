@@ -4,7 +4,7 @@ import styles from './ArticleFooter.module.css';
 
 export function RelatedArticleGridCard({ article }) {
   return (
-    <Link href={`/insights/${article.id}`} className={`no-underline ${styles.card}`}>
+    <Link prefetch={false} href={`/insights/${article.id}`} className={`no-underline ${styles.card}`}>
       <img
         src={article.image || 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=400&auto=format&fit=crop'}
         alt={article.title}

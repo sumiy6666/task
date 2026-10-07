@@ -143,8 +143,8 @@ export function ComposeFlow({ user, categories, initialType = 'discussion' }) {
             poll: { options: filledOptions, allowMultiple, anonymous, closesAt: close?.iso || null },
           }
         : { type: 'discussion', title: title.trim(), body, categoryId: category?.id ?? null };
-      const { topicId } = await postJson('/api/topics', payload);
-      setCreated({ topicId, isPoll });
+      const { topicId, pending } = await postJson('/api/topics', payload);
+      setCreated({ topicId, isPoll, pending: Boolean(pending) });
       setStep('success');
     } catch (e) {
       setError(e.message);
@@ -235,12 +235,23 @@ export function ComposeFlow({ user, categories, initialType = 'discussion' }) {
           <GradientBadge>
             <PaperPlaneIcon />
           </GradientBadge>
-          <h1 className={styles.successTitle}>Your post is now live!</h1>
-          <p className={styles.successText}>Your post has been published and is visible to the community!</p>
+          {created.pending ? (
+            <>
+              <h1 className={styles.successTitle}>Your post is awaiting approval</h1>
+              <p className={styles.successText}>A moderator reviews posts from new members. It will appear in the community once approved.</p>
+            </>
+          ) : (
+            <>
+              <h1 className={styles.successTitle}>Your post is now live!</h1>
+              <p className={styles.successText}>Your post has been published and is visible to the community!</p>
+            </>
+          )}
           <div className={styles.successActions}>
-            <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} onClick={() => router.push(`/conversations/${created.topicId}`)}>
-              {created.isPoll ? 'View poll' : 'View post'}
-            </button>
+            {!created.pending && (
+              <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} onClick={() => router.push(`/conversations/${created.topicId}`)}>
+                {created.isPoll ? 'View poll' : 'View post'}
+              </button>
+            )}
             <button type="button" className={`${styles.btn} ${styles.btnGrey}`} onClick={reset}>
               Create another post
             </button>

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { isTopicHref } from '@/lib/links';
 import styles from './PageHero.module.css';
 
 const ArrowRight = (props) => (
@@ -46,6 +47,7 @@ export function PageHero({
               <Link
                 key={action.label}
                 href={action.href}
+                prefetch={isTopicHref(action.href) ? false : undefined}
                 className={`${styles.button} ${action.variant === 'solid' ? styles.solid : styles.outline} ${actions.length === 1 ? styles.single : ''}`}
               >
                 {action.label}

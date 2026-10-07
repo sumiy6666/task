@@ -9,7 +9,7 @@ import styles from './ArticleFooter.module.css';
 // sample article there is nowhere to post it.
 export function CommentForm({ topicId }) {
   const [text, setText] = useState('');
-  const [status, setStatus] = useState('idle'); // idle | sending | sent
+  const [status, setStatus] = useState('idle'); // idle | sending | sent | pending
   const [error, setError] = useState('');
 
   const submit = async () => {
@@ -30,7 +30,7 @@ export function CommentForm({ topicId }) {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Could not post your comment.');
       setText('');
-      setStatus('sent');
+      setStatus(data.pending ? 'pending' : 'sent');
     } catch (e) {
       setError(e.message);
       setStatus('idle');
@@ -47,16 +47,18 @@ export function CommentForm({ topicId }) {
         value={text}
         onChange={(e) => {
           setText(e.target.value);
-          if (status === 'sent') setStatus('idle');
+          if (status === 'sent' || status === 'pending') setStatus('idle');
         }}
       />
-      {(error || status === 'sent') && (
+      {(error || status === 'sent' || status === 'pending') && (
         <p role={error ? 'alert' : 'status'} style={{ margin: '8px 0', fontSize: 14, color: error ? '#b42318' : '#027a48' }}>
-          {error || (
+          {error || (status === 'pending' ? (
+            'Thanks! Your comment will appear once a moderator approves it.'
+          ) : (
             <>
-              Thanks, your comment is posted. <Link href={`/conversations/${topicId}`} className="underline">See the discussion</Link>
+              Thanks, your comment is posted. <Link prefetch={false} href={`/conversations/${topicId}`} className="underline">See the discussion</Link>
             </>
-          )}
+          ))}
         </p>
       )}
       <button type="button" className={styles.submit} onClick={submit} disabled={status === 'sending'}>

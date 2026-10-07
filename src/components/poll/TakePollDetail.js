@@ -84,7 +84,7 @@ export default function TakePollDetail({ poll: initialPoll }) {
             {error || (poll.voters != null ? `${poll.voters} ${poll.voters === 1 ? 'voter' : 'voters'}` : '')}
           </span>
           {poll.topicId && (
-            <Link href={`/conversations/${poll.topicId}`} className="text-[#11a0db] hover:underline">
+            <Link prefetch={false} href={`/conversations/${poll.topicId}`} className="text-[#11a0db] hover:underline">
               Open discussion →
             </Link>
           )}

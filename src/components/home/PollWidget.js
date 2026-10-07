@@ -31,7 +31,7 @@ export function PollWidget({ poll }) {
         </div>
         <div className={styles.titleSection}>
           <Reveal as="span" className={styles.tag}>POLLS</Reveal>
-          <Reveal as="h3" delay={150}><Link href={href}>{question}</Link></Reveal>
+          <Reveal as="h3" delay={150}><Link prefetch={false} href={href}>{question}</Link></Reveal>
         </div>
         <Link href="/poll" className={styles.learnMore}>
           LEARN MORE <ArrowRight size={14} />

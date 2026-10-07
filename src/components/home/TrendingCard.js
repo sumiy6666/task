@@ -49,7 +49,7 @@ export function TrendingCard({ slides }) {
           </Button>
         </Reveal>
 
-        <Reveal as="h2" delay={150} className={styles.title}><Link href={tabs[activeTab].href}>{tabs[activeTab].title}</Link></Reveal>
+        <Reveal as="h2" delay={150} className={styles.title}><Link prefetch={false} href={tabs[activeTab].href}>{tabs[activeTab].title}</Link></Reveal>
         <Reveal as="p" delay={300} className={styles.desc}>{tabs[activeTab].desc}</Reveal>
 
         <button

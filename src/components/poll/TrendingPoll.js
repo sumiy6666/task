@@ -19,7 +19,7 @@ export default function TrendingPoll({ poll }) {
     <PageHero
       image="/images/pollbanner.png"
       label="TRENDING POLL"
-      title={shown.topicId ? <Link href={`/conversations/${shown.topicId}`}>{shown.question}</Link> : shown.question}
+      title={shown.topicId ? <Link prefetch={false} href={`/conversations/${shown.topicId}`}>{shown.question}</Link> : shown.question}
       titleWidth="min(37.7vw, 490px)"
       arrows
     >
