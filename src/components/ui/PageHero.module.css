@@ -100,3 +100,25 @@
   .title { font-size: 22px; max-width: none; }
   .text { max-width: none; }
 }
+
+/* Poll page: bigger label, medium-weight title, as in its design. */
+.large .content { padding: 50px 40px 45px; }
+.large .label { font-size: 20px; margin-bottom: 22px; }
+.large .title { font-size: 30px; font-weight: 500; line-height: 44px; margin-bottom: 24px; font-variation-settings: normal; }
+
+@media (max-width: 1024px) {
+  .large .content { padding: 40px 32px 80px; }
+  .large .label { font-size: 16px; }
+  .large .title { font-size: 26px; line-height: 36px; }
+}
+
+@media (max-width: 640px) {
+  .large .content { padding: 28px 20px 72px; }
+  .large .title { font-size: 22px; line-height: 30px; }
+}
+
+/* Poll page: the design leaves more room under the banner. */
+.large.hero { margin-bottom: 41px; }
+@media (max-width: 1024px) {
+  .large.hero { margin-bottom: 24px; }
+}

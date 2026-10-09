@@ -1,0 +1,114 @@
+.header {
+  padding: 0 2.2rem 0 2.3rem;
+}
+
+/* Reveal wrapper around each card. */
+.cell {
+  display: flex;
+}
+
+.card {
+  position: relative;
+  flex: 1;
+  aspect-ratio: 512 / 754;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.3rem 2.25rem 2rem;
+  box-shadow: 0 16px 28px rgba(19, 39, 66, 0.18);
+}
+
+/* Navy wash behind the text, clearing towards the middle of the photo. */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(30, 40, 100, 0.92) 0%, rgba(40, 55, 120, 0.6) 30%, rgba(40, 55, 120, 0) 55%, rgba(0, 0, 0, 0) 75%, rgba(0, 0, 0, 0.35) 100%);
+  transition: opacity 0.3s;
+}
+
+.content,
+.readBtn {
+  position: relative;
+  z-index: 1;
+}
+
+.tag {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: 300;
+  line-height: 1.37;
+  max-width: 17rem;
+}
+
+.readBtn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.25rem;
+  padding: 0 0.85rem 0 1rem;
+  border: 1px solid white;
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.readBtn:hover {
+  background-color: white;
+  color: var(--color-text-main);
+}
+
+@media (max-width: 1200px) {
+  .card {
+    padding: 2rem 1.75rem 1.75rem;
+  }
+
+  .cardTitle {
+    font-size: 1.35rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .header {
+    padding: 0 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 0 0.25rem;
+  }
+
+  .card {
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-xl);
+    padding: 1.75rem 1.5rem 1.5rem;
+  }
+
+  .tag {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .cardTitle {
+    font-size: 1.35rem;
+  }
+
+  .readBtn {
+    height: 2.5rem;
+    font-size: 0.85rem;
+  }
+}

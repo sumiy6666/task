@@ -2,17 +2,10 @@
 
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import styles from './RegisterEvent.module.css';
-import { GradientBadge } from '../compose/GradientBadge';
-import { CheckIcon, CloseIcon } from '../compose/icons';
+import { CloseIcon } from '../compose/icons';
 
 const line = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.2, strokeLinecap: 'round', strokeLinejoin: 'round' };
 
-const ClockIcon = () => (
-  <svg viewBox="0 0 14 14" {...line}><circle cx="7" cy="7" r="6" /><path d="M7 3.5V7l2.2 1.4" /></svg>
-);
-const ArrowIcon = () => (
-  <svg viewBox="0 0 20 20" {...line}><path d="M3 10h14M12 5l5 5-5 5" /></svg>
-);
 const CalendarIcon = () => (
   <svg viewBox="0 0 18 18" {...line}><rect x="2" y="3" width="14" height="13" rx="2" /><path d="M2 7h14M6 1.5v3M12 1.5v3M6.5 11l1.8 1.8L11.5 9.5" /></svg>
 );
@@ -71,15 +64,15 @@ export function downloadIcs(event) {
   URL.revokeObjectURL(url);
 }
 
+// "4:00 PM - 5:30 PM IST | Wednesday, 12 June 2024 | Virtual event", as in the design.
 function EventMeta({ event }) {
-  return (
-    <ul className={styles.meta}>
-      <li><ClockIcon />{event.fullDate}</li>
-      <li><ClockIcon />{event.time}</li>
-      <li><ClockIcon />{event.location}</li>
-    </ul>
-  );
+  return <p className={styles.meta}>{[event.time, event.fullDate, event.location].filter(Boolean).join(' | ')}</p>;
 }
+
+// Four-point sparkle beside the success badge.
+const Sparkle = ({ className }) => (
+  <svg className={className} viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0c.5 4.2 3.8 7.5 8 8-4.2.5-7.5 3.8-8 8-.5-4.2-3.8-7.5-8-8 4.2-.5 7.5-3.8 8-8z" fill="currentColor" /></svg>
+);
 
 export function RegisterEventModal({ event, onClose }) {
   const [form, setForm] = useState({ name: '', email: '', organisation: '', role: '' });
@@ -141,11 +134,13 @@ export function RegisterEventModal({ event, onClose }) {
         {registeredEmail ? (
           <>
             <div className={styles.doneHead}>
-              <GradientBadge>
-                <CheckIcon />
-              </GradientBadge>
-              <h2 id="register-title" className={styles.doneTitle}>You’re Registered</h2>
-              <p className={styles.doneText}>You’re all set for</p>
+              <div className={styles.badge} aria-hidden="true">
+                <span className={styles.badgeCircle} />
+                <Sparkle className={styles.sparkleLg} />
+                <Sparkle className={styles.sparkleSm} />
+                <Sparkle className={styles.sparkleXs} />
+              </div>
+              <h2 id="register-title" className={styles.doneTitle}>You’re Registered!</h2>
             </div>
             <div className={styles.doneRow}>
               <img className={styles.doneThumb} src={event.detailImage || event.image} alt="" />
@@ -193,13 +188,9 @@ export function RegisterEventModal({ event, onClose }) {
                 </label>
               </div>
 
-              <div className={styles.submitRow}>
-                <button type="submit" className={styles.confirm} disabled={busy}>
-                  {busy ? 'Registering…' : 'Confirm Registration'}
-                  <ArrowIcon />
-                </button>
-                <span className={styles.hint}>You can cancel anytime.</span>
-              </div>
+              <button type="submit" className={styles.confirm} disabled={busy}>
+                {busy ? 'REGISTERING…' : 'REGISTER'}
+              </button>
               {error && <span className={styles.error} role="alert">{error}</span>}
             </form>
 

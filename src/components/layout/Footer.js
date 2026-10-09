@@ -1,62 +1,90 @@
 'use client';
 import React from 'react';
+import Link from 'next/link';
 import styles from './Footer.module.css';
 import { usePathname } from 'next/navigation';
-import { AccordionMenu } from '../ui/AccordionMenu';
 
 // Pages that run full-width without the site footer.
 const NO_FOOTER = ['/conversations/new'];
+
+const NAV_LINKS = [
+  { href: '/discussions', label: 'DISCUSSIONS' },
+  { href: '/poll', label: 'POLLS' },
+  { href: '/events', label: 'EVENTS' },
+  { href: '/members', label: 'MEMBERS' },
+  { href: '/discussions', label: 'MY DASHBOARD' },
+];
+
+const ICON_LINKS = [
+  { href: '#', label: 'AV Product', icon: '/images/Vector1.svg' },
+  { href: '#', label: 'Support', icon: '/images/Icon4.svg' },
+  { href: '#', label: 'AI Assistance', icon: '/images/Vector2.svg' },
+];
+
+const LEGAL_LINKS = [
+  { href: '/about', label: 'About AV Community' },
+  { href: '/privacy', label: 'Privacy Policy' },
+  { href: '/terms', label: 'Terms of use' },
+  { href: '/guidelines', label: 'Community Guidelines' },
+  { href: '/feedback', label: 'Site Feedback' },
+];
 
 export function Footer() {
   const pathname = usePathname();
   if (NO_FOOTER.includes(pathname)) return null;
 
   return (
-    <div className="container" style={{ marginTop: '0rem', marginBottom: '2rem' }}>
+    <div className={`container ${styles.wrapper}`}>
       <footer className={styles.footerContainer}>
-        <div className={styles.footerGrid}>
-          <div className={styles.leftCol}>
-            <AccordionMenu />
-          </div>
-          <div className={styles.rightCol}>
-            <div className={styles.stayLoopCard}>
-              <h3>Stay in Loop</h3>
-              <p>Subscribe to get the latest insights, events and updates from AV CIRCLE.</p>
-              <form className={styles.loopForm}>
-                <input type="email" placeholder="Enter your email" />
-                <button type="submit" aria-label="Subscribe">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                </button>
-              </form>
-            </div>
+        <div className={styles.top}>
+          <div className={styles.loop}>
+            <h3>STAY IN LOOP</h3>
+            <p>Subscribe to get the latest insights,<br className={styles.desktopBreak} /> events and updates from AV COMMUNITY.</p>
+            <form className={styles.loopForm}>
+              <input type="email" placeholder="Enter your email" aria-label="Email address" />
+              <button type="submit" aria-label="Subscribe">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+              </button>
+            </form>
 
             <div className={styles.iconLinks}>
-              <a href="#"><div className={styles.iconCircle}><img src="/images/Vector1.svg" alt="AV Product" className={styles.icon} /></div> AV Product</a>
-              <a href="#"><div className={styles.iconCircle}><img src="/images/Icon4.svg" alt="Support" className={styles.icon} /></div> Support</a>
-              <a href="#"><div className={styles.iconCircle}><img src="/images/Icon5.svg" alt="Profile" className={styles.icon} /></div> Profile</a>
-              <a href="#"><div className={styles.iconCircle}><img src="/images/Icon6.svg" alt="Notification" className={styles.icon} /></div> Notification</a>
-              <a href="#"><div className={styles.iconCircle}><img src="/images/Vector2.svg" alt="AI Assistance" className={styles.icon} /></div> AI Assistance</a>
-            </div>
-
-            <div className={styles.brand}>
-              <img src="/images/logo.svg" alt="AV CIRCLE" className={styles.brandLogo} />
-              <p>AV CIRCLE is the community platform for Asset Vantage users to connect, learn, share knowledge and grow together.</p>
+              {ICON_LINKS.map((link) => (
+                <a key={link.label} href={link.href}>
+                  <span className={styles.iconCircle}>
+                    {/* The icons are white; a mask lets them take the brand blue. */}
+                    <span
+                      className={styles.icon}
+                      style={{ maskImage: `url(${link.icon})`, WebkitMaskImage: `url(${link.icon})` }}
+                      aria-hidden="true"
+                    />
+                  </span>
+                  {link.label}
+                </a>
+              ))}
             </div>
           </div>
+
+          <nav className={styles.nav} aria-label="Footer">
+            {NAV_LINKS.map((link) => (
+              <Link key={link.label} href={link.href}>{link.label}</Link>
+            ))}
+          </nav>
         </div>
 
+        {/* Stretched to the footer width whatever font renders it. */}
+        <svg className={styles.wordmark} viewBox="0 0 1000 204" aria-hidden="true">
+          <text x="0" y="169" textLength="1000" lengthAdjust="spacingAndGlyphs">Community</text>
+        </svg>
+
         <div className={styles.bottomBar}>
-          <p>&copy; 2026 AV CIRCLE. All rights reserved.</p>
+          <p>&copy; 2026 AV COMMUNITY. All rights reserved.</p>
           <div className={styles.legalLinks}>
-            <a href="/privacy">Privacy Policy</a>
-            <span className={styles.separator}>|</span>
-            <a href="/terms">Terms of use</a>
-            <span className={styles.separator}>|</span>
-            <a href="/guidelines">Community Guidelines</a>
-            <span className={styles.separator}>|</span>
-            <a href="/feedback">Site Feedback</a>
-            <span className={styles.separator}>|</span>
-            <a href="#">Help Center</a>
+            {LEGAL_LINKS.map((link, index) => (
+              <React.Fragment key={link.href}>
+                {index > 0 && <span className={styles.separator}>|</span>}
+                <Link href={link.href}>{link.label}</Link>
+              </React.Fragment>
+            ))}
           </div>
         </div>
       </footer>

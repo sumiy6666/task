@@ -1,12 +1,11 @@
 import React from 'react';
 import styles from './page.module.css';
 import { HeroBanner } from '@/components/home/HeroBanner';
+import { DiscussionForum } from '@/components/home/DiscussionForum';
+import { ResourcesCarousel } from '@/components/home/ResourcesCarousel';
 import { PollWidget } from '@/components/home/PollWidget';
-import { QuickAccess } from '@/components/home/QuickAccess';
-import { TrendingCard } from '@/components/home/TrendingCard';
-import { CommunityPulse } from '@/components/home/CommunityPulse';
 import { UpdateList } from '@/components/home/UpdateList';
-import { ExploreCards } from '@/components/home/ExploreCards';
+import { CommunityPulse } from '@/components/home/CommunityPulse';
 import { loadHome } from '@/lib/discourse/lists';
 
 export default async function Home() {
@@ -16,28 +15,20 @@ export default async function Home() {
   return (
     <main className={`container ${styles.main}`}>
       <HeroBanner />
+      <DiscussionForum topics={live?.forum} />
+      <ResourcesCarousel resources={live?.resources} />
 
-      {/* Row 1: Polls/QuickAccess + Trending */}
+      {/* Poll + News */}
       <section className={styles.gridRow}>
-        <div className={styles.colLeft}>
+        <div className={styles.colPoll}>
           <PollWidget poll={live?.poll} />
-          <QuickAccess />
         </div>
-        <div className={styles.colRight}>
-          <TrendingCard slides={live?.trending} />
-        </div>
-      </section>
-
-      {/* Row 2: CommunityPulse/Updates + ExploreCards */}
-      <section className={styles.gridRow}>
-        <div className={styles.colLeft2}>
-          <CommunityPulse pulse={live?.pulse} />
+        <div className={styles.colNews}>
           <UpdateList updates={live?.updates} />
         </div>
-        <div className={styles.colRight2}>
-          <ExploreCards />
-        </div>
       </section>
+
+      <CommunityPulse pulse={live?.pulse} />
     </main>
   );
 }

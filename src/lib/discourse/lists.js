@@ -63,6 +63,8 @@ function topicMapper(list, categoriesById) {
       views: t.views ?? null,
       replies: Math.max(0, (t.posts_count || 1) - 1),
       likes: t.like_count || 0,
+      tags: (t.tags || []).map((tag) => (typeof tag === 'string' ? tag : tag.name)),
+      lastActivity: timeAgo(t.last_posted_at || t.bumped_at || t.created_at),
     };
   };
 }
@@ -173,13 +175,14 @@ const mostVoted = (polls) => [...polls].sort((a, b) => (b.voters || 0) - (a.vote
 
 export function loadDiscussions() {
   return safely('discussions', async () => {
-    const [categories, latest, active, top, members, tags] = await Promise.all([
-      loadCategories(),
+    const categories = await loadCategories();
+    const [latest, active, top, members, tags, polls] = await Promise.all([
       discourseFetch('/latest.json?order=created'),
       discourseFetch('/latest.json'),
       discourseFetch('/top.json?period=all'),
       loadTopMembers(6).catch(() => []),
       discourseFetch('/tags.json').catch(() => null),
+      fetchPolls(categories, 6).catch(() => []),
     ]);
     const categoriesById = new Map(categories.map((c) => [c.id, c]));
 
@@ -188,7 +191,15 @@ export function loadDiscussions() {
       .map((t) => ({ id: t.id, title: t.title, author: t.author.name, timeAgo: t.timeAgo, category: t.category }));
     const total = categories.reduce((sum, c) => sum + (c.topic_count || 0), 0);
 
+    const openPolls = polls.filter((p) => !p.closed);
+    const sidePoll = mostVoted(openPolls);
+
     return {
+      // The discussions feed; the page filters it by category and trims it.
+      feed: mapList(latest, categoriesById).filter((t) => !t.pinned).slice(0, 30),
+      // An open poll for the feed, and the most-voted one for the sidebar.
+      feedPoll: openPolls.find((p) => p !== sidePoll) || null,
+      poll: sidePoll,
       latest: mapList(latest, categoriesById).slice(0, 4),
       trending: mapList(top, categoriesById).slice(0, 4),
       recentlyActive,
@@ -213,8 +224,8 @@ export function loadMembers() {
   return safely('members', () => loadMemberProfiles(50));
 }
 
-// Home page: the most-voted open poll, the trending carousel, the pulse
-// numbers and the staff updates list.
+// Home page: the most-voted open poll, the trending carousel, the forum
+// cards, the resources carousel, the pulse numbers and the news list.
 export function loadHome() {
   return safely('home', async () => {
     const categories = await loadCategories();
@@ -255,6 +266,15 @@ export function loadHome() {
         insight: articleTopics[0] && { ...slide(articleTopics[0], counts), href: `/insights/${articleTopics[0].id}` },
         polls: poll && { title: poll.question, desc: `${poll.voters} ${poll.voters === 1 ? 'vote' : 'votes'} so far. Have your say.`, image: null, href: '/poll' },
       },
+      // One recent topic from each of four categories.
+      forum: latestTopics
+        .filter((t) => !t.pinned && t.category)
+        .filter((t, i, all) => all.findIndex((x) => x.category === t.category) === i)
+        .slice(0, 4)
+        .map((t) => ({ category: t.category, title: t.title, replies: t.replies, timeAgo: t.timeAgo, href: `/conversations/${t.id}` })),
+      resources: articleTopics
+        .slice(0, 6)
+        .map((t) => ({ tag: t.category, title: t.title, image: t.image, href: `/insights/${t.id}` })),
       pulse: {
         contributors: stats.participating_users_30_days ?? null,
         topics: topTopics.length || null,

@@ -40,8 +40,8 @@
   gap: calc(26 * var(--px));
 }
 .avatarRing {
-  width: calc(70 * var(--px));
-  height: calc(70 * var(--px));
+  width: calc(77 * var(--px));
+  height: calc(77 * var(--px));
   border-radius: 50%;
   padding: calc(2 * var(--px));
   background: linear-gradient(160deg, #D25FD0 0%, #6E8BF0 55%, #3FA9F5 100%);
@@ -95,14 +95,14 @@
 .category:focus-within { border-color: var(--color-primary); }
 .categoryLabel {
   display: block;
-  font-size: calc(10 * var(--px));
-  letter-spacing: 0.02em;
+  font-size: calc(13.5 * var(--px));
+  letter-spacing: 0.01em;
   color: #1d1d1d;
   text-transform: uppercase;
 }
 .categoryValue {
   display: block;
-  margin-top: calc(6 * var(--px));
+  margin-top: calc(3 * var(--px));
   font-size: calc(14 * var(--px));
   color: var(--color-link-blue);
 }
@@ -214,7 +214,7 @@
 }
 .sectionTitle {
   font-size: calc(18 * var(--px));
-  font-weight: 500;
+  font-weight: 600;
   color: #111;
 }
 .optionList {
@@ -254,7 +254,7 @@
   border: none;
   outline: none;
   font: inherit;
-  font-size: calc(14 * var(--px));
+  font-size: calc(15.5 * var(--px));
   color: #111;
   background: transparent;
 }
@@ -279,7 +279,7 @@
   gap: calc(20 * var(--px));
 }
 .setting + .setting { margin-top: calc(26 * var(--px)); }
-.settingLabel { font-size: calc(16 * var(--px)); color: #111; }
+.settingLabel { font-size: calc(15 * var(--px)); color: #111; }
 .settingHint { display: block; margin-top: calc(4 * var(--px)); font-size: calc(13 * var(--px)); color: #a3a3a3; }
 
 .toggle {
@@ -320,7 +320,7 @@
   border-radius: calc(6 * var(--px));
   padding: 0 calc(11 * var(--px));
   font: inherit;
-  font-size: calc(14 * var(--px));
+  font-size: calc(13 * var(--px));
   color: #111;
   outline: none;
   background: #fff;
@@ -341,7 +341,7 @@
 }
 .reviewTop .category { margin-top: calc(35 * var(--px)); }
 .reviewQuestion {
-  font-size: calc(28 * var(--px));
+  font-size: calc(27 * var(--px));
   font-weight: 400;
   color: #111;
   margin-top: calc(22 * var(--px));
@@ -362,7 +362,7 @@
   display: flex;
   align-items: center;
   padding: 0 calc(22 * var(--px));
-  font-size: calc(14 * var(--px));
+  font-size: calc(15.5 * var(--px));
   color: #111;
 }
 .reviewMeta {
@@ -377,6 +377,58 @@
   color: #333;
   white-space: pre-wrap;
   max-width: calc(845 * var(--px));
+}
+
+
+/* Post type cards: ARTICLE / POLL / INSIGHT */
+.kinds {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: calc(33 * var(--px));
+  margin-top: calc(26 * var(--px));
+}
+.kindCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(38 * var(--px));
+  height: calc(322 * var(--px));
+  border: 1px solid var(--color-input-border);
+  border-radius: calc(8 * var(--px));
+  background: #fff;
+  font-size: calc(29 * var(--px));
+  letter-spacing: 0.01em;
+  color: #111;
+  transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
+}
+.kindCard:hover { border-color: var(--color-primary); box-shadow: 0 calc(8 * var(--px)) calc(20 * var(--px)) rgba(0, 164, 228, 0.12); }
+.kindCard:hover .kindCardIcon { color: var(--color-primary); }
+.kindCardIcon { height: calc(64 * var(--px)); width: auto; color: #a3a3a3; transition: color 0.2s; }
+
+/* The chosen type with GO BACK on the right */
+.kindHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: calc(26 * var(--px));
+}
+.kindTitle { display: inline-flex; align-items: center; gap: calc(14 * var(--px)); padding-left: calc(9 * var(--px)); font-size: calc(18 * var(--px)); color: #111; }
+.kindIcon { height: calc(20 * var(--px)); width: auto; color: #111; }
+.goBack { display: inline-flex; align-items: center; gap: calc(10 * var(--px)); margin-right: calc(16 * var(--px)); font-size: calc(14.5 * var(--px)); letter-spacing: 0.02em; color: #9a9a9a; }
+.goBack:hover { color: var(--color-primary); }
+.goBack svg { width: calc(16 * var(--px)); height: calc(16 * var(--px)); }
+.kindHeader + .bodyInput,
+.kindHeader + label + .bodyInput { margin-top: calc(24 * var(--px)); }
+
+/* The poll editor sits in a bordered box */
+.pollBox {
+  margin-top: calc(18 * var(--px));
+  padding: calc(30 * var(--px)) calc(26 * var(--px)) calc(32 * var(--px)) calc(37 * var(--px));
+  border: 1px solid var(--color-input-border);
+  border-radius: calc(8 * var(--px));
+  grid-template-columns: calc(615 * var(--px)) 1fr;
+  column-gap: calc(155 * var(--px));
 }
 
 /* Success */
@@ -458,6 +510,10 @@
   .dragHandle { padding-left: 0; }
   .dateInput { flex: 1; min-width: 0; width: auto; height: 36px; }
   .reviewQuestion { font-size: 24px; }
+  .kinds { gap: 16px; }
+  .kindCard { height: 220px; gap: 24px; font-size: 22px; }
+  .kindCardIcon { height: 48px; }
+  .pollBox { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); column-gap: 32px; padding: 24px; }
   .reviewOptions { width: 100%; }
   .success { padding: 64px 0; }
   .successActions { gap: 24px; margin-top: 56px; }
@@ -481,7 +537,14 @@
   .categoryValue { font-size: 15px; }
   .bodyInput { margin-top: 12px; height: 240px; padding: 14px 16px; font-size: 16px; }
 
-  .pollGrid { grid-template-columns: 1fr; row-gap: 28px; margin-top: 24px; }
+  .pollGrid, .pollBox { grid-template-columns: 1fr; row-gap: 28px; margin-top: 16px; }
+  .pollBox { padding: 18px 14px; }
+  .kinds { grid-template-columns: 1fr; gap: 12px; margin-top: 16px; }
+  .kindCard { flex-direction: row; justify-content: flex-start; height: 76px; padding: 0 22px; gap: 20px; font-size: 18px; }
+  .kindCardIcon { height: 30px; width: 34px; }
+  .kindHeader { margin-top: 20px; }
+  .kindTitle { font-size: 16px; padding-left: 0; }
+  .goBack { font-size: 13px; margin-right: 0; }
   .sectionTitle { font-size: 17px; }
   .optionList { margin-top: 14px; }
   .optionRow { gap: 8px; }
@@ -511,4 +574,9 @@
   .successText { font-size: 14px; line-height: 1.5; margin-top: 12px; }
   .successActions { flex-direction: column; gap: 14px; margin-top: 40px; width: 100%; }
   .successActions .btn { width: 100%; }
+}
+
+/* The 1300px container has no side padding of its own. */
+@media (min-width: 769px) and (max-width: 1340px) {
+  .page { padding-left: 1.5rem; padding-right: 1.5rem; }
 }

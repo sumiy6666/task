@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './HeroBanner.module.css';
 import { Button } from '../ui/Button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, MessageSquare } from 'lucide-react';
 
 const bannerData = [
   {
@@ -10,15 +10,15 @@ const bannerData = [
     tag: 'FEATURED',
     title: 'The engagement letter decides what the family keeps',
     desc: 'Under the AICPA Code, working papers stay with the firm unless a contract says otherwise. Most letters say nothing.',
-    buttonText: 'LEARN MORE',
+    buttonText: 'LEARN',
     href: '/insights'
   },
   {
-    image: '/images/herobanner1.jpg',
+    image: '/images/herobanner2.jpg',
     tag: 'TRENDING',
     title: "GIFT City's family fund route is open",
     desc: 'Three years after the framework arrived, the first full registration went to a foreign structure.',
-    buttonText: 'READ ARTICLE',
+    buttonText: 'READ',
     href: '/insights'
   }
 ];
@@ -39,7 +39,7 @@ export function HeroBanner() {
       setCurrentSlide((prev) => (prev + 1) % bannerData.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [currentSlide]);
 
   const nextSlide = () => goTo((prev) => (prev + 1) % bannerData.length);
   const prevSlide = () => goTo((prev) => (prev === 0 ? bannerData.length - 1 : prev - 1));
@@ -51,12 +51,12 @@ export function HeroBanner() {
           <h1 className="rise-in">Welcome to <span className={styles.highlight}>AV COMMUNITY</span></h1>
           <p className="rise-in" style={{ '--delay': '0.15s' }}>Connect, learn and grow with professionals around the world.</p>
         </div>
-        <div className={styles.welcomeActions}>
-          <Button href="/conversations/new" variant="secondary" icon={<img src="/images/banner_conversation.svg" alt="conversation" style={{ width: '16px', height: '16px' }} />} iconPosition="left" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'transparent', border: '1px solid #ccc', color: '#555', padding: '0.3vw 1.5vw', borderRadius: '24px', fontSize: '11px' }}>
-            START A CONVERSATION
+        <div className={`${styles.welcomeActions} rise-in`} style={{ '--delay': '0.3s' }}>
+          <Button href="/conversations/new" variant="secondary" icon={<MessageSquare size={18} strokeWidth={1.5} />} iconPosition="left" className={styles.discussionBtn}>
+            START A DISCUSSION
           </Button>
-          <Button href="/discussions" variant="primary" icon={<ArrowRight size={16} />} iconPosition="right" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#00A4E4', color: 'white', padding: '0.3vw 1.5vw', borderRadius: '24px', border: 'none', fontSize: '11px' }}>
-            LEARN MORE
+          <Button href="/discussions" variant="primary" icon={<ArrowRight size={16} />} iconPosition="right" className={styles.dashboardBtn}>
+            MY DASHBOARD
           </Button>
         </div>
       </div>
@@ -67,7 +67,7 @@ export function HeroBanner() {
             key={index}
             className={styles.bannerBackground}
             style={{
-              backgroundImage: `linear-gradient(to right, rgb(0, 62, 207, 0.3) 0%, rgba(12, 43, 74, 0.5) 40%, rgba(12, 43, 74, 0) 70%), url('${banner.image}')`,
+              backgroundImage: `linear-gradient(100deg, rgba(10, 30, 92, 0.92) 0%, rgba(12, 30, 70, 0.6) 35%, rgba(12, 43, 74, 0) 65%), url('${banner.image}')`,
               opacity: currentSlide === index ? 1 : 0,
               visibility: currentSlide === index ? 'visible' : 'hidden',
             }}
@@ -83,28 +83,24 @@ export function HeroBanner() {
           </p>
         </div>
 
-        <div
-          key={`btn-${currentSlide}`}
-          className={`${styles.learnMoreBtnWrapper} rise-in`}
-          style={{ '--base': hasSlid ? '0.3s' : '0.6s', '--delay': '0.45s' }}
-        >
-          <Button href={bannerData[currentSlide].href} variant="outline" icon={<ArrowRight size={16} />} iconPosition="right" className={styles.learnMoreBtn} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'transparent', border: '1px solid white', color: 'white', padding: '0.3rem 1.2rem', borderRadius: '24px', fontSize: '12px' }}>
-            {bannerData[currentSlide].buttonText}
-          </Button>
-        </div>
+        <div className={styles.bannerFooter}>
+          <div
+            key={`btn-${currentSlide}`}
+            className="rise-in"
+            style={{ '--base': hasSlid ? '0.3s' : '0.6s', '--delay': '0.45s' }}
+          >
+            <Button href={bannerData[currentSlide].href} variant="outline" icon={<ArrowRight size={16} />} iconPosition="right" className={styles.learnMoreBtn}>
+              {bannerData[currentSlide].buttonText}
+            </Button>
+          </div>
 
-        <div className={styles.bannerControls}>
-          <button className={styles.navBtn} aria-label="Previous" onClick={prevSlide}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
-          </button>
-          <button className={styles.navBtn} aria-label="Next" onClick={nextSlide}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-          </button>
-        </div>
-
-        <div className={styles.userBadge}>
-          <div className={styles.headphoneIcon}>
-            <img src="/images/icon1coversation.svg" alt="Conversations" style={{ width: '38px', height: '38px' }} />
+          <div className={styles.bannerControls}>
+            <button className={styles.navBtn} aria-label="Previous slide" onClick={prevSlide}>
+              <ArrowLeft size={14} />
+            </button>
+            <button className={styles.navBtn} aria-label="Next slide" onClick={nextSlide}>
+              <ArrowRight size={14} />
+            </button>
           </div>
         </div>
       </div>

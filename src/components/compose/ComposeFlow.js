@@ -6,7 +6,26 @@ import styles from './Compose.module.css';
 import { GradientBadge } from './GradientBadge';
 import { EmojiButton, insertAtCursor } from './EmojiButton';
 import { PollOptionsEditor } from './PollOptionsEditor';
-import { ChevronDownIcon, CloseIcon, ImageIcon, LinkIcon, PaperPlaneIcon } from './icons';
+import { ArticleIcon, ChevronDownIcon, ChevronLeftIcon, CloseIcon, ImageIcon, InsightIcon, LinkIcon, PaperPlaneIcon, PollIcon } from './icons';
+
+const KINDS = [
+  { id: 'article', label: 'ARTICLE', Icon: ArticleIcon },
+  { id: 'poll', label: 'POLL', Icon: PollIcon },
+  { id: 'insight', label: 'INSIGHT', Icon: InsightIcon },
+];
+
+// The chosen type with a GO BACK link on the right.
+function KindHeader({ kind, onBack, backLabel = 'GO BACK' }) {
+  const { label, Icon } = KINDS.find((k) => k.id === kind);
+  return (
+    <div className={styles.kindHeader}>
+      <span className={styles.kindTitle}><Icon className={styles.kindIcon} aria-hidden="true" />{label}</span>
+      <button type="button" className={styles.goBack} onClick={onBack}>
+        <ChevronLeftIcon aria-hidden="true" />{backLabel}
+      </button>
+    </div>
+  );
+}
 import { redirectIfSignedOut } from '@/lib/auth-client';
 
 let nextOptionId = 1;
@@ -41,10 +60,10 @@ function Author({ user }) {
   );
 }
 
-function CategoryField({ categories, value, onChange, readOnly = false }) {
+export function CategoryField({ categories, value, onChange, readOnly = false, className = '' }) {
   const current = categories.find((c) => String(c.id ?? c.name) === value);
   return (
-    <div className={`${styles.category} ${readOnly ? styles.categoryStatic : ''}`}>
+    <div className={`${styles.category} ${readOnly ? styles.categoryStatic : ''} ${className}`}>
       <span className={styles.categoryLabel} id="category-label">Categories</span>
       <span className={styles.categoryValue}>{current?.name || 'Select'}</span>
       <ChevronDownIcon className={styles.categoryChevron} />
@@ -66,14 +85,21 @@ function CategoryField({ categories, value, onChange, readOnly = false }) {
   );
 }
 
-export function ComposeFlow({ user, categories, initialType = 'discussion' }) {
+// `initialTitle` and `initialCategory` (a category name) prefill the form,
+// e.g. from the composer on the discussions page.
+export function ComposeFlow({ user, categories, initialType = 'discussion', initialTitle = '', initialCategory }) {
   const router = useRouter();
   const keyOf = (c) => String(c.id ?? c.name);
   const defaultKey = (type) => keyOf(categories.find((c) => (type === 'poll' ? c.isPoll : !c.isPoll)) || categories[0]);
 
   const [step, setStep] = useState('edit');
-  const [categoryKey, setCategoryKey] = useState(() => defaultKey(initialType));
-  const [title, setTitle] = useState('');
+  // What is being posted: 'article' | 'poll' | 'insight'; null shows the type cards.
+  const [kind, setKind] = useState(initialType === 'poll' ? 'poll' : null);
+  const [categoryKey, setCategoryKey] = useState(() => {
+    const named = initialCategory && categories.find((c) => c.name === initialCategory);
+    return named ? keyOf(named) : defaultKey(initialType);
+  });
+  const [title, setTitle] = useState(initialTitle);
   const [body, setBody] = useState('');
   const [options, setOptions] = useState(initialOptions);
   const [allowMultiple, setAllowMultiple] = useState(false);
@@ -96,13 +122,28 @@ export function ComposeFlow({ user, categories, initialType = 'discussion' }) {
   }, [step]);
 
   const category = categories.find((c) => keyOf(c) === categoryKey);
-  const isPoll = Boolean(category?.isPoll);
+  const isPoll = kind === 'poll';
+
+  // Picking a type moves to its usual category: polls to the Polls category
+  // (so they appear on the Poll page), insights to Articles/Insights.
+  const chooseKind = (next) => {
+    setKind(next);
+    setError('');
+    const find = (test) => categories.find(test);
+    const target =
+      next === 'poll' ? find((c) => c.isPoll)
+      : next === 'insight' ? find((c) => /insight|article/i.test(c.name))
+      : category?.isPoll ? find((c) => !c.isPoll)
+      : null;
+    if (target) setCategoryKey(keyOf(target));
+  };
   const filledOptions = options.map((o) => o.text.trim()).filter(Boolean);
   const close = useMemo(() => formatClose(endDate, endTime), [endDate, endTime]);
   const today = new Date().toISOString().slice(0, 10);
 
   const reset = () => {
     setStep('edit');
+    setKind(null);
     setTitle('');
     setBody('');
     setOptions(initialOptions());
@@ -117,6 +158,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion' }) {
   };
 
   const validate = () => {
+    if (!kind) return 'Choose Article, Poll or Insight.';
     if (!title.trim()) return isPoll ? 'Please write your question.' : 'Please add what this conversation is about.';
     if (isPoll) {
       if (filledOptions.length < 2) return 'Add at least two options.';
@@ -265,11 +307,12 @@ export function ComposeFlow({ user, categories, initialType = 'discussion' }) {
     return (
       <section className={styles.card}>
         {closeButton}
-        <h1 className={styles.reviewHeading}>Review and Publish</h1>
+        <h1 className={styles.srOnly}>Review and Publish</h1>
         <div className={styles.reviewTop}>
           <Author user={user} />
           <CategoryField categories={categories} value={categoryKey} readOnly />
         </div>
+        <KindHeader kind="poll" onBack={() => setStep('edit')} backLabel="EDIT" />
         <h2 className={styles.reviewQuestion}>{title.trim()}</h2>
         <ul className={styles.reviewOptions}>
           {filledOptions.map((o, i) => (
@@ -278,13 +321,9 @@ export function ComposeFlow({ user, categories, initialType = 'discussion' }) {
         </ul>
         <p className={styles.reviewMeta}>
           {close ? `Poll closes on ${close.label}` : 'Poll stays open until closed manually'}
-          {allowMultiple ? ' · Multiple selections allowed' : ''}
-          {anonymous ? ' · Anonymous voting' : ''}
         </p>
         <div className={styles.footer}>
-          <button type="button" className={styles.notice} onClick={() => setStep('edit')} style={{ textDecoration: 'underline' }}>
-            Back to edit
-          </button>
+          <span />
           <div className={styles.actions} style={{ alignItems: 'center' }}>
             {status}
             <button type="button" className={`${styles.btn} ${styles.btnGrey} ${styles.btnDraft}`} onClick={saveDraft} disabled={busy}>
@@ -306,12 +345,12 @@ export function ComposeFlow({ user, categories, initialType = 'discussion' }) {
 
       <div className={styles.titleRow}>
         <label className={styles.srOnly} htmlFor="compose-title">
-          {isPoll ? 'Question' : 'Title'}
+          Question
         </label>
         <input
           id="compose-title"
           className={styles.titleInput}
-          placeholder={isPoll ? 'Write question here' : 'What is this conversation about in one brief sentence?'}
+          placeholder="Write question here"
           value={title}
           maxLength={255}
           onChange={(e) => setTitle(e.target.value)}
@@ -326,8 +365,19 @@ export function ComposeFlow({ user, categories, initialType = 'discussion' }) {
         />
       </div>
 
-      {isPoll ? (
-        <div className={styles.pollGrid}>
+      {!kind ? (
+        <div className={styles.kinds} role="group" aria-label="What would you like to post?">
+          {KINDS.map(({ id, label, Icon }) => (
+            <button key={id} type="button" className={styles.kindCard} onClick={() => chooseKind(id)}>
+              <Icon className={styles.kindCardIcon} aria-hidden="true" />
+              <span>{label}</span>
+            </button>
+          ))}
+        </div>
+      ) : isPoll ? (
+        <>
+        <KindHeader kind="poll" onBack={() => setKind(null)} />
+        <div className={`${styles.pollGrid} ${styles.pollBox}`}>
           <div>
             <h2 className={styles.sectionTitle}>Options</h2>
             <PollOptionsEditor options={options} onChange={setOptions} createOption={newOption} />
@@ -356,8 +406,10 @@ export function ComposeFlow({ user, categories, initialType = 'discussion' }) {
             </div>
           </div>
         </div>
+        </>
       ) : (
         <>
+          <KindHeader kind={kind} onBack={() => setKind(null)} />
           <label className={styles.srOnly} htmlFor="compose-body">Message</label>
           <textarea id="compose-body" ref={bodyRef} className={styles.bodyInput} value={body} onChange={(e) => setBody(e.target.value)} />
         </>

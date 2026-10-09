@@ -11,9 +11,15 @@ import { CommentIcon, EyeIcon, LikeIcon } from '@/components/topic/icons';
 import { getCurrentUser, getTopic } from '@/lib/discourse';
 import { DiscourseError } from '@/lib/discourse/client';
 import { compactNumber, timeAgo } from '@/lib/discourse/format';
+import { getSampleConversation, hasSampleConversation } from '@/components/topic/sampleConversations';
+
+// Forum topics and sample conversations open here; other sample ids go back to the list.
+const conversationHref = (id) => (/^\d+$/.test(String(id)) || hasSampleConversation(id) ? `/conversations/${id}` : '/discussions');
 
 // Cached so generateMetadata and the page share one Discourse request.
 const loadTopic = cache(async (id) => {
+  const sample = getSampleConversation(id);
+  if (sample) return sample;
   try {
     return await getTopic(id);
   } catch (error) {
@@ -104,7 +110,7 @@ export default async function ConversationPage({ params }) {
           <aside className={`${styles.card} ${styles.side}`} aria-labelledby="related-heading">
             <h2 id="related-heading" className={styles.relatedHeading}>Related Discussions</h2>
             {topic.related.map((item, i) => (
-              <Reveal key={item.id} delay={150 + i * 120} href={`/conversations/${item.id}`} className={styles.relatedItem}>
+              <Reveal key={item.id} delay={150 + i * 120} href={conversationHref(item.id)} className={styles.relatedItem}>
                 <img className={styles.avatarLg} src={item.avatar} alt="" />
                 <span className={styles.relatedTitle}>{item.title}</span>
               </Reveal>

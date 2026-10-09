@@ -1,9 +1,11 @@
 'use client';
 import { useState } from 'react';
 import PollResultCard from '@/components/poll/PollResultCard';
+import styles from './Poll.module.css';
 
 const PAGE_SIZE = 6;
 
+// Closed polls, three across with rules between columns; more load on request.
 export default function ClosedPollsGrid({ polls }) {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const visiblePolls = polls.slice(0, visibleCount);
@@ -11,34 +13,17 @@ export default function ClosedPollsGrid({ polls }) {
 
   return (
     <>
-      <div className="grid grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1" style={{ rowGap: 'calc(4 * var(--sa))' }}>
-        {visiblePolls.map((poll, idx) => {
-          const isRightColumn = (idx + 1) % 3 === 0;
-          const isMiddleColumn = idx % 3 === 1;
-          return (
-            <div
-              key={poll.id}
-              style={{
-                ...(isMiddleColumn ? { paddingLeft: 'calc(3 * var(--sa))', paddingRight: 'calc(3 * var(--sa))' } : {}),
-                ...(!isRightColumn && !isMiddleColumn ? { paddingRight: 'calc(3 * var(--sa))' } : {}),
-                ...(isRightColumn ? { paddingLeft: 'calc(3 * var(--sa))' } : {}),
-                ...(!isRightColumn ? { borderRight: '1px solid #d1d5db' } : {})
-              }}
-            >
-              <PollResultCard question={poll.question} options={poll.options} />
-            </div>
-          );
-        })}
+      <div className={styles.closedGrid}>
+        {visiblePolls.map((poll) => (
+          <div key={poll.id} className={`min-w-0 ${styles.closedCol}`}>
+            <PollResultCard question={poll.question} options={poll.options} />
+          </div>
+        ))}
       </div>
 
       {hasMore && (
-        <div className="flex justify-center" style={{ marginTop: 'calc(4 * var(--sa))' }}>
-          <button
-            type="button"
-            onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
-            className="text-white font-medium rounded-full transition-opacity hover:opacity-85"
-            style={{ backgroundColor: '#000', fontSize: 'calc(0.85 * var(--fa) + var(--fb))', padding: 'calc(0.8 * var(--sa)) calc(2.4 * var(--sa))' }}
-          >
+        <div className={styles.loadMore}>
+          <button type="button" onClick={() => setVisibleCount((count) => count + PAGE_SIZE)} className={styles.outlineBtn}>
             Load more
           </button>
         </div>

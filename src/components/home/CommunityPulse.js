@@ -19,7 +19,7 @@ export function CommunityPulse({ pulse }) {
 
   return (
     <Card className={styles.pulseCard}>
-      <h3 className={styles.title}>COMMUNITY PULSE</h3>
+      <h2 className={styles.title}>COMMUNITY PULSE</h2>
       
       <div className={styles.statsGrid}>
         {stats.map((stat, index) => (

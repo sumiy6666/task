@@ -1,85 +1,139 @@
+/* Sticky: the top padding scrolls away first, so the bar settles into a
+   compact strip as the page moves, with no jump in the layout below. */
 .header {
-  padding: 1.5rem 0;
-  position: relative;
+  --stick-offset: -2.25rem;
+  position: sticky;
+  top: var(--stick-offset);
   z-index: 50;
+  padding: 3rem 0 0.9rem;
+  margin-bottom: 1.1rem;
+  transition: background-color 0.35s ease, box-shadow 0.35s ease, backdrop-filter 0.35s ease;
+}
+
+.scrolled {
+  background-color: rgba(243, 246, 249, 0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 8px 24px rgba(19, 39, 66, 0.08);
 }
 
 .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   position: relative;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  font-size: 1.75rem;
-  font-weight: 500;
-  letter-spacing: -0.02em;
+  flex-shrink: 0;
 }
 
-.av {
-  color: var(--color-text-main);
-  margin-right: 0.25rem;
-}
-
-.circle {
-  background-color: var(--color-primary);
-  color: white;
-  padding: 0.2rem 0.8rem;
-  border-radius: var(--radius-full);
-  font-weight: 600;
-  font-size: 1.25rem;
+.logo img {
+  width: 231px;
+  height: auto;
 }
 
 .actions {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.iconNav {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  background: var(--color-surface);
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-full);
-  box-shadow: var(--shadow-sm);
+  gap: 1.75rem;
 }
 
 .iconButton {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 3.75rem;
+  height: 3.75rem;
+  flex-shrink: 0;
   color: var(--color-primary);
+  background: var(--color-surface);
   border-radius: 50%;
-  transition: all 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .iconButton:hover {
-  background-color: var(--color-bg);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
-.iconButton svg {
-  width: 1.25rem;
-  height: 1.25rem;
+/* Unread marker on the chat button and avatar. */
+.dot {
+  position: absolute;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: #FF4D5E;
+  border: 2px solid var(--color-surface);
+  box-sizing: content-box;
 }
 
+.chatButton .dot {
+  top: 0.95rem;
+  right: 1rem;
+}
+
+.searchPill {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 11.25rem;
+  height: 3.75rem;
+  padding: 0 1.1rem 0 1.25rem;
+  background: var(--color-surface);
+  border-radius: var(--radius-full);
+  transition: box-shadow 0.2s;
+}
+
+.searchPill:focus-within {
+  box-shadow: 0 0 0 2px rgba(0, 164, 228, 0.35);
+}
+
+.searchIcon {
+  flex-shrink: 0;
+  color: var(--color-primary);
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--color-text-main);
+}
+
+.searchInput::placeholder {
+  color: #B8C2CC;
+}
+
+/* Phones only: icon that opens .searchBox. */
+.searchToggle {
+  display: none;
+}
+
+.profileWrap {
+  position: relative;
+}
+
+/* Avatar inside a purple-to-blue ring. */
 .profile {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.1rem;
-  height: 2.1rem;
+  width: 3.75rem;
+  height: 3.75rem;
   border-radius: 50%;
-  border: 2px solid var(--color-primary);
-  padding: 2px;
-  background: var(--color-surface);
+  padding: 3px;
+  background: linear-gradient(135deg, #B05CFF, #3A97FF 60%, #00A4E4);
 }
 
 .avatar {
@@ -87,6 +141,8 @@
   height: 100%;
   border-radius: 50%;
   overflow: hidden;
+  border: 2px solid var(--color-surface);
+  background: var(--color-surface);
 }
 
 .avatar img {
@@ -95,16 +151,22 @@
   object-fit: cover;
 }
 
+.profile .dot {
+  top: 0.15rem;
+  right: 0.45rem;
+}
+
 .menuButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3rem;
-  height: 3rem;
+  width: 3.75rem;
+  height: 3.75rem;
+  flex-shrink: 0;
   background-color: var(--color-primary);
   color: white;
   border-radius: 50%;
-  box-shadow: 0 4px 10px rgba(0, 164, 228, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 164, 228, 0.3);
   transition: all 0.2s;
   z-index: 100;
 }
@@ -115,8 +177,8 @@
 }
 
 .menuButton svg {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.6rem;
+  height: 1.6rem;
 }
 
 .menuButtonOpen {
@@ -145,8 +207,6 @@
   transform: translateY(10px);
 }
 
-
-
 .sideMenuInner {
   display: flex;
   flex-direction: column;
@@ -154,11 +214,6 @@
   position: relative;
 }
 
-@media (max-width: 768px) {
-  .sideMenuInner {
-    padding: 1.5rem;
-  }
-}
 .searchBox {
   position: absolute;
   top: calc(100% + 10px);
@@ -174,14 +229,8 @@
   z-index: 120;
 }
 
-.searchInput {
-  flex: 1;
-  min-width: 0;
-  border: none;
-  outline: none;
-  background: transparent;
+.searchBox .searchInput {
   font-size: 14px;
-  color: var(--color-text-main);
 }
 
 .searchClose {
@@ -195,10 +244,6 @@
 
 .searchClose:hover {
   background: var(--color-bg);
-}
-
-.profileWrap {
-  position: relative;
 }
 
 .profileMenu {
@@ -235,12 +280,12 @@
 .signIn {
   display: inline-flex;
   align-items: center;
-  height: 2.1rem;
-  padding: 0 1rem;
+  height: 3rem;
+  padding: 0 1.4rem;
   border-radius: var(--radius-full);
   background: var(--color-primary);
   color: #fff;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   white-space: nowrap;
 }
@@ -249,33 +294,115 @@
   background: var(--color-primary-dark);
 }
 
-@media (max-width: 768px) {
-  .header {
-    padding: 1.25rem 0 0.5rem;
+/* The 1300px container has no side padding of its own. */
+@media (max-width: 1340px) {
+  .container {
+    padding: 0 1.5rem;
   }
+}
 
-  .logo img {
-    height: 26px !important;
-  }
-
+@media (max-width: 1024px) {
   .actions {
-    gap: 0.75rem;
+    gap: 1rem;
   }
 
-  /* Phones get just the logo and the menu button (plus sign-in/avatar). */
-  .iconNav {
-    background: transparent;
-    box-shadow: none;
-    padding: 0;
-    gap: 0.5rem;
-  }
-
-  .iconNav > .iconButton {
-    display: none;
-  }
-
+  .iconButton,
+  .profile,
   .menuButton {
     width: 3.25rem;
     height: 3.25rem;
+  }
+
+  .searchPill {
+    width: 10rem;
+    height: 3.25rem;
+    padding: 0 0.9rem 0 1rem;
+  }
+
+  .searchInput {
+    font-size: 0.9rem;
+  }
+
+  .chatButton .dot {
+    top: 0.75rem;
+    right: 0.8rem;
+  }
+
+  .logo img {
+    width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    --stick-offset: -0.5rem;
+    padding: 1.25rem 0 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  .logo img {
+    width: 150px;
+  }
+
+  .actions {
+    position: static;
+    gap: 0.5rem;
+  }
+
+  /* Phones get the logo, a search icon, the avatar and the menu button. */
+  .chatButton,
+  .searchPill {
+    display: none;
+  }
+
+  .searchToggle {
+    display: flex;
+  }
+
+  .iconButton,
+  .profile,
+  .menuButton {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .menuButton svg {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+
+  .profile {
+    padding: 2px;
+  }
+
+  .profile .dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    top: 0;
+    right: 0.2rem;
+  }
+
+  .signIn {
+    height: 2.5rem;
+    padding: 0 1rem;
+    font-size: 13px;
+  }
+
+  .sideMenuInner {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .logo img {
+    width: 128px;
+  }
+
+  .actions {
+    gap: 0.35rem;
   }
 }

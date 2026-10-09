@@ -1,0 +1,147 @@
+.box {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 3.75rem;
+  height: 3.75rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.inputWrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  height: 2.75rem;
+  padding: 0 0.9rem 0 1.25rem;
+  background: #E8EDF1;
+  border-radius: var(--radius-full);
+  transition: box-shadow 0.2s;
+}
+
+.inputWrap:focus-within {
+  box-shadow: 0 0 0 2px rgba(0, 164, 228, 0.35);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.87rem;
+  color: var(--color-text-main);
+}
+
+.input::placeholder {
+  color: #1d1d1d;
+}
+
+.emoji {
+  display: flex;
+  color: #9a9a9a;
+  transition: color 0.2s;
+}
+
+.emoji:hover {
+  color: var(--color-primary);
+}
+
+.emoji svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.post {
+  flex-shrink: 0;
+  width: 9rem;
+  height: 2.75rem;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition: background-color 0.2s;
+}
+
+.post:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.post:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.message {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #027a48;
+}
+
+.error {
+  color: #b42318;
+}
+
+/* Smaller variant, for replies nested in a thread. */
+.sm .avatar {
+  width: 3.1rem;
+  height: 3.1rem;
+}
+
+.sm .inputWrap,
+.sm .post {
+  height: 2.4rem;
+}
+
+@media (max-width: 768px) {
+  .box {
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .avatar,
+  .sm .avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .row {
+    gap: 0.5rem;
+  }
+
+  .inputWrap,
+  .sm .inputWrap,
+  .post,
+  .sm .post {
+    height: 2.5rem;
+  }
+
+  .post {
+    width: 4.5rem;
+    font-size: 0.72rem;
+  }
+}
+
+.hiddenAvatar {
+  visibility: hidden;
+}

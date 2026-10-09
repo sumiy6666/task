@@ -68,6 +68,27 @@
   border-color: white;
 }
 
+/* Black outline pill on white cards (EXPLORE, TAKE A POLL). */
+.outlineDark {
+  background-color: transparent;
+  color: #000;
+  border: 1px solid #000;
+  gap: 0.5rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+.outlineDark > .icon {
+  padding: 0;
+  display: flex;
+}
+
+.outlineDark:hover:not(:disabled) {
+  background-color: #1095cc;
+  border-color: #1095cc;
+  color: white;
+}
+
 .ghost {
   background-color: transparent;
   color: inherit;

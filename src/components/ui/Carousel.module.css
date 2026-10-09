@@ -1,0 +1,117 @@
+.section {
+  margin-bottom: 2.75rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2.25rem;
+}
+
+.title {
+  font-size: 1.47rem;
+  font-weight: 500;
+  color: #000;
+  text-transform: uppercase;
+}
+
+.controls {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.navBtn {
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.navBtn:hover:not(:disabled) {
+  transform: scale(1.08);
+}
+
+.navBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Three slides across on desktop; the rest scroll in from the right. */
+.track {
+  --gap: var(--carousel-gap, 2.45rem);
+  --per-view: 3;
+  display: flex;
+  gap: var(--gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* Room for the card shadows, which overflow would otherwise clip. */
+  padding: 0 0 2.5rem;
+  margin-bottom: -2.5rem;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.slide {
+  flex: 0 0 calc((100% - (var(--per-view) - 1) * var(--gap)) / var(--per-view));
+  scroll-snap-align: start;
+  display: flex;
+}
+
+.slide > * {
+  flex: 1;
+}
+
+@media (max-width: 1200px) {
+  .track {
+    --gap: min(var(--carousel-gap, 2.45rem), 1.75rem);
+  }
+}
+
+@media (max-width: 1024px) {
+  .section {
+    margin-bottom: 2rem;
+  }
+
+  .header {
+    margin-bottom: 1.75rem;
+  }
+
+  .track {
+    --per-view: 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    margin-bottom: 1.5rem;
+  }
+
+  .header {
+    margin-bottom: 1.25rem;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .navBtn {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  /* One slide plus a peek of the next. */
+  .track {
+    --gap: 1rem;
+    --per-view: 1.15;
+  }
+}

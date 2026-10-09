@@ -1,21 +1,25 @@
 .pulseCard {
-  margin-bottom: 2rem;
+  margin-bottom: 2.75rem;
   overflow: visible;
+  border: none;
+  border-radius: 2rem;
+  padding: 2.6rem 2.15rem 3.25rem;
+  box-shadow: 0 20px 40px rgba(19, 39, 66, 0.08);
 }
 
 .title {
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  margin-bottom: 1.5rem;
-  color: var(--color-text-main);
+  font-size: 1.47rem;
+  font-weight: 500;
+  margin-bottom: 2.25rem;
+  padding-left: 0.6rem;
+  color: #000;
   text-transform: uppercase;
 }
 
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
+  gap: 2.2rem;
 }
 
 .statItem {
@@ -23,11 +27,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  padding: 1.5rem 1rem;
-  border-radius: var(--radius-lg);
+  padding: 1.6rem 1.8rem;
+  border-radius: 1.5rem;
   color: white;
   transition: transform 0.2s;
-  min-height: 120px;
+  min-height: 8.5rem;
 }
 
 .statItem:hover {
@@ -35,47 +39,67 @@
 }
 
 .statValue {
-  font-size: 2.5rem;
+  font-size: 2.9rem;
   font-weight: 300;
-  margin-bottom: 0.25rem;
+  letter-spacing: -0.03em;
   line-height: 1;
 }
 
 .statLabel {
-  font-size: 0.875rem;
-  font-weight: 500;
-  opacity: 0.9;
+  font-size: 1.15rem;
+  font-weight: 400;
 }
 
-.blue {
-  background-color: var(--color-primary);
+/* Reveal wrapper around each stat box; keeps boxes equal height. */
+.statCell {
+  display: flex;
 }
 
-.darkBlue {
-  background-color: var(--color-accent-blue);
+.statCell > .statItem {
+  flex: 1;
 }
 
-.purple {
-  background-color: var(--color-accent-purple);
-}
-
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .statItem {
+    padding: 1.5rem 1.4rem;
+  }
+
+  .statValue {
+    font-size: 2.6rem;
+  }
+
+  .statLabel {
+    font-size: 1.02rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .pulseCard {
+    padding: 2.5rem 2rem;
+    margin-bottom: 2rem;
   }
 }
 
 @media (max-width: 768px) {
   .pulseCard {
-    padding: 1.75rem 1.5rem;
+    padding: 1.75rem 1.25rem;
     margin-bottom: 1.5rem;
+    border-radius: var(--radius-xl);
   }
 
   .title {
-    font-size: 1rem;
-    font-weight: 500;
-    letter-spacing: 0;
-    margin-bottom: 1.75rem;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    padding-left: 0;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
   }
 
   .statItem {
@@ -86,22 +110,16 @@
     border-radius: 1.25rem;
   }
 
+  .statItem:hover {
+    transform: none;
+  }
+
   .statValue {
-    font-size: 3rem;
+    font-size: 2.75rem;
     margin-bottom: auto;
   }
 
   .statLabel {
     font-size: 0.85rem;
-    font-weight: 400;
   }
-}
-
-/* Reveal wrapper around each stat box; keeps boxes equal height. */
-.statCell {
-  display: flex;
-}
-
-.statCell > .statItem {
-  flex: 1;
 }

@@ -1,5 +1,7 @@
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import ClosedPollsGrid from '@/components/poll/ClosedPollsGrid';
+import { OutlineLink } from '@/components/poll/RecentPollsList';
+import styles from '@/components/poll/Poll.module.css';
 import { loadPolls } from '@/lib/discourse/lists';
 
 // Sample data, shown when Discourse is not connected.
@@ -143,18 +145,19 @@ export default async function ClosedPollsPage() {
   const polls = live ? live.closed : allClosedPollsData;
 
   return (
-    <div className="container min-h-screen" style={{ paddingBottom: 'calc(4 * var(--sa))' }}>
+    <div className={`container min-h-screen ${styles.page}`}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Poll', href: '/poll' }, { label: 'Closed Polls' }]} />
 
-      <div className="rounded-2xl" style={{ backgroundColor: '#eef1f5', padding: 'calc(3 * var(--sa))', borderRadius: 'calc(1.2 * var(--sa))' }}>
-        <div style={{ marginBottom: 'calc(3 * var(--sa))' }}>
-          <h3 className="font-semibold text-[#132742] uppercase" style={{ fontSize: 'calc(0.9 * var(--fa) + var(--fb))', letterSpacing: '0.1em' }}>CLOSED POLLS</h3>
+      <div className={`${styles.closed} ${styles.closedPage}`}>
+        <div className={styles.closedHeader}>
+          <h1 className={styles.panelTitle}>CLOSED POLLS</h1>
+          <OutlineLink href="/poll">TAKE A POLL</OutlineLink>
         </div>
 
         {polls.length > 0 ? (
           <ClosedPollsGrid polls={polls} />
         ) : (
-          <p className="text-[#6b7280]" style={{ fontSize: 'calc(0.85 * var(--fa) + var(--fb))' }}>No closed polls yet.</p>
+          <p className={styles.meta}>No closed polls yet.</p>
         )}
       </div>
     </div>

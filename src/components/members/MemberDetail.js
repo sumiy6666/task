@@ -11,7 +11,7 @@ export default function MemberDetail({ member }) {
   ];
 
   return (
-    <Reveal stagger={120} className={`overflow-hidden ${styles.panel} ${styles.detail}`}>
+    <Reveal stagger={120} className={styles.detail}>
       {/* Top profile info */}
       <div className={styles.profile}>
         <img src={member.avatar} alt={member.name} className={styles.profileAvatar} />
@@ -59,7 +59,7 @@ export default function MemberDetail({ member }) {
         ))}
       </div>
 
-      <button type="button" className={styles.follow}>Follow Member</button>
+      <button type="button" className={styles.follow}>FOLLOW</button>
     </Reveal>
   );
 }

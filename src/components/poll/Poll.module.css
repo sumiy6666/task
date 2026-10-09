@@ -1,22 +1,27 @@
-/* Poll pages. Desktop sizes follow the window up to the 1300px page
-   container, then hold, keeping the design's proportions to the container.
-   Tablets and phones use fixed pixels. (Spacing can't use Tailwind classes:
-   the global `* { padding: 0; margin: 0 }` reset outranks them.) */
+/* Poll pages. Desktop sizes follow the 1440px design; tablets and phones
+   are below. (Spacing can't use Tailwind classes: the global
+   `* { padding: 0; margin: 0 }` reset outranks them.) */
+
+.page { padding-bottom: 2.5rem; }
+
+@media (min-width: 1025px) and (max-width: 1340px) {
+  .page { padding-left: 1.5rem; padding-right: 1.5rem; }
+}
 
 /* ---- Trending poll answers (inside the page banner) ---- */
 
-.heroOptions { display: flex; flex-direction: column; gap: min(0.54vw, 7px); max-width: min(22.54vw, 293px); }
+.heroOptions { display: flex; flex-direction: column; gap: 11px; max-width: 292px; }
 
 .heroOption {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: min(2.85vw, 37px);
-  padding: 0 min(2.62vw, 34px) 0 min(1.08vw, 14px);
+  height: 32px;
+  padding: 0 14px 0 14px;
   border: 1px solid rgba(255, 255, 255, 0.85);
   border-radius: 999px;
-  font-size: min(1.08vw, 14px);
+  font-size: 13px;
   font-weight: 300;
   letter-spacing: 0.03em;
   overflow: hidden;
@@ -25,136 +30,173 @@
 .heroOption > span:not(.heroFill) { position: relative; }
 
 /* The chosen answer is filled up to the percentage column. */
-.heroFill { position: absolute; inset: 0 auto 0 0; width: 73%; background: #2788ff; border-radius: 999px; }
+.heroFill { position: absolute; inset: 0 auto 0 0; width: 73%; background: #11A0DB; border-radius: 999px; }
 
-/* ---- Recent polls and Take poll panels ---- */
+/* ---- Recent polls (white) and Take a poll (grey) share one card ---- */
 
-.panel { background: #fff; border-radius: min(1.85vw, 24px); box-shadow: 0 min(0.31vw, 4px) min(1.54vw, 20px) rgba(0, 62, 207, 0.06); }
+.split {
+  display: flex;
+  margin-bottom: 41px;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(19, 39, 66, 0.08);
+}
+.splitList { flex: 723 1 0; min-width: 0; display: flex; flex-direction: column; }
+.splitTake { flex: 574 1 0; min-width: 0; background: #E9EDF1; }
 
-.panelHeader { display: flex; align-items: center; justify-content: space-between; padding: min(4.15vw, 54px) min(3vw, 39px) min(1.69vw, 22px); }
-.panelTitle { font-size: min(1.08vw, 14px); font-weight: 400; color: #111; text-transform: uppercase; }
-.viewAll { display: inline-flex; align-items: center; gap: min(1.54vw, 20px); font-size: min(0.77vw, 10px); color: #11a0db; text-transform: uppercase; }
-.viewAll svg { width: min(1vw, 13px); height: min(1vw, 13px); }
-.viewAll:hover { text-decoration: underline; }
+.panelHeader { padding: 55px 40px 30px; }
+.panelTitle { font-size: 23px; font-weight: 400; color: #111; text-transform: uppercase; }
+
+/* Outlined pill buttons: VIEW, VIEW ALL, TAKE A POLL. */
+.outlineBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 41px;
+  padding: 0 22px;
+  border: 1px solid #111;
+  border-radius: 999px;
+  font-size: 13px;
+  color: #111;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  transition: background-color 0.2s, color 0.2s;
+}
+.outlineBtn:hover { background: #1095cc; border-color: #1095cc; color: #fff; }
+.outlineBtn svg { width: 13px; height: 13px; }
 
 .recentRow {
   position: relative;
-  padding: min(2vw, 26px) min(3vw, 39px) min(1.69vw, 22px);
+  padding: 22px 40px 20px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
-.recentRow::after { content: ''; position: absolute; left: min(3vw, 39px); right: min(3vw, 39px); bottom: 0; border-bottom: 1px solid #ddd; }
+.recentRow::after { content: ''; position: absolute; left: 40px; right: 40px; bottom: 0; border-bottom: 1px solid #ddd; }
 .recentRow:last-child::after { display: none; }
-.recentRow:hover { background: #f6f8fa; }
-.recentRowActive, .recentRowActive:hover { background: #e9eef2; box-shadow: 0 min(0.46vw, 6px) min(1.08vw, 14px) rgba(0, 0, 0, 0.08); }
+.recentRow:hover { background: #f5f7f9; }
+.recentRowActive, .recentRowActive:hover { background: #E9EDF1; }
 .recentRowActive::after { display: none; }
-.recentQuestion { font-size: min(1.15vw, 15px); font-weight: 400; line-height: 1.4; color: #111; margin-bottom: min(0.62vw, 8px); }
-.meta { font-size: min(1.04vw, 13.5px); color: #aaa; }
-.metaSep { margin: 0 min(1.38vw, 18px); }
+.recentQuestion { font-size: 17.5px; font-weight: 400; line-height: 1.4; color: #111; margin-bottom: 6px; }
+.meta { font-size: 16px; color: #9a9a9a; }
+.metaSep { margin: 0 18px; }
+.recentFooter { padding: 30px 40px 35px; }
 
-.take { padding: min(4.23vw, 55px) min(2.46vw, 32px) min(3.69vw, 48px) min(3.69vw, 48px); }
-.takeLabel { font-size: min(1.04vw, 13.5px); font-weight: 400; color: #11a0db; text-transform: uppercase; margin-bottom: min(2.31vw, 30px); }
-.takeQuestion { font-size: min(1.31vw, 17px); font-weight: 400; line-height: 1.45; color: #111; max-width: min(26.15vw, 340px); margin: 0 0 min(2.31vw, 30px) min(0.46vw, 6px); }
-.takeOptions { display: flex; flex-direction: column; gap: min(1.08vw, 14px); }
+.take { padding: 55px 66px 48px 63px; }
+.takeLabel { font-size: 23px; font-weight: 400; color: #11a0db; text-transform: uppercase; margin-bottom: 30px; }
+.takeQuestion { font-size: 17px; font-weight: 400; line-height: 25px; color: #111; max-width: 340px; margin: 0 0 30px 4px; }
+.takeOptions { display: flex; flex-direction: column; gap: 21px; }
 .takeOption {
   display: flex;
   align-items: center;
-  height: min(3.08vw, 40px);
-  padding: 0 min(1.69vw, 22px) 0 min(2.46vw, 32px);
+  height: 39px;
+  padding: 0 17px 0 32px;
   border-radius: 999px;
-  background: #e9eef2;
+  background: #fff;
   color: #385e87;
-  font-size: min(1.15vw, 15px);
-  box-shadow: 0 min(0.15vw, 2px) min(0.46vw, 6px) rgba(0, 0, 0, 0.05);
+  font-size: 16.5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   cursor: pointer;
   transition: background-color 0.2s;
 }
-.takeOption:hover { background: #dde6ec; }
-.takeLetter { width: min(4.77vw, 62px); }
+.takeOption:hover { background: #f5f8fb; }
+.takeLetter { width: 61px; }
 .takeText { flex: 1; }
-.takePct { font-size: min(1.23vw, 16px); }
+.takePct { font-size: 15.5px; }
 
 /* ---- Closed polls ---- */
 
 .closed {
-  background: #e9eef2;
-  border-radius: min(1.85vw, 24px);
-  box-shadow: 0 min(0.46vw, 6px) min(1.69vw, 22px) rgba(0, 0, 0, 0.08);
-  padding: min(4.31vw, 56px) min(2.31vw, 30px) min(4vw, 52px) min(3.08vw, 40px);
-  margin-top: min(2vw, 26px);
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(19, 39, 66, 0.08);
+  padding: 48px 44px 59px 40px;
 }
-.closedHeader { display: flex; align-items: center; justify-content: space-between; margin-bottom: min(4.92vw, 64px); }
-.closedGrid { display: grid; grid-template-columns: repeat(3, 1fr); }
-.closedCol { padding: 0 min(3.08vw, 40px); border-left: 1px solid #c9d1d9; }
-.closedCol:first-child { padding-left: 0; border-left: 0; }
+.closedHeader { display: flex; align-items: center; justify-content: space-between; margin-bottom: 57px; }
+.closedGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 77px; }
+.closedCol { padding: 0 52px; border-left: 1px solid #c9d1d9; }
+.closedCol:nth-child(3n + 1) { padding-left: 0; border-left: 0; }
+.closedCol:nth-child(3n) { padding-right: 0; }
 
-.resultQuestion { font-size: min(1.19vw, 15.5px); font-weight: 400; line-height: 1.45; color: #111; min-height: min(3.54vw, 46px); margin-bottom: min(2vw, 26px); }
-.resultOptions { display: flex; flex-direction: column; gap: min(1.15vw, 15px); max-width: min(26vw, 338px); }
+.resultQuestion { font-size: 15.5px; font-weight: 400; line-height: 22px; color: #111; min-height: 44px; margin-bottom: 25px; }
+.resultOptions { display: flex; flex-direction: column; gap: 16px; }
 .resultOption {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: min(2.31vw, 30px);
-  padding: 0 min(2.46vw, 32px) 0 min(3.23vw, 42px);
+  height: 29px;
+  padding: 0 32px 0 22px;
   border-radius: 999px;
-  background: #fff;
+  background: #E8EDF1;
   color: #385e87;
-  font-size: min(1vw, 13px);
+  font-size: 12.5px;
   overflow: hidden;
 }
 .resultOption > span:not(.resultFill) { position: relative; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .resultOptionChosen > span:nth-of-type(2) { color: #fff; }
 /* The chosen answer is filled up to the percentage column. */
-.resultFill { position: absolute; inset: 0 auto 0 0; width: 78%; background: #11a0db; border-radius: 999px; }
+.resultFill { position: absolute; inset: 0 auto 0 0; width: 77%; background: #11a0db; border-radius: 999px; }
+
+.loadMore { display: flex; justify-content: center; margin-top: 48px; }
 
 /* Tablets */
 @media (max-width: 1024px) {
   .heroOptions { gap: 8px; max-width: 320px; }
-  .heroOption { height: 38px; padding: 0 30px 0 16px; font-size: 14px; }
+  .heroOption { height: 36px; font-size: 14px; }
 
-  .panel { border-radius: 20px; }
+  .split { flex-direction: column; border-radius: 18px; margin-bottom: 24px; }
+  .splitList, .splitTake { flex: none; }
   .panelHeader { padding: 32px 28px 18px; }
-  .panelTitle { font-size: 14px; }
-  .viewAll { font-size: 11px; gap: 10px; }
-  .viewAll svg { width: 13px; height: 13px; }
-  .recentRow { padding: 20px 28px 18px; }
+  .panelTitle { font-size: 18px; }
+  .recentRow { padding: 18px 28px; }
   .recentRow::after { left: 28px; right: 28px; }
-  .recentQuestion { font-size: 15px; margin-bottom: 6px; }
-  .meta { font-size: 13px; }
   .metaSep { margin: 0 12px; }
+  .recentFooter { padding: 20px 28px 28px; }
 
   .take { padding: 32px 28px; }
-  .takeLabel { font-size: 13px; margin-bottom: 18px; }
-  .takeQuestion { font-size: 17px; max-width: none; margin: 0 0 22px; }
-  .takeOptions { gap: 10px; }
-  .takeOption { height: 42px; padding: 0 20px 0 24px; font-size: 15px; }
+  .takeLabel { font-size: 18px; margin-bottom: 18px; }
+  .takeQuestion { max-width: none; margin: 0 0 22px; }
+  .takeOptions { gap: 12px; }
   .takeLetter { width: 44px; }
-  .takePct { font-size: 15px; }
 
-  .closed { border-radius: 20px; padding: 32px 28px; margin-top: 20px; }
+  .closed { border-radius: 18px; padding: 32px 28px; }
   .closedHeader { margin-bottom: 28px; }
-  .closedGrid { grid-template-columns: repeat(2, 1fr); row-gap: 32px; }
-  .closedCol { padding: 0 20px; }
-  .closedCol:nth-child(2n + 1) { padding-left: 0; border-left: 0; }
-  .resultQuestion { font-size: 15px; min-height: 0; margin-bottom: 16px; }
-  .resultOptions { gap: 10px; max-width: none; }
-  .resultOption { height: 34px; padding: 0 20px 0 22px; font-size: 13px; }
+  .closedGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 36px; }
+  .closedCol, .closedCol:nth-child(3n), .closedCol:nth-child(3n + 1) { padding: 0 0 0 24px; border-left: 1px solid #c9d1d9; }
+  .closedCol:nth-child(2n + 1) { padding-left: 0; padding-right: 24px; border-left: 0; }
+  .resultQuestion { min-height: 0; margin-bottom: 16px; }
+  .resultOptions { gap: 10px; }
+  .resultOption { height: 34px; padding: 0 20px 0 20px; font-size: 13px; }
 }
 
 /* Phones */
 @media (max-width: 640px) {
   .heroOptions { max-width: none; }
 
+  .split, .closed { border-radius: 16px; }
   .panelHeader { padding: 24px 20px 14px; }
   .recentRow { padding: 16px 20px; }
   .recentRow::after { left: 20px; right: 20px; }
+  .recentFooter { padding: 16px 20px 22px; }
 
   .take { padding: 24px 20px; }
-  .takeOption { padding: 0 16px 0 18px; font-size: 14px; }
+  .takeOption { padding: 0 16px 0 18px; }
   .takeLetter { width: 32px; }
 
   .closed { padding: 24px 20px; }
-  .closedGrid { grid-template-columns: 1fr; }
-  .closedCol, .closedCol:nth-child(2n + 1) { padding: 0; border-left: 0; }
+  .closedHeader { gap: 12px; }
+  .closedGrid { grid-template-columns: minmax(0, 1fr); row-gap: 28px; }
+  .closedCol, .closedCol:nth-child(3n), .closedCol:nth-child(3n + 1), .closedCol:nth-child(2n + 1) { padding: 0; border-left: 0; }
+}
+
+/* Closed Polls page: the card sits higher on its header than on the Poll page. */
+.closedPage { padding-top: 37px; }
+.closedPage .closedHeader { margin-bottom: 48px; }
+
+@media (max-width: 1024px) {
+  .closedPage { padding-top: 28px; }
+  .closedPage .closedHeader { margin-bottom: 28px; }
 }

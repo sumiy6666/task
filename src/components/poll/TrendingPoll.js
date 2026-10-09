@@ -20,8 +20,11 @@ export default function TrendingPoll({ poll }) {
       image="/images/pollbanner.png"
       label="TRENDING POLL"
       title={shown.topicId ? <Link prefetch={false} href={`/conversations/${shown.topicId}`}>{shown.question}</Link> : shown.question}
-      titleWidth="min(37.7vw, 490px)"
+      titleWidth="490px"
       arrows
+      large
+      // Navy wash behind the text, as in the design.
+      wash="linear-gradient(to right, rgba(14, 24, 64, 0.85) 0%, rgba(20, 34, 84, 0.55) 32%, rgba(20, 34, 84, 0) 55%)"
     >
       <div className={styles.heroOptions}>
         {shown.options.map((opt, i) => (

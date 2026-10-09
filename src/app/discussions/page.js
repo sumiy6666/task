@@ -1,180 +1,144 @@
 import React from 'react';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
-import { Reveal } from '@/components/ui/Reveal';
-import { EventBanner } from '@/components/discussions/EventBanner';
-import { ConversationList } from '@/components/discussions/ConversationList';
+import { PollWidget } from '@/components/ui/PollWidget';
+import { DiscussionComposer } from '@/components/discussions/DiscussionComposer';
+import { FeedCard } from '@/components/discussions/FeedCard';
 import { CategoryList } from '@/components/discussions/CategoryList';
-import { ActiveDiscussionsList } from '@/components/discussions/ActiveDiscussionsList';
-import { TrendingDiscussions } from '@/components/discussions/TrendingDiscussions';
-import { ActiveMembersList } from '@/components/discussions/ActiveMembersList';
-import { PopularTagsList } from '@/components/discussions/PopularTagsList';
+import styles from '@/components/discussions/Feed.module.css';
+import { getCurrentUser } from '@/lib/discourse';
 import { loadDiscussions } from '@/lib/discourse/lists';
 
-// Sample data, shown when Discourse is not connected. Sample ids are not
+export const metadata = { title: 'Discussions | AV Community' };
+
+const SAMPLE_TAGS = ['FamilyOffice', 'Investments', 'BestPractices', 'Liquidity'];
+
+// Sample feed, shown when Discourse is not connected. Sample ids are not
 // numbers, so they never link to a real forum topic.
-const latestConversations = [
+const sampleFeed = [
   {
-    id: 'sample-101',
+    id: 'sample-201',
     title: 'Best practices for managing liquid investments in family portfolios?',
-    author: { name: 'Priya Mehta', avatar: 'https://i.pravatar.cc/100?img=5' },
+    author: { name: 'Ramesh Mehta', avatar: 'https://i.pravatar.cc/160?img=12' },
     timeAgo: '2h ago',
     category: 'Investments',
-    views: null,
+    tags: SAMPLE_TAGS,
+    body: [
+      'I’m curious to learn, from this community, what approaches are family offices using to balance liquidity, return expectations and portfolio flexibility? Are there any frameworks, tools or strategies that have worked well for you, especially in volatile markets?',
+      'Would love to hear your experience, lessons learnt, or resources you’d recommend!',
+    ],
     replies: 24,
-    likes: 15
+    likes: 15,
+    views: 1200,
+    lastActivity: '1h ago',
+    reply: {
+      author: { name: 'Rohan Kapoor', avatar: 'https://i.pravatar.cc/160?img=11' },
+      text: 'I’m curious to learn, from this community, what approaches are family offices using to balance liquidity, return expectations and portfolio flexibility? Are there any frameworks, tools or strategies that have worked well for you, especially in volatile markets?',
+      likes: 8,
+      replies: 1,
+    },
   },
   {
-    id: 'sample-102',
-    title: 'How do yo approach next-gen engagement in your family office?',
-    author: { name: 'Rohan Kapoor', avatar: 'https://i.pravatar.cc/100?img=11' },
-    timeAgo: '5h ago',
+    id: 'sample-202',
+    title: 'Which asset class has performed best for your office over the last 3 years?',
+    author: { name: 'Praveen Puri', avatar: 'https://i.pravatar.cc/160?img=59' },
+    timeAgo: '3h ago',
+    category: 'Investments',
+    tags: SAMPLE_TAGS,
+    pollOptions: ['Private equity', 'Venture', 'Real estate', 'Public equities', 'Hedge funds', 'Fixed income'],
+  },
+  {
+    id: 'sample-203',
+    title: 'Year-end accounting checklist for family office',
+    author: { name: 'Varun Vashi', avatar: 'https://i.pravatar.cc/160?img=68' },
+    timeAgo: '4h ago',
     category: 'Family Office',
-    views: null,
-    replies: 18,
-    likes: 9
+    tags: SAMPLE_TAGS,
+    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&auto=format&fit=crop',
+    body: [
+      'Simplify your family office’s year end close with a practical checklist covering account reconciliations, investment records and financial reporting. Keep essential tasks on track and begin the new financial year with clear, organised records.',
+      'What do you think?',
+    ],
+    replies: 24,
+    likes: 15,
+    views: 1200,
+    lastActivity: '1h ago',
   },
-  {
-    id: 'sample-103',
-    title: 'Views on direct indexing for concentrated portfolios',
-    author: { name: 'Arvind Rajan', avatar: 'https://i.pravatar.cc/100?img=8' },
-    timeAgo: '1d ago',
-    category: 'Investments',
-    views: null,
-    replies: 21,
-    likes: 7
-  },
-  {
-    id: 'sample-104',
-    title: 'Using AI for research and portfolio monitoring',
-    author: { name: 'Neha Shah', avatar: 'https://i.pravatar.cc/100?img=9' },
-    timeAgo: '2d ago',
-    category: 'Technology',
-    views: null,
-    replies: 16,
-    likes: 13
-  }
 ];
 
-const trendingConversations = [
-  {
-    id: 't1',
-    title: 'When should a family bring in an external CIO?',
-    author: { name: 'Rohan Kapoor', avatar: 'https://i.pravatar.cc/100?img=11' },
-    timeAgo: '5h ago',
-    category: 'Family Office',
-    views: 124,
-    replies: 27,
-    likes: 14
-  },
-  {
-    id: 't2',
-    title: 'Are private markets still worth the complexity?',
-    author: { name: 'Neha Sethi', avatar: 'https://i.pravatar.cc/100?img=9' },
-    timeAgo: '10h ago',
-    category: 'Investments',
-    views: 86,
-    replies: 12,
-    likes: 8
-  },
-  {
-    id: 't3',
-    title: 'How much liquidity should a family office really maintain?',
-    author: { name: 'Vikram Rao', avatar: 'https://i.pravatar.cc/100?img=13' },
-    timeAgo: '14h ago',
-    category: 'Investments',
-    views: 312,
-    replies: 34,
-    likes: 21
-  },
-  {
-    id: 't4',
-    title: 'What should a family office never outsource?',
-    author: { name: 'Meera Iyer', avatar: 'https://i.pravatar.cc/100?img=5' },
-    timeAgo: '16h ago',
-    category: 'Best Practices',
-    views: 67,
-    replies: 9,
-    likes: 6
-  }
+// The first row shows every category.
+const sampleCategories = [
+  { name: 'General', count: '1.2K', isAll: true },
+  { name: 'Industry Trends', count: '236' },
+  { name: 'Best Practices', count: '186' },
+  { name: 'Product/AV', count: '142' },
+  { name: 'Family Office', count: '201' },
+  { name: 'Investments', count: '248' },
+  { name: 'Accounting', count: '98' },
+  { name: 'Technology', count: '154' },
 ];
 
-const categories = [
-  { name: 'All categories', count: '1.2K', isActive: true },
-  { name: 'General', count: '236', isActive: false },
-  { name: 'Best Practices', count: '186', isActive: false },
-  { name: 'Product/AV', count: '142', isActive: false },
-  { name: 'Family Office', count: '201', isActive: false },
-  { name: 'Investments', count: '248', isActive: false },
-  { name: 'Accounting', count: '98', isActive: false },
-  { name: 'Technology', count: '154', isActive: false },
-  { name: 'Industry Trends', count: '179', isActive: false }
-];
+const samplePoll = {
+  question: 'What would you like to see discussed next?',
+  options: [
+    { label: 'Industry trends and insights', percentage: 46 },
+    { label: 'Best practices and case studies', percentage: 28 },
+    { label: 'Tools and technologies', percentage: 16 },
+    { label: 'Networking events', percentage: 10 },
+  ],
+  responsesText: '120 responses • 2h ago',
+};
 
-const activeDiscussions = [
-  { title: 'How do you evaluate a fund manager beyond past performance?', author: 'Priya Mehta', timeAgo: '2h ago', category: 'Investments' },
-  { title: 'What cybersecurity risks should family offices be most concerned about?', author: 'Priya Mehta', timeAgo: '2h ago', category: 'Investments' },
-  { title: 'Has anyone created a family constitution that actually works?', author: 'Priya Mehta', timeAgo: '2h ago', category: 'Investments' }
-];
+// A forum topic or poll, in the shape FeedCard takes.
+const fromTopic = (t) => ({ ...t, body: t.description ? [t.description] : [] });
+const fromPoll = (p) => ({
+  id: p.topicId,
+  title: p.question,
+  author: { name: 'Poll', avatar: '/images/pollicon.png' },
+  timeAgo: p.time,
+  category: p.category,
+  pollOptions: p.options.map((o) => o.label),
+});
+const sidebarPoll = (p) => ({
+  question: p.question,
+  options: p.options.map((o) => ({ label: o.label, percentage: parseInt(o.percentage, 10) || 0 })),
+  responsesText: `${p.voters} ${p.voters === 1 ? 'response' : 'responses'} • ${p.time}`,
+});
 
-const activeMembers = [
-  { name: 'Priya Mehta', contributions: '152', avatar: 'https://i.pravatar.cc/100?img=5' },
-  { name: 'Rajan Bansal', contributions: '128', avatar: 'https://i.pravatar.cc/100?img=8' },
-  { name: 'Poonam Shah', contributions: '112', avatar: 'https://i.pravatar.cc/100?img=9' },
-  { name: 'Rajeev Kapoor', contributions: '98', avatar: 'https://i.pravatar.cc/100?img=11' },
-  { name: 'Vaayu Rajan', contributions: '90', avatar: 'https://i.pravatar.cc/100?img=13' },
-  { name: 'Amit Ameta', contributions: '87', avatar: 'https://i.pravatar.cc/100?img=12' }
-];
+export default async function DiscussionPage({ searchParams }) {
+  const { category } = await searchParams;
+  const [live, user] = await Promise.all([loadDiscussions(), getCurrentUser().catch(() => null)]);
 
-const popularTags = [
-  { name: 'investments', count: 122 },
-  { name: 'bestpractices', count: 89 },
-  { name: 'governance', count: 56 },
-  { name: 'family-office', count: 71 },
-  { name: 'technology', count: 34 },
-  { name: 'networks', count: 51 }
-];
+  const categories = live?.categories.length > 1
+    ? live.categories.map((c, i) => ({ name: c.name, count: c.count, isAll: i === 0 }))
+    : sampleCategories;
+  const active = categories.some((c) => c.name === category && !c.isAll) ? category : null;
 
-export default async function DiscussionPage() {
-  const live = await loadDiscussions();
-  const data = {
-    latest: live?.latest.length ? live.latest : latestConversations,
-    trending: live?.trending.length ? live.trending : trendingConversations,
-    categories: live?.categories.length > 1 ? live.categories : categories,
-    recentlyActive: live?.recentlyActive.length ? live.recentlyActive : activeDiscussions,
-    members: live?.members.length ? live.members : activeMembers,
-    tags: live?.tags.length ? live.tags : popularTags,
-  };
+  let feed = live?.feed.length ? live.feed.map(fromTopic) : sampleFeed;
+  if (live?.feedPoll) feed.splice(1, 0, fromPoll(live.feedPoll));
+  if (active) feed = feed.filter((item) => item.category === active);
+  feed = feed.slice(0, 8);
+
+  const poll = live?.poll ? sidebarPoll(live.poll) : samplePoll;
 
   return (
-    <div className="container min-h-screen" style={{ paddingBottom: 'calc(4 * var(--sa))' }}>
+    <main className={`container ${styles.page}`}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Discussion' }]} />
 
-      <EventBanner topic={live?.trending[0]} />
+      <div className={styles.layout}>
+        <DiscussionComposer avatar={user?.avatar} categories={categories.filter((c) => c.name !== 'All categories')} />
 
-      <div className="flex max-lg:flex-col" style={{ gap: 'calc(1.5 * var(--sa))', marginBottom: 'calc(1.5 * var(--sa))' }}>
-        <div className="flex-[1_1_67%] min-w-0">
-          <ConversationList title="LATEST CONVERSATIONS" conversations={data.latest} showViewAll={true} />
-        </div>
-        <div className="flex-[1_1_33%] min-w-0">
-          <CategoryList categories={data.categories} />
-        </div>
-      </div>
+        <CategoryList categories={categories} active={active} />
 
-      <div className="flex max-lg:flex-col" style={{ gap: 'calc(1.5 * var(--sa))' }}>
-        <div className="flex-[1_1_67%] min-w-0 flex flex-col" style={{ gap: 'calc(1.5 * var(--sa))' }}>
-          <ActiveDiscussionsList discussions={data.recentlyActive} />
-          <TrendingDiscussions conversations={data.trending} />
-          
-          <Reveal className="rounded-2xl overflow-hidden" style={{ height: 'calc(18 * var(--da) + var(--db))', marginTop: 'calc(1 * var(--sa))' }}>
-             <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=1200&auto=format&fit=crop" className="w-full h-full object-cover" alt="Discussion bottom banner" />
-          </Reveal>
-        </div>
-        
-        <div className="flex-[1_1_33%] min-w-0 flex flex-col" style={{ gap: 'calc(1.5 * var(--sa))' }}>
-          <ActiveMembersList members={data.members} />
-          <PopularTagsList tags={data.tags} />
-        </div>
+        <section className={styles.feed} aria-label="Discussions">
+          {feed.length > 0 ? (
+            feed.map((item) => <FeedCard key={item.id} item={item} currentUser={user} />)
+          ) : (
+            <div className={`${styles.card} ${styles.empty}`}>No discussions in {active} yet.</div>
+          )}
+        </section>
+
+        <PollWidget title={null} className={styles.sidePoll} {...poll} />
       </div>
-    </div>
+    </main>
   );
 }

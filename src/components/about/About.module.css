@@ -3,14 +3,11 @@
    use Tailwind classes: the global `* { padding: 0; margin: 0 }` reset
    outranks them.) */
 
-/* Nunito Sans (the stand-in for Avenir on Windows and Android) reads heavier
-   than Avenir at the same weight, so trim its variable weight axis to match
-   the design. Real Avenir is not a variable font and ignores this. */
-.page { padding-bottom: min(3.08vw, 40px); font-variation-settings: 'wght' 320; }
+.page { padding-bottom: min(3.08vw, 40px); }
 .stack { display: flex; flex-direction: column; gap: min(2.31vw, 30px); margin-bottom: min(2.31vw, 30px); }
 
 .card { background: #fff; border-radius: min(1.85vw, 24px); box-shadow: 0 min(0.46vw, 6px) min(1.69vw, 22px) rgba(0, 62, 207, 0.07); padding: min(3.92vw, 51px) min(2.92vw, 38px) min(4vw, 52px); }
-.sectionTitle { font-size: min(1.04vw, 14px); font-weight: 500; font-variation-settings: normal; color: #111; text-transform: uppercase; margin-bottom: min(2.46vw, 32px); }
+.sectionTitle { font-size: min(1.04vw, 14px); font-weight: 500; color: #111; text-transform: uppercase; margin-bottom: min(2.46vw, 32px); }
 
 /* ---- What you can do here ---- */
 
@@ -50,12 +47,12 @@
   color: #fff;
 }
 .sideIcon svg { width: min(1.85vw, 24px); height: min(1.85vw, 24px); }
-.sideName { font-size: min(1.31vw, 18px); font-weight: 600; font-variation-settings: normal; color: #111; line-height: 1.3; }
+.sideName { font-size: min(1.31vw, 18px); font-weight: 600; color: #111; line-height: 1.3; }
 .sideNameAccent { color: #11a0db; }
 .sideSub { font-size: min(1.15vw, 15px); color: #111; }
 .sideList { display: flex; flex-direction: column; gap: min(1.15vw, 15px); margin: min(2.15vw, 28px) 0 min(1.85vw, 24px); font-size: min(1.04vw, 13.5px); color: #333; }
 .rule { border: 0; border-top: 1px solid #ddd; margin: min(1.38vw, 18px) 0; }
-.together { margin-top: min(2.31vw, 30px); font-size: min(1.04vw, 14px); font-weight: 600; font-variation-settings: normal; line-height: 1.45; color: #111; }
+.together { margin-top: min(2.31vw, 30px); font-size: min(1.04vw, 14px); font-weight: 600; line-height: 1.45; color: #111; }
 
 /* Tabbed photo panel: a white pill of icons on the left, text over the photo. */
 .panel {
@@ -129,8 +126,8 @@
   color: #fff;
   font-size: min(2.23vw, 29px);
 }
-.stepTitle { font-size: min(1.31vw, 18px); font-weight: 500; font-variation-settings: normal; line-height: 1.15; color: #11a0db; max-width: min(8.46vw, 110px); }
-.stepText { font-size: min(1.12vw, 16px); font-weight: 500; font-variation-settings: normal; line-height: 1.45; color: #111; max-width: min(15.38vw, 200px); }
+.stepTitle { font-size: min(1.31vw, 18px); font-weight: 500; line-height: 1.15; color: #11a0db; max-width: min(8.46vw, 110px); }
+.stepText { font-size: min(1.12vw, 16px); font-weight: 500; line-height: 1.45; color: #111; max-width: min(15.38vw, 200px); }
 
 /* Tablets */
 @media (max-width: 1024px) {

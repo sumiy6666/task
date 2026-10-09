@@ -1,37 +1,40 @@
 import React from 'react';
 import Link from 'next/link';
-import styles from './ArticleFooter.module.css';
+import { ArrowRight } from 'lucide-react';
+import { Carousel } from '../ui/Carousel';
+import { Reveal } from '../ui/Reveal';
+import styles from './Article.module.css';
 
+const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=600&auto=format&fit=crop';
+
+// A related article: photo card with the title and summary over a navy wash.
 export function RelatedArticleGridCard({ article }) {
   return (
-    <Link prefetch={false} href={`/insights/${article.id}`} className={`no-underline ${styles.card}`}>
-      <img
-        src={article.image || 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=400&auto=format&fit=crop'}
-        alt={article.title}
-        className={styles.cardImage}
-      />
-      <h4 className={styles.cardTitle}>{article.title}</h4>
-      <p className={styles.cardText}>{article.description}</p>
-      <span className={styles.readMore}>
-        Read More
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
-        </svg>
+    <Link
+      prefetch={false}
+      href={`/insights/${article.id}`}
+      className={styles.relatedCard}
+      style={{ backgroundImage: `url('${article.image || FALLBACK_IMAGE}')` }}
+    >
+      <span className={styles.relatedOverlay} aria-hidden="true" />
+      <span className={styles.relatedText}>
+        <span className={styles.relatedCardTitle}>{article.title}</span>
+        <span className={styles.relatedCardDesc}>{article.description}</span>
       </span>
+      <span className={styles.relatedArrow} aria-hidden="true"><ArrowRight size={13} /></span>
     </Link>
   );
 }
 
-// The Related Articles section: title and a row of cards.
+// The Related Articles row under an article.
 export function RelatedArticles({ articles }) {
   return (
-    <section className={styles.related}>
-      <h3 className={styles.relatedTitle}>Related Articles</h3>
-      <div className={styles.grid}>
-        {articles.map((article) => (
-          <RelatedArticleGridCard key={article.id} article={article} />
-        ))}
-      </div>
-    </section>
+    <Carousel id="related-title" title="RELATED ARTICLES" gap="1.45rem" headerClassName={styles.relatedHeader} className={styles.related}>
+      {articles.map((article, i) => (
+        <Reveal key={article.id} delay={(i % 3) * 150} className={styles.relatedCell}>
+          <RelatedArticleGridCard article={article} />
+        </Reveal>
+      ))}
+    </Carousel>
   );
 }

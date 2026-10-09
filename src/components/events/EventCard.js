@@ -4,7 +4,7 @@ export default function EventCard({ event, isActive, onClick }) {
   return (
     <div
       onClick={onClick}
-      className={`flex items-start cursor-pointer transition-colors ${styles.card} ${isActive ? styles.cardActive : 'hover:bg-gray-50'}`}
+      className={`flex items-start cursor-pointer transition-colors ${styles.card} ${isActive ? styles.cardActive : 'hover:bg-[#f5f7f9]'}`}
     >
       {/* Thumbnail */}
       <div className={`flex-shrink-0 overflow-hidden ${styles.thumb}`}>
@@ -19,11 +19,11 @@ export default function EventCard({ event, isActive, onClick }) {
       </div>
 
       {/* Details */}
-      <div className={`flex-1 flex flex-col ${styles.cardBody}`}>
+      <div className={`flex-1 flex flex-col items-start ${styles.cardBody}`}>
         <h4 className={`text-[#111] ${styles.cardTitle}`}>
           {event.title}
         </h4>
-        <div className={`flex items-center text-[#9a9a9a] ${styles.cardMeta}`}>
+        <div className={`flex items-center text-[#8a8a8a] ${styles.cardMeta}`}>
           <div className={`flex items-center ${styles.cardMetaItem}`}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <circle cx="12" cy="12" r="10" />

@@ -6,16 +6,16 @@ import { Footer } from '@/components/layout/Footer';
 import { Nunito_Sans } from "next/font/google";
 import "./globals.css";
 
-// The site font is Avenir (see --font-sans in globals.css). Avenir is a paid
-// font that ships with macOS but not Windows or Android, so Nunito Sans, a
-// close free match, stands in where Avenir is not installed.
-const avenirFallback = Nunito_Sans({
-  variable: "--font-avenir-fallback",
+// The site font is Avenir (see globals.css). Avenir is a paid font that is
+// not on Windows or Android, so Nunito Sans, the closest free match, stands
+// in until Avenir is installed or its files are added to public/fonts/avenir.
+const avenirStandIn = Nunito_Sans({
+  variable: "--font-avenir-stand-in",
   subsets: ["latin"],
 });
 
 export const metadata = {
-  title: "AV CIRCLE",
+  title: "AV COMMUNITY",
   description: "Connect, learn and grow with professionals around the world.",
 };
 
@@ -27,7 +27,7 @@ export default async function RootLayout({ children }) {
   });
 
   return (
-    <html lang="en" className={avenirFallback.variable}>
+    <html lang="en" className={avenirStandIn.variable}>
       <body>
         <Header user={user} canSignIn={isSignInEnabled()} />
         <Suspense fallback={null}>

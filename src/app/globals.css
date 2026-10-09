@@ -1,5 +1,98 @@
 @import "tailwindcss";
 
+/* The only site font is Avenir. It is taken from the visitor's machine when
+   installed (macOS ships it; on Windows install Avenir, Avenir LT Std or
+   Avenir Next), otherwise from the licensed files in public/fonts/avenir/
+   (Avenir-Light, -Book, -Medium, -Heavy, -Black as .woff2/.woff/.otf/.ttf). */
+@font-face {
+  font-family: 'Avenir';
+  src: local('Avenir Light'),
+    local('Avenir-Light'),
+    local('Avenir LT Std 35 Light'),
+    local('AvenirLTStd-Light'),
+    local('Avenir Next Ultra Light'),
+    local('AvenirNext-UltraLight'),
+    url('/fonts/avenir/Avenir-Light.woff2') format('woff2'),
+    url('/fonts/avenir/Avenir-Light.woff') format('woff'),
+    url('/fonts/avenir/Avenir-Light.otf') format('opentype'),
+    url('/fonts/avenir/Avenir-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Avenir';
+  src: local('Avenir Book'),
+    local('Avenir-Book'),
+    local('Avenir Roman'),
+    local('Avenir-Roman'),
+    local('Avenir LT Std 45 Book'),
+    local('AvenirLTStd-Book'),
+    local('Avenir LT Std 55 Roman'),
+    local('AvenirLTStd-Roman'),
+    local('Avenir Next Regular'),
+    local('AvenirNext-Regular'),
+    url('/fonts/avenir/Avenir-Book.woff2') format('woff2'),
+    url('/fonts/avenir/Avenir-Book.woff') format('woff'),
+    url('/fonts/avenir/Avenir-Book.otf') format('opentype'),
+    url('/fonts/avenir/Avenir-Book.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Avenir';
+  src: local('Avenir Medium'),
+    local('Avenir-Medium'),
+    local('Avenir LT Std 65 Medium'),
+    local('AvenirLTStd-Medium'),
+    local('Avenir Next Medium'),
+    local('AvenirNext-Medium'),
+    url('/fonts/avenir/Avenir-Medium.woff2') format('woff2'),
+    url('/fonts/avenir/Avenir-Medium.woff') format('woff'),
+    url('/fonts/avenir/Avenir-Medium.otf') format('opentype'),
+    url('/fonts/avenir/Avenir-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Avenir';
+  src: local('Avenir Heavy'),
+    local('Avenir-Heavy'),
+    local('Avenir LT Std 85 Heavy'),
+    local('AvenirLTStd-Heavy'),
+    local('Avenir Next Bold'),
+    local('AvenirNext-Bold'),
+    url('/fonts/avenir/Avenir-Heavy.woff2') format('woff2'),
+    url('/fonts/avenir/Avenir-Heavy.woff') format('woff'),
+    url('/fonts/avenir/Avenir-Heavy.otf') format('opentype'),
+    url('/fonts/avenir/Avenir-Heavy.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Avenir';
+  src: local('Avenir Black'),
+    local('Avenir-Black'),
+    local('Avenir LT Std 95 Black'),
+    local('AvenirLTStd-Black'),
+    local('Avenir Next Heavy'),
+    local('AvenirNext-Heavy'),
+    url('/fonts/avenir/Avenir-Black.woff2') format('woff2'),
+    url('/fonts/avenir/Avenir-Black.woff') format('woff'),
+    url('/fonts/avenir/Avenir-Black.otf') format('opentype'),
+    url('/fonts/avenir/Avenir-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --color-primary: #00A4E4;       /* Light blue used in buttons, logos */
   --color-primary-dark: #0088be;
@@ -14,7 +107,7 @@
   --color-text-muted: #6b7280;    /* Gray text */
   --color-border: #e5e7eb;
 
-  --font-sans: 'Avenir', 'Avenir Next', var(--font-avenir-fallback), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-sans: 'Avenir', 'Avenir Next', var(--font-avenir-stand-in), sans-serif;
   
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -40,6 +133,16 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 body {

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import TrendingPoll from '@/components/poll/TrendingPoll';
-import RecentPollsList, { ViewAllLink } from '@/components/poll/RecentPollsList';
+import RecentPollsList, { OutlineLink } from '@/components/poll/RecentPollsList';
 import TakePollDetail from '@/components/poll/TakePollDetail';
 import PollResultCard from '@/components/poll/PollResultCard';
 import { Reveal } from '@/components/ui/Reveal';
@@ -120,21 +120,21 @@ export default function PollPageView({ recentPolls = recentPollsData, closedPoll
   const trending = recentPolls === recentPollsData ? null : [...recentPolls].sort((a, b) => (b.voters || 0) - (a.voters || 0))[0];
 
   return (
-    <div className="container min-h-screen" style={{ paddingBottom: 'calc(4 * var(--sa))' }}>
+    <div className={`container min-h-screen ${pollStyles.page}`}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Poll' }]} />
 
       <TrendingPoll poll={trending} />
 
-      {/* Recent Polls + Take Poll side-by-side */}
-      <div className="flex max-lg:flex-col" style={{ gap: 'calc(1.5 * var(--sa))', marginBottom: 'calc(2 * var(--sa))' }}>
-        <div className="flex-[1_1_56%] min-w-0">
+      {/* Recent polls (white) and Take a poll (grey) share one card. */}
+      <div className={pollStyles.split}>
+        <div className={pollStyles.splitList}>
           <RecentPollsList
             polls={recentPolls}
             activePollId={activePoll?.id}
             onPollSelect={setActivePoll}
           />
         </div>
-        <div className="flex-[1_1_44%] min-w-0">
+        <div className={pollStyles.splitTake}>
           <TakePollDetail key={activePoll?.id} poll={activePoll} />
         </div>
       </div>
@@ -143,7 +143,7 @@ export default function PollPageView({ recentPolls = recentPollsData, closedPoll
       <div className={pollStyles.closed}>
         <div className={pollStyles.closedHeader}>
           <Reveal as="h3" className={pollStyles.panelTitle}>CLOSED POLLS</Reveal>
-          <ViewAllLink href="/poll/closed" />
+          <OutlineLink href="/poll/closed">VIEW ALL</OutlineLink>
         </div>
 
         {closedPolls.length === 0 ? (

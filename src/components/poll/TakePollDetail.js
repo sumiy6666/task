@@ -50,8 +50,8 @@ export default function TakePollDetail({ poll: initialPoll }) {
   };
 
   return (
-    <div className={`flex flex-col h-full ${styles.panel} ${styles.take}`}>
-      <Reveal as="h3" className={styles.takeLabel}>TAKE POLL</Reveal>
+    <div className={`flex flex-col ${styles.take}`}>
+      <Reveal as="h3" className={styles.takeLabel}>TAKE A POLL</Reveal>
 
       <Reveal as="h2" delay={120} className={styles.takeQuestion}>
         {poll.question}
@@ -79,7 +79,7 @@ export default function TakePollDetail({ poll: initialPoll }) {
       </Reveal>
 
       {(error || poll.voters != null || poll.topicId) && (
-        <div className={`flex items-center justify-between ${styles.meta}`} style={{ marginTop: 'min(1.54vw, 20px)' }}>
+        <div className={`flex items-center justify-between ${styles.meta}`} style={{ marginTop: 20 }}>
           <span role={error ? 'alert' : undefined}>
             {error || (poll.voters != null ? `${poll.voters} ${poll.voters === 1 ? 'voter' : 'voters'}` : '')}
           </span>

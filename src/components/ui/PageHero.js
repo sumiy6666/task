@@ -25,6 +25,8 @@ export function PageHero({
   spacious = false,
   compact = false,
   framed = false,
+  // `large`: the Poll page design, with a bigger label and medium-weight title.
+  large = false,
   // wash = 'linear-gradient(to right, rgba(21, 75, 200, 0.92) 0%, rgba(21, 75, 200, 0.75) 33%, rgba(21, 75, 200, 0) 58%)'
  wash = 'linear-gradient(to right, rgba(21, 75, 200, 0) 0%, rgba(21, 75, 200, 0) 33%, rgba(21, 75, 200, 0) 58%)'
   
@@ -33,7 +35,7 @@ export function PageHero({
   let step = 0;
 
   return (
-    <section className={`${styles.hero} ${spacious ? styles.spacious : ''} ${compact ? styles.compact : ''} ${framed ? styles.framed : ''}`} style={{ backgroundImage: framed ? `url('${image}')` : `${wash}, url('${image}')` }}>
+    <section className={`${styles.hero} ${spacious ? styles.spacious : ''} ${compact ? styles.compact : ''} ${framed ? styles.framed : ''} ${large ? styles.large : ''}`} style={{ backgroundImage: framed ? `url('${image}')` : `${wash}, url('${image}')` }}>
       <div className={styles.content}>
         {label && <div className={`rise-in ${styles.label}`} style={delay(step++)}>{label}</div>}
 

@@ -1,0 +1,669 @@
+/* Discussions page: composer, feed cards and sidebar. Sizes follow the
+   1440px desktop design; tablets and phones are below. */
+
+.page {
+  padding-bottom: 4rem;
+}
+
+/* The 1300px container has no side padding of its own. */
+@media (min-width: 769px) and (max-width: 1340px) {
+  .page {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* Composer on top; feed beside the categories and poll. The feed spans both
+   sidebar rows so the poll sits right under the categories. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 26.1rem;
+  grid-template-rows: auto auto 1fr;
+  column-gap: 3rem;
+  row-gap: 2.75rem;
+  align-items: start;
+}
+
+.layout > .composer { grid-column: 1 / -1; }
+.feed { grid-column: 1; grid-row: 2 / span 2; }
+.categoriesCard { grid-column: 2; grid-row: 2; }
+.sidePoll { grid-column: 2; grid-row: 3; }
+
+.card,
+.composer,
+.categoriesCard {
+  background: var(--color-surface);
+  border-radius: 1.25rem;
+  box-shadow: 0 12px 30px rgba(19, 39, 66, 0.08);
+}
+
+/* ---- Composer ---- */
+
+.composer {
+  display: flex;
+  gap: 2.8rem;
+  padding: 2.1rem 2.4rem 2.1rem 1.9rem;
+}
+
+.composerAvatar {
+  flex-shrink: 0;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.composerMain {
+  flex: 1;
+  min-width: 0;
+}
+
+.composerRow {
+  display: flex;
+  gap: 1.4rem;
+}
+
+.composerInput {
+  flex: 1;
+  min-width: 0;
+  height: 3.5rem;
+  padding: 0 0.9rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  outline: none;
+  background: #E8EDF1;
+  font-family: inherit;
+  font-size: 0.82rem;
+  color: var(--color-text-main);
+  transition: border-color 0.2s;
+}
+
+.composerInput::placeholder {
+  color: #1d1d1d;
+}
+
+.composerInput:focus {
+  border-color: var(--color-primary);
+}
+
+/* CategoryField is sized for the compose page; fixed sizes here. */
+.composer .composerCategory {
+  width: 13.9rem;
+  height: 3.5rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.5rem;
+}
+
+.composer .composerCategory > span:first-child {
+  font-size: 0.62rem;
+}
+
+.composer .composerCategory > span:nth-child(2) {
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+}
+
+.composer .composerCategory > svg {
+  right: 0.9rem;
+  bottom: 0.8rem;
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.composerFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.composerTools {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  padding-left: 0.5rem;
+}
+
+.toolButton {
+  display: flex;
+  color: #9a9a9a;
+  transition: color 0.2s;
+}
+
+.toolButton:hover {
+  color: var(--color-primary);
+}
+
+.toolButton svg {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.postButton {
+  width: 9rem;
+  height: 2.75rem;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition: background-color 0.2s;
+}
+
+.postButton:hover {
+  background: var(--color-primary-dark);
+}
+
+/* ---- Feed ---- */
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 2.6rem;
+  min-width: 0;
+}
+
+.card {
+  padding: 2.5rem 2.5rem 2.25rem 3.6rem;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.title {
+  font-size: 2.1rem;
+  font-weight: 500;
+  line-height: 1.32;
+  color: #1D9FD8;
+  max-width: 36.3rem;
+}
+
+.title a:hover {
+  color: var(--color-primary-dark);
+}
+
+.bookmark {
+  flex-shrink: 0;
+  display: flex;
+  margin-top: 0.6rem;
+  color: #9a9a9a;
+  transition: color 0.2s;
+}
+
+.bookmark svg {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.bookmark:hover,
+.bookmarked {
+  color: var(--color-primary);
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 2.2rem;
+}
+
+.authorAvatar {
+  flex-shrink: 0;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.authorName {
+  font-size: 1.12rem;
+  font-weight: 500;
+  color: #000;
+}
+
+.authorMeta {
+  margin-top: 0.15rem;
+  font-size: 1rem;
+  color: #9AA3AD;
+}
+
+.tags {
+  margin-top: 0.45rem;
+  font-size: 0.85rem;
+  color: #1D9FD8;
+  word-spacing: 0.1rem;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 20.6rem;
+  margin-top: 2.1rem;
+  border-radius: 0.75rem;
+  object-fit: cover;
+}
+
+.body {
+  margin-top: 2rem;
+  max-width: 41rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #222;
+}
+
+.body p + p {
+  margin-top: 1.2rem;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 2.75rem;
+  margin-top: 2rem;
+  padding: 1.4rem 0;
+  border-top: 1px solid #D5DAE1;
+  font-size: 0.85rem;
+  color: #9AA3AD;
+}
+
+.card > .stats:last-child {
+  padding-bottom: 0.25rem;
+}
+
+.stats:has(+ .reply) {
+  border-bottom: 1px solid #D5DAE1;
+}
+
+.stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.stat svg {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.lastActivity {
+  margin-left: auto;
+}
+
+/* Latest reply, shown under the stats. */
+.reply {
+  display: flex;
+  gap: 1.9rem;
+  padding: 1.75rem 0 1.5rem 0.25rem;
+}
+
+.replyAvatar {
+  flex-shrink: 0;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.replyText {
+  margin-top: 0.35rem;
+  max-width: 34rem;
+  font-size: 0.83rem;
+  line-height: 1.5;
+  color: #222;
+}
+
+.replyStats {
+  display: flex;
+  gap: 1.25rem;
+  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  color: #9AA3AD;
+}
+
+.replyStats svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.replyBox {
+  padding: 0.5rem 0 0.25rem 0.25rem;
+}
+
+/* Poll options: lettered pills. */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+  max-width: 45.5rem;
+  list-style: none;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  height: 2.25rem;
+  padding: 0 1rem 0 2rem;
+  border-radius: var(--radius-full);
+  background: #E8EDF1;
+  font-size: 1.08rem;
+  color: #385E87;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.option:hover {
+  background: #DCE7F3;
+  color: var(--color-primary);
+}
+
+.optionLetter {
+  width: 3.75rem;
+  flex-shrink: 0;
+}
+
+.pollAuthor {
+  margin-top: 1rem;
+}
+
+.empty {
+  padding: 3rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+/* ---- Sidebar ---- */
+
+.categoriesCard {
+  padding: 2.9rem 2.5rem 2.75rem 0;
+}
+
+.sideTitle {
+  padding-left: 3.25rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.47rem;
+  font-weight: 500;
+  color: #000;
+}
+
+.categoryList {
+  list-style: none;
+}
+
+.categoryRow {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 4.05rem;
+  padding: 0 1.4rem 0 4.5rem;
+  font-size: 1.1rem;
+  color: #000;
+  transition: color 0.2s;
+}
+
+/* Dividers start under the text column, not at the card edge. */
+.categoryRow::after {
+  content: '';
+  position: absolute;
+  left: 2.75rem;
+  right: 0;
+  bottom: 0;
+  border-bottom: 1px solid #D5DAE1;
+}
+
+li:last-child > .categoryRow::after {
+  display: none;
+}
+
+.categoryRow:hover {
+  color: var(--color-primary);
+}
+
+/* The selected row is a grey tab running in from the card's left edge. */
+.categoryActive {
+  height: 3.1rem;
+  margin-bottom: 0.45rem;
+  background: #D9D9D9;
+  border-radius: 0 var(--radius-full) var(--radius-full) 0;
+}
+
+.categoryActive::after {
+  display: none;
+}
+
+.categoryActive:hover {
+  color: #000;
+}
+
+/* The shared PollWidget sets its sizes inline; the sidebar design is larger. */
+.sidePoll > p {
+  font-size: 1.4rem !important;
+  line-height: 1.3 !important;
+}
+
+.sidePoll span[title] {
+  font-size: 0.85rem !important;
+  padding: 0 0.6rem 0 0.3rem !important;
+}
+
+@media (max-width: 768px) {
+  .sidePoll > p {
+    font-size: 1.15rem !important;
+  }
+
+  .sidePoll span[title] {
+    font-size: 0.85rem !important;
+  }
+}
+
+/* ---- Tablets: one column; categories become a scrolling chip row ---- */
+
+@media (max-width: 1024px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    row-gap: 1.75rem;
+  }
+
+  .layout > .composer,
+  .feed,
+  .categoriesCard,
+  .sidePoll {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .categoriesCard {
+    padding: 1.5rem 0 1.25rem;
+  }
+
+  .sideTitle {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+  }
+
+  .categoryList {
+    display: flex;
+    gap: 0.6rem;
+    overflow-x: auto;
+    padding: 0 1.5rem 0.25rem;
+    scrollbar-width: none;
+  }
+
+  .categoryList::-webkit-scrollbar {
+    display: none;
+  }
+
+  .categoryRow,
+  .categoryActive {
+    gap: 0.6rem;
+    height: 2.4rem;
+    margin: 0;
+    padding: 0 1rem;
+    border-radius: var(--radius-full);
+    background: #EBF1FD;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  .categoryRow span:last-child {
+    color: #6b7280;
+  }
+
+  .categoryActive {
+    background: #D9D9D9;
+  }
+
+  .categoryRow::after {
+    display: none;
+  }
+
+  .card {
+    padding: 2rem 2rem 1.75rem 2.5rem;
+  }
+}
+
+/* ---- Phones ---- */
+
+@media (max-width: 768px) {
+  .page {
+    padding-bottom: 2rem;
+  }
+
+  .layout {
+    row-gap: 1.25rem;
+  }
+
+  .feed {
+    gap: 1.25rem;
+  }
+
+  .card,
+  .composer,
+  .categoriesCard {
+    border-radius: 1rem;
+  }
+
+  .composer {
+    gap: 0.75rem;
+    padding: 1.25rem 1rem;
+  }
+
+  .composerAvatar {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .composerRow {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .composerInput {
+    height: 2.9rem;
+    font-size: 0.9rem;
+  }
+
+  .composer .composerCategory {
+    width: 100%;
+  }
+
+  .composerFooter {
+    margin-top: 0.9rem;
+  }
+
+  .composerTools {
+    padding-left: 0;
+  }
+
+  .postButton {
+    width: 6rem;
+    height: 2.5rem;
+  }
+
+  .card {
+    padding: 1.5rem 1.15rem 1.25rem;
+  }
+
+  .title {
+    font-size: 1.2rem;
+    line-height: 1.45;
+  }
+
+  .bookmark {
+    margin-top: 0.25rem;
+  }
+
+  .author {
+    gap: 0.85rem;
+    margin-top: 1.25rem;
+  }
+
+  .authorAvatar {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+
+  .image {
+    height: 12.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .body {
+    margin-top: 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .stats {
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    margin-top: 1.25rem;
+    padding: 1rem 0;
+  }
+
+  .lastActivity {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .reply {
+    gap: 0.85rem;
+    padding: 1.25rem 0 1rem;
+  }
+
+  .replyAvatar {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .replyText {
+    font-size: 0.85rem;
+  }
+
+  .replyBox {
+    padding-left: 0;
+  }
+
+  .options {
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .option {
+    height: 2.5rem;
+    padding-left: 1.1rem;
+    font-size: 0.88rem;
+  }
+
+  .optionLetter {
+    width: 2rem;
+  }
+}

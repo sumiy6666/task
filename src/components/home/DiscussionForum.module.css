@@ -1,0 +1,167 @@
+.forumCard {
+  border: none;
+  border-radius: 2rem;
+  padding: 3rem 2.5rem 3.3rem;
+  margin-bottom: 2.75rem;
+  box-shadow: 0 20px 40px rgba(19, 39, 66, 0.08);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2.25rem;
+  padding: 0 0.5rem 0 0.35rem;
+}
+
+.title {
+  font-size: 1.47rem;
+  font-weight: 500;
+  color: #000;
+  text-transform: uppercase;
+}
+
+.exploreBtn {
+  height: 2.25rem;
+  padding: 0 1.05rem;
+  font-size: 0.82rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2.1rem;
+}
+
+.topicCard {
+  display: flex;
+  flex-direction: column;
+  min-height: 17.6rem;
+  padding: 2.1rem 1.75rem 1.4rem 1.95rem;
+  background: #EBF1FD;
+  border-radius: 1.4rem;
+  box-shadow: 0 12px 22px rgba(19, 39, 66, 0.1);
+  color: #000;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.topicCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 30px rgba(19, 39, 66, 0.14);
+}
+
+.category {
+  font-size: 1.12rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 1.1rem;
+}
+
+.question {
+  font-size: 1.1rem;
+  line-height: 1.42;
+  max-width: 12rem;
+  margin-bottom: 1.5rem;
+}
+
+.meta {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.25rem;
+  border-top: 1px solid #D5DAE1;
+  font-size: 0.95rem;
+  margin-left: -0.25rem;
+  margin-right: -0.25rem;
+}
+
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (max-width: 1200px) {
+  .grid {
+    gap: 1.5rem;
+  }
+
+  .topicCard {
+    padding: 2rem 1.4rem 1.4rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .forumCard {
+    padding: 2.5rem 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .topicCard {
+    min-height: 14rem;
+  }
+
+  .question {
+    max-width: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .forumCard {
+    padding: 1.75rem 1.25rem;
+    border-radius: var(--radius-xl);
+    margin-bottom: 1.5rem;
+  }
+
+  .header {
+    margin-bottom: 1.5rem;
+    padding: 0;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .exploreBtn {
+    height: 2.4rem;
+    padding: 0 1rem;
+    font-size: 0.75rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .topicCard {
+    min-height: 0;
+    padding: 1.75rem 1.5rem 1.5rem;
+    border-radius: 1.25rem;
+    box-shadow: 0 8px 16px rgba(19, 39, 66, 0.08);
+  }
+
+  .topicCard:hover {
+    transform: none;
+  }
+
+  .category {
+    font-size: 1rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .question {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .meta {
+    padding-top: 1rem;
+    font-size: 0.9rem;
+  }
+}

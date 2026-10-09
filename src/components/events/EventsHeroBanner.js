@@ -67,12 +67,12 @@ export default function EventsHeroBanner({ onFilterChange, onRegister }) {
 
       {/* Left Content */}
       {/* Keyed by slide so the text animates in one by one on every change. */}
-      <div key={currentSlide} className={`relative flex flex-col justify-center h-full text-white ${styles.heroContent}`} style={{ zIndex: 2 }}>
-        <div className={`rise-in uppercase font-medium ${styles.heroLabel}`}>
+      <div key={currentSlide} className={`relative flex flex-col text-white ${styles.heroContent}`} style={{ zIndex: 2 }}>
+        <div className={`rise-in uppercase ${styles.heroLabel}`}>
           {slide.label}
         </div>
 
-        <h2 className={`rise-in font-semibold leading-tight ${styles.heroTitle}`} style={{ '--delay': '0.15s' }}>
+        <h2 className={`rise-in ${styles.heroTitle}`} style={{ '--delay': '0.15s' }}>
           {slide.title}
         </h2>
 
@@ -88,7 +88,7 @@ export default function EventsHeroBanner({ onFilterChange, onRegister }) {
           ))}
         </div>
 
-        <div className="rise-in" style={{ '--delay': '0.45s' }}>
+        <div className={`rise-in ${styles.heroAction}`} style={{ '--delay': '0.45s' }}>
           <button type="button" onClick={() => onRegister?.(slides[currentSlide].title)} className={`inline-flex items-center text-white bg-transparent hover:bg-white/10 transition-colors cursor-pointer ${styles.registerBtn}`}>
             REGISTER NOW
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.heroIcon}>
@@ -106,13 +106,13 @@ export default function EventsHeroBanner({ onFilterChange, onRegister }) {
           className={`w-full bg-white flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors ${styles.exploreTrigger} ${dropdownOpen ? styles.exploreTriggerOpen : ''}`}
         >
           <div className={`flex flex-col items-start ${styles.exploreLabels}`}>
-            <span className={`font-semibold text-[#9ca3af] uppercase ${styles.exploreLabel}`}>EXPLORE EVENTS</span>
-            <span className={`font-medium text-[#00A4E4] ${styles.exploreValue}`}>{activeFilter}</span>
+            <span className={`uppercase ${styles.exploreLabel}`}>EXPLORE EVENTS</span>
+            <span className={`text-[#00A4E4] ${styles.exploreValue}`}>{activeFilter}</span>
           </div>
           <svg
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#9ca3af"
+            stroke="currentColor"
             strokeWidth="2"
             className={`transition-transform duration-200 ${styles.exploreChevron}`}
             style={{ transform: dropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
@@ -123,7 +123,7 @@ export default function EventsHeroBanner({ onFilterChange, onRegister }) {
 
         {/* Dropdown menu */}
         {dropdownOpen && (
-          <div className={`w-full bg-white overflow-hidden ${styles.exploreMenu}`}>
+          <div className={`w-full bg-white ${styles.exploreMenu}`}>
             {filters.map((f) => (
               <div
                 key={f}
@@ -131,7 +131,7 @@ export default function EventsHeroBanner({ onFilterChange, onRegister }) {
                 className={`flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors ${styles.exploreItem}`}
                 style={{ color: activeFilter === f ? '#00A4E4' : '#132742' }}
               >
-                <span className="font-medium">{f}</span>
+                <span>{f}</span>
                 {activeFilter === f && (
                   <svg viewBox="0 0 24 24" fill="none" stroke="#00A4E4" strokeWidth="2.5" className={styles.exploreCheck}>
                     <polyline points="20 6 9 17 4 12" />
@@ -141,19 +141,6 @@ export default function EventsHeroBanner({ onFilterChange, onRegister }) {
             ))}
           </div>
         )}
-      </div>
-
-      {/* Slide indicators */}
-      <div className={`absolute flex items-center ${styles.dots}`}>
-        {slides.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentSlide(i)}
-            aria-label={`Show event ${i + 1}`}
-            className={`rounded-full cursor-pointer transition-all duration-300 ${styles.dot} ${currentSlide === i ? styles.dotActive : ''}`}
-            style={{ backgroundColor: currentSlide === i ? '#00A4E4' : 'rgba(255,255,255,0.5)' }}
-          />
-        ))}
       </div>
 
       {/* Navigation Arrows */}
