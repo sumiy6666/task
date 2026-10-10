@@ -5,11 +5,12 @@ import { ProfileIcon } from './ProfileIcon';
 import { EARNED_BADGES, UPCOMING_BADGES } from './sampleProfile';
 import styles from './Profile.module.css';
 
-// Badges tab: progress, earned badges, and badges still to earn.
-export function BadgesPanel() {
-  const earned = EARNED_BADGES.length;
-  const total = earned + UPCOMING_BADGES.length;
-  const percent = Math.round((earned / total) * 100);
+// Badges tab: progress, earned badges, and badges still to earn. A forum
+// profile passes the member's badges and the forum's others.
+export function BadgesPanel({ earnedBadges = EARNED_BADGES, upcomingBadges = UPCOMING_BADGES }) {
+  const earned = earnedBadges.length;
+  const total = earned + upcomingBadges.length;
+  const percent = total ? Math.round((earned / total) * 100) : 0;
 
   return (
     <section className={`${styles.card} ${styles.listPanel}`} aria-labelledby="badges-title">
@@ -32,7 +33,7 @@ export function BadgesPanel() {
       <div className={styles.badgeSection}>
         <h3 className={styles.badgeSectionTitle}>Earned Badges ({earned})</h3>
         <Reveal stagger={80} className={styles.badgeGrid}>
-          {EARNED_BADGES.map((b) => (
+          {earnedBadges.map((b) => (
             <div key={b.name} className={styles.badge}>
               <ProfileIcon name={b.icon} />
               <div className={styles.badgeName}>{b.name}</div>
@@ -47,17 +48,22 @@ export function BadgesPanel() {
       </div>
 
       <div className={styles.badgeSection}>
-        <h3 className={styles.badgeSectionTitle}>Upcoming Badges ({UPCOMING_BADGES.length})</h3>
+        <h3 className={styles.badgeSectionTitle}>Upcoming Badges ({upcomingBadges.length})</h3>
         <Reveal stagger={80} className={styles.badgeGrid}>
-          {UPCOMING_BADGES.map((b) => (
+          {upcomingBadges.map((b) => (
             <div key={b.name} className={styles.badge}>
               <ProfileIcon name={b.icon} />
               <div className={styles.badgeName}>{b.name}</div>
               <div className={styles.badgeText}>{b.text}</div>
-              <div className={styles.badgeBar} role="progressbar" aria-valuenow={b.done} aria-valuemin={0} aria-valuemax={b.total} aria-label={`${b.name} progress`}>
-                <span style={{ width: `${(b.done / b.total) * 100}%` }} />
-              </div>
-              <div className={styles.badgeCount}>{b.done}/{b.total}</div>
+              {/* The forum does not report progress towards a badge. */}
+              {b.total != null && (
+                <>
+                  <div className={styles.badgeBar} role="progressbar" aria-valuenow={b.done} aria-valuemin={0} aria-valuemax={b.total} aria-label={`${b.name} progress`}>
+                    <span style={{ width: `${(b.done / b.total) * 100}%` }} />
+                  </div>
+                  <div className={styles.badgeCount}>{b.done}/{b.total}</div>
+                </>
+              )}
             </div>
           ))}
         </Reveal>

@@ -1,6 +1,8 @@
 'use client';
 import { useState } from 'react';
+import Link from 'next/link';
 import { TextTabs } from './ProfileTabs';
+import { useProfileSection } from './useProfileSection';
 import { NOTIFICATIONS } from './sampleProfile';
 import styles from './Profile.module.css';
 
@@ -18,9 +20,19 @@ const Line = ({ line }) => (
 );
 
 // Notifications tab: filter by kind, grouped by day, unread marked with a dot.
-export function NotificationsPanel() {
+// A forum profile (`live`) loads the member's own notifications.
+export function NotificationsPanel({ live = false }) {
   const [kind, setKind] = useState('All');
-  const [items, setItems] = useState(NOTIFICATIONS);
+  const [sample, setSample] = useState(NOTIFICATIONS);
+  const [forum, setForum] = useProfileSection('notifications', live);
+  const items = live ? forum.items || [] : sample;
+  const setItems = live ? setForum : setSample;
+  const status = live && (forum.loading ? 'Loading…' : forum.error || (items.length === 0 && 'No notifications yet.'));
+
+  const markAllRead = () => {
+    setItems((all) => (all || []).map((n) => ({ ...n, unread: false })));
+    if (live) fetch('/api/profile/notifications', { method: 'PUT' }).catch(() => {});
+  };
   const count = (k) => items.filter((n) => n.kind === k).length;
   const tabs = [{ id: 'All', label: `All(${items.length})` }, ...KINDS.map((k) => ({ id: k, label: `${k}(${count(k)})` }))];
   const shown = kind === 'All' ? items : items.filter((n) => n.kind === kind);
@@ -30,12 +42,14 @@ export function NotificationsPanel() {
     <section className={`${styles.card} ${styles.listPanel}`} aria-labelledby="notifications-title">
       <div className={styles.listHead}>
         <h2 id="notifications-title" className={styles.panelTitle}>Notifications</h2>
-        <button type="button" className={styles.markRead} onClick={() => setItems((all) => all.map((n) => ({ ...n, unread: false })))}>
+        <button type="button" className={styles.markRead} onClick={markAllRead}>
           Mark all as read
         </button>
       </div>
 
       <TextTabs tabs={tabs} active={kind} onChange={setKind} label="Notification type" />
+
+      {status && <p className={styles.groupTitle}>{status}</p>}
 
       {groups.map((group) => (
         <div key={group}>
@@ -44,7 +58,9 @@ export function NotificationsPanel() {
             <div key={n.id} className={styles.notification}>
               <img className={styles.smallAvatar} src={n.avatar} alt="" />
               <div className={styles.notificationBody}>
-                <div className={styles.notificationTitle}>{n.title}</div>
+                <div className={styles.notificationTitle}>
+                  {n.href ? <Link prefetch={false} href={n.href}>{n.title}</Link> : n.title}
+                </div>
                 {n.lines.map((line, i) => <Line key={i} line={line} />)}
               </div>
               <span className={styles.time}>{n.time}</span>

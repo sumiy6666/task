@@ -8,7 +8,7 @@ import styles from './Profile.module.css';
 // The Messages panel from My Profile as a dialog over the page (opened from
 // the header's message icon). Rendered into <body>: the sticky header's
 // backdrop blur would otherwise trap a fixed-position child inside it.
-export function MessagesModal({ onClose }) {
+export function MessagesModal({ live = false, onClose }) {
   const dialogRef = useRef(null);
   const onEscape = useEffectEvent(() => onClose());
 
@@ -36,7 +36,7 @@ export function MessagesModal({ onClose }) {
         <button type="button" className={styles.modalClose} aria-label="Close messages" onClick={onClose}>
           <X strokeWidth={1.5} />
         </button>
-        <MessagesPanel />
+        <MessagesPanel live={live} />
       </div>
     </div>,
     document.body

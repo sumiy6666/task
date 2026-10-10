@@ -1,33 +1,75 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { redirectIfSignedOut } from '@/lib/auth-client';
 import { Search, Send, SquarePen } from 'lucide-react';
 import { THREADS } from './sampleProfile';
+import { useProfileSection } from './useProfileSection';
 import styles from './Profile.module.css';
 
-// Messages tab: conversations on the left, the open one on the right.
-export function MessagesPanel() {
-  const [threads, setThreads] = useState(THREADS);
-  const [activeId, setActiveId] = useState(THREADS[0].id);
+// Messages tab: conversations on the left, the open one on the right. With
+// the forum connected (`live`) these are the member's private messages: each
+// conversation's messages load when it is opened, and replies are posted.
+export function MessagesPanel({ live = false }) {
+  const [sample, setSample] = useState(THREADS);
+  const [forum, setForum] = useProfileSection('messages', live);
+  const threads = live ? forum.items || [] : sample;
+  const setThreads = live ? (update) => setForum((all) => update(all || [])) : setSample;
+  const [chosenId, setChosenId] = useState(live ? null : THREADS[0].id);
   const [query, setQuery] = useState('');
   const [draft, setDraft] = useState('');
+  const [error, setError] = useState('');
 
   const term = query.trim().toLowerCase();
   const visible = term ? threads.filter((t) => t.name.toLowerCase().includes(term) || t.preview.toLowerCase().includes(term)) : threads;
+  const activeId = chosenId ?? threads[0]?.id;
   const active = threads.find((t) => t.id === activeId);
+  const status = live && (forum.loading ? 'Loading…' : forum.error || (threads.length === 0 && 'No messages yet.'));
+
+  const setMessages = (id, messages) => setThreads((all) => all.map((t) => (t.id === id ? { ...t, messages } : t)));
+
+  // A forum conversation's messages are fetched the first time it is shown.
+  const needsMessages = live && active && active.messages === null;
+  useEffect(() => {
+    if (!needsMessages) return;
+    const id = activeId;
+    fetch(`/api/profile/messages/${id}`)
+      .then((res) => (redirectIfSignedOut(res) ? null : res.json()))
+      .then((data) => data && setForum((all) => (all || []).map((t) => (t.id === id ? { ...t, messages: data.messages || [] } : t))))
+      .catch(() => setForum((all) => (all || []).map((t) => (t.id === id ? { ...t, messages: [] } : t))));
+  }, [needsMessages, activeId, setForum]);
 
   const open = (id) => {
-    setActiveId(id);
+    setChosenId(id);
+    setError('');
     setThreads((all) => all.map((t) => (t.id === id ? { ...t, unread: false } : t)));
   };
 
-  // Sample conversations only keep the message on this page.
-  const send = (e) => {
+  // Forum replies are posted; sample conversations only keep the message on
+  // this page. A failed send is put back in the box.
+  const send = async (e) => {
     e.preventDefault();
     const text = draft.trim();
-    if (!text) return;
+    if (!text || !active) return;
     const time = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-    setThreads((all) => all.map((t) => (t.id === activeId ? { ...t, preview: text, time, messages: [...t.messages, { from: 'me', text, time }] } : t)));
+    const before = active.messages || [];
+    setThreads((all) => all.map((t) => (t.id === activeId ? { ...t, preview: live ? t.preview : text, time: live ? 'just now' : time, messages: [...before, { from: 'me', text, time }] } : t)));
     setDraft('');
+    setError('');
+    if (!live) return;
+    try {
+      const res = await fetch(`/api/topics/${active.id}/replies`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ raw: text }),
+      });
+      if (redirectIfSignedOut(res)) return;
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not send your message.');
+    } catch (err) {
+      setMessages(active.id, before);
+      setDraft(text);
+      setError(err.message);
+    }
   };
 
   return (
@@ -41,6 +83,8 @@ export function MessagesPanel() {
           </label>
           <button type="button" className={styles.roundBtn} aria-label="New message"><SquarePen strokeWidth={1.5} /></button>
         </div>
+
+        {status && <p className={styles.threadText} style={{ padding: '12px 16px' }}>{status}</p>}
 
         <div role="list">
           {visible.map((t) => (
@@ -79,7 +123,8 @@ export function MessagesPanel() {
           </div>
 
           <div className={styles.chatBody}>
-            {active.messages.map((m, i) => (
+            {active.messages === null && <p className={styles.chatStatus}>Loading…</p>}
+            {(active.messages || []).map((m, i) => (
               <div key={i} className="flex flex-col">
                 <div className={`${styles.bubble} ${m.from === 'me' ? styles.bubbleOut : styles.bubbleIn}`}>{m.text}</div>
                 <span className={`${styles.bubbleTime} ${m.from === 'me' ? styles.bubbleTimeOut : ''}`}>{m.time}</span>
@@ -87,6 +132,7 @@ export function MessagesPanel() {
             ))}
           </div>
 
+          {error && <p role="alert" className={styles.chatStatus} style={{ color: '#b42318', padding: '0 16px' }}>{error}</p>}
           <form className={styles.composer} onSubmit={send}>
             <label className={styles.searchBox}>
               <input placeholder="Write a message" aria-label="Write a message" value={draft} onChange={(e) => setDraft(e.target.value)} />

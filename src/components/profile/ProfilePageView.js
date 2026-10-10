@@ -22,8 +22,10 @@ export const PROFILE_TABS = [
 ];
 
 // My Profile: header card, tab bar, and the open tab. The tab is kept in the
-// address (?tab=badges) so it can be linked to and survives a reload.
-export function ProfilePageView({ profile, initialTab = 'summary' }) {
+// address (?tab=badges) so it can be linked to and survives a reload. `live`
+// carries the member's forum stats, activity and badges; without it the tabs
+// show sample content.
+export function ProfilePageView({ profile, live = null, initialTab = 'summary' }) {
   const [tab, setTab] = useState(PROFILE_TABS.some((t) => t.id === initialTab) ? initialTab : 'summary');
 
   const show = (id) => {
@@ -41,12 +43,12 @@ export function ProfilePageView({ profile, initialTab = 'summary' }) {
       <ProfileTabs tabs={PROFILE_TABS} active={tab} onChange={show} label="Profile sections" />
 
       <div role="tabpanel" key={tab} className="rise-in">
-        {tab === 'summary' && <SummaryPanel onShowBadges={() => show('badges')} />}
-        {tab === 'activity' && <ActivityPanel />}
-        {tab === 'notifications' && <NotificationsPanel />}
-        {tab === 'messages' && <MessagesPanel />}
+        {tab === 'summary' && <SummaryPanel glance={live?.glance} topBadges={live?.badges.earned.slice(0, 2)} onShowBadges={() => show('badges')} />}
+        {tab === 'activity' && <ActivityPanel items={live?.activity} live={Boolean(live)} />}
+        {tab === 'notifications' && <NotificationsPanel live={Boolean(live)} />}
+        {tab === 'messages' && <MessagesPanel live={Boolean(live)} />}
         {tab === 'invites' && <InvitesPanel />}
-        {tab === 'badges' && <BadgesPanel />}
+        {tab === 'badges' && <BadgesPanel earnedBadges={live?.badges.earned} upcomingBadges={live?.badges.upcoming} />}
       </div>
     </main>
   );

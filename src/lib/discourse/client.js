@@ -50,7 +50,7 @@ export const SIGN_IN_REQUIRED = 'Please sign in to continue.';
 const SHARED_READ_SECONDS = 30;
 const CACHE_TAG = 'discourse';
 // Writes that do not change what other pages show.
-const QUIET_WRITES = ['/drafts.json', '/uploads.json', '/user-api-key/revoke'];
+const QUIET_WRITES = ['/drafts.json', '/uploads.json', '/user-api-key/revoke', '/notifications/mark-read.json'];
 // A rate-limited read is retried once when Discourse asks for a short wait.
 const MAX_RETRY_WAIT_SECONDS = 4;
 

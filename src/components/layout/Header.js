@@ -9,7 +9,7 @@ import { MessagesModal } from '../profile/MessagesModal';
 
 // `user` is the signed-in Discourse member (null for a guest). `canSignIn`
 // is false in demo mode, where there is no forum to sign in to.
-export function Header({ user = null, canSignIn = false }) {
+export function Header({ user = null, canSignIn = false, live = false }) {
   // Only one of the menu, the profile menu and the phone search box is open
   // at a time: opening one closes the others.
   const [openPanel, setOpenPanel] = useState(null); // 'menu' | 'profile' | 'search'
@@ -185,7 +185,7 @@ export function Header({ user = null, canSignIn = false }) {
           </div>
         </div>
       </div>
-      {isMessagesOpen && <MessagesModal onClose={() => setIsMessagesOpen(false)} />}
+      {isMessagesOpen && <MessagesModal live={live} onClose={() => setIsMessagesOpen(false)} />}
     </header>
   );
 }

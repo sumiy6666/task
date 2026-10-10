@@ -58,6 +58,7 @@ function topicMapper(list, categoriesById) {
       author: { name: op?.name || op?.username || 'Member', avatar: avatarUrl(op?.avatar_template) },
       authorIsStaff: Boolean(op?.admin || op?.moderator),
       timeAgo: timeAgo(t.created_at),
+      createdAt: t.created_at,
       category: categoriesById.get(t.category_id)?.name || '',
       pinned: Boolean(t.pinned),
       views: t.views ?? null,
@@ -73,6 +74,11 @@ function topicMapper(list, categoriesById) {
 const isFeedback = (t, categoriesById) => /feedback/i.test(categoriesById.get(t.category_id)?.name || '');
 const mapList = (list, categoriesById) =>
   topicsOf(list).filter((t) => !isFeedback(t, categoriesById)).map(topicMapper(list, categoriesById));
+
+// Articles newest first. A category list puts pinned topics and recent
+// activity ahead of new topics, so sort by when each was published.
+const articlesPath = (c) => `${categoryPath(c)}?order=created`;
+const newestFirst = (topics) => [...topics].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
 // Members: the directory is closed to non-staff accounts on this forum, so
 // fall back to the "all members" group and each member's profile summary.
@@ -224,26 +230,28 @@ export function loadMembers() {
   return safely('members', () => loadMemberProfiles(50));
 }
 
-// Home page: the most-voted open poll, the trending carousel, the forum
-// cards, the resources carousel, the pulse numbers and the news list.
+// Home page: the newest article and next event, the most-voted open poll,
+// the trending carousel, the forum cards, the resources carousel, the pulse
+// numbers and the news list.
 export function loadHome() {
   return safely('home', async () => {
     const categories = await loadCategories();
     const categoriesById = new Map(categories.map((c) => [c.id, c]));
     const articles = findCategory(categories, /article|insight/i);
-    const [latest, active, top, about, polls, articleList] = await Promise.all([
+    const [latest, active, top, about, polls, articleList, events] = await Promise.all([
       discourseFetch('/latest.json?order=created'),
       discourseFetch('/latest.json'),
       discourseFetch('/top.json?period=all'),
       discourseFetch('/about.json', { revalidate: PROFILE_SECONDS }).catch(() => null),
       fetchPolls(categories, 6).catch(() => []),
-      articles ? discourseFetch(categoryPath(articles)).catch(() => null) : null,
+      articles ? discourseFetch(articlesPath(articles)).catch(() => null) : null,
+      fetchEvents(categories).catch(() => []),
     ]);
 
     const latestTopics = mapList(latest, categoriesById);
     const activeTopics = mapList(active, categoriesById);
     const topTopics = mapList(top, categoriesById);
-    const articleTopics = articleList ? mapList(articleList, categoriesById) : [];
+    const articleTopics = articleList ? newestFirst(mapList(articleList, categoriesById)) : [];
     const openPolls = polls.filter((p) => !p.closed);
     const stats = about?.about?.stats || {};
 
@@ -258,6 +266,11 @@ export function loadHome() {
     const poll = mostVoted(openPolls);
 
     return {
+      // The top of the page: the newest article and the next event.
+      hero: {
+        article: articleTopics[0] && { title: articleTopics[0].title, desc: articleTopics[0].description, image: articleTopics[0].image, href: `/insights/${articleTopics[0].id}` },
+        event: events[0] || null,
+      },
       poll,
       trending: {
         trending: slide(topTopics[0], counts),
@@ -298,12 +311,12 @@ export function loadInsights() {
     if (!articles) return null;
 
     const [list, latest, polls, members] = await Promise.all([
-      discourseFetch(categoryPath(articles)),
+      discourseFetch(articlesPath(articles)),
       discourseFetch('/latest.json'),
       fetchPolls(categories, 6).catch(() => []),
       loadTopMembers(3).catch(() => []),
     ]);
-    const items = mapList(list, categoriesById).map((a) => ({ ...a, author: a.author.name, authorAvatar: a.author.avatar }));
+    const items = newestFirst(mapList(list, categoriesById)).map((a) => ({ ...a, author: a.author.name, authorAvatar: a.author.avatar }));
     if (items.length === 0) return null;
 
     const poll = mostVoted(polls.filter((p) => !p.closed));
@@ -332,7 +345,87 @@ export function loadRelatedArticles(excludeId) {
     const categories = await loadCategories();
     const articles = findCategory(categories, /article|insight/i);
     if (!articles) return [];
-    const items = mapList(await discourseFetch(categoryPath(articles)), new Map());
+    const items = newestFirst(mapList(await discourseFetch(articlesPath(articles)), new Map()));
     return items.filter((a) => a.id !== Number(excludeId)).slice(0, 4).map((a) => ({ id: a.id, title: a.title, description: a.description, image: a.image }));
+  });
+}
+
+// Events come from the Discourse Calendar and Event plugin. Without it the
+// events endpoint is a 404, which fetch does not cache, so remember the miss
+// for a while rather than asking on every page view.
+const CALENDAR_RETRY_MS = 10 * 60 * 1000;
+let calendarMissingAt = 0;
+
+const EVENT_TIMEZONE = 'Asia/Kolkata';
+const EVENT_IMAGE = '/images/eventbanner.png';
+
+// A forum event in the shape the events components take (see sampleEvents.js).
+function mapEvent(e, categoriesById) {
+  const timeZone = e.timezone || EVENT_TIMEZONE;
+  const start = new Date(e.starts_at);
+  const end = e.ends_at ? new Date(e.ends_at) : null;
+  const part = (options, date = start) => new Intl.DateTimeFormat('en-GB', { timeZone, ...options }).format(date);
+  const clock = (date) => new Intl.DateTimeFormat('en-US', { timeZone, hour: 'numeric', minute: '2-digit' }).format(date);
+  const zone = part({ timeZoneName: 'short' }).split(' ').pop();
+  const fullDate = `${part({ weekday: 'long' })}, ${part({ day: 'numeric' })} ${part({ month: 'long' })} ${part({ year: 'numeric' })}`;
+  const upcoming = (end || start) > new Date();
+  const topic = e.post?.topic;
+
+  return {
+    id: e.id,
+    discourseEventId: e.id,
+    topicId: topic?.id ?? null,
+    startsAt: start.toISOString(),
+    // An event without an end time is shown (and added to calendars) as one hour.
+    endsAt: (end || new Date(start.getTime() + 60 * 60 * 1000)).toISOString(),
+    upcoming,
+    location: e.location || 'Virtual event',
+    title: cleanTitle(e.name || topic?.title || 'Community event'),
+    month: part({ month: 'long' }),
+    day: part({ day: 'numeric' }),
+    weekday: part({ weekday: 'short' }).toUpperCase(),
+    time: `${clock(start)}${end ? ` - ${clock(end)}` : ''} ${zone}`,
+    joining: e.stats?.going ?? 0,
+    category: categoriesById.get(e.category_id)?.name || 'Event',
+    image: EVENT_IMAGE,
+    detailImage: EVENT_IMAGE,
+    fullDate,
+    speaker: null,
+    agenda: null,
+    registration: upcoming ? `Open until ${part({ day: 'numeric' })} ${part({ month: 'long' })}, ${clock(start)} ${zone}` : 'Closed',
+    description: cleanExcerpt(e.description || ''),
+  };
+}
+
+// Marks whether each event is still to come or has finished.
+export const withUpcoming = (events, now = new Date()) => events.map((e) => ({ ...e, upcoming: new Date(e.endsAt || e.startsAt) > now }));
+
+// Upcoming events soonest first, then past events most recent first.
+export function orderEvents(events) {
+  const time = (e) => new Date(e.startsAt).getTime();
+  const upcoming = events.filter((e) => e.upcoming).sort((a, b) => time(a) - time(b));
+  const past = events.filter((e) => !e.upcoming).sort((a, b) => time(b) - time(a));
+  return [...upcoming, ...past];
+}
+
+async function fetchEvents(categories) {
+  if (calendarMissingAt && Date.now() - calendarMissingAt < CALENDAR_RETRY_MS) return [];
+  const data = await discourseFetch('/discourse-post-event/events.json?include_details=true').catch((error) => {
+    if (error?.status === 404) {
+      calendarMissingAt = Date.now();
+      return null;
+    }
+    throw error;
+  });
+  calendarMissingAt = data ? 0 : calendarMissingAt;
+  const categoriesById = new Map(categories.map((c) => [c.id, c]));
+  return orderEvents((data?.events || []).filter((e) => e.starts_at).map((e) => mapEvent(e, categoriesById)));
+}
+
+// Forum events for the events page, or null to show the sample events.
+export function loadEvents() {
+  return safely('events', async () => {
+    const events = await fetchEvents(await loadCategories());
+    return events.length ? events : null;
   });
 }

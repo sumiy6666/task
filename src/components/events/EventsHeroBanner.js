@@ -5,7 +5,8 @@ import styles from './Events.module.css';
 
 const filters = ['Webinars', 'Roundtables', 'Community Sessions', 'Past Events'];
 
-const slides = [
+// Sample slides, shown when the forum has no events.
+const sampleSlides = [
   {
     label: 'UPCOMING EVENT',
     title: 'Navigating market volatility: Strategies for family portfolios',
@@ -32,7 +33,7 @@ const slides = [
   }
 ];
 
-export default function EventsHeroBanner({ onFilterChange, onRegister }) {
+export default function EventsHeroBanner({ slides = sampleSlides, onFilterChange, onRegister }) {
   const [activeFilter, setActiveFilter] = useState('Webinars');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -45,13 +46,13 @@ export default function EventsHeroBanner({ onFilterChange, onRegister }) {
 
   const goNext = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
-  }, []);
+  }, [slides.length]);
 
   const goPrev = useCallback(() => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  }, []);
+  }, [slides.length]);
 
-  const slide = slides[currentSlide];
+  const slide = slides[currentSlide] || slides[0];
 
   return (
     <div className={`relative overflow-hidden ${styles.hero}`}>
@@ -89,7 +90,7 @@ export default function EventsHeroBanner({ onFilterChange, onRegister }) {
         </div>
 
         <div className={`rise-in ${styles.heroAction}`} style={{ '--delay': '0.45s' }}>
-          <button type="button" onClick={() => onRegister?.(slides[currentSlide].title)} className={`inline-flex items-center text-white bg-transparent hover:bg-white/10 transition-colors cursor-pointer ${styles.registerBtn}`}>
+          <button type="button" onClick={() => onRegister?.(slide.title)} className={`inline-flex items-center text-white bg-transparent hover:bg-white/10 transition-colors cursor-pointer ${styles.registerBtn}`}>
             REGISTER NOW
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.heroIcon}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />

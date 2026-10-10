@@ -14,10 +14,13 @@ export function ProfileHeader({ profile }) {
         <h1 className={`rise-in ${styles.name}`} style={{ '--delay': '0.1s' }}>{profile.name}</h1>
         <p className={`rise-in ${styles.handle}`} style={{ '--delay': '0.15s' }}>@{profile.username}</p>
         {profile.bio && <p className={`rise-in ${styles.bio}`} style={{ '--delay': '0.2s' }}>{profile.bio}</p>}
-        <div className={`rise-in ${styles.follows}`} style={{ '--delay': '0.25s' }}>
-          <span>{profile.followers} Followers</span>
-          <span>{profile.following} Following</span>
-        </div>
+        {/* The forum has no followers, so a forum profile leaves this out. */}
+        {profile.followers != null && (
+          <div className={`rise-in ${styles.follows}`} style={{ '--delay': '0.25s' }}>
+            <span>{profile.followers} Followers</span>
+            <span>{profile.following} Following</span>
+          </div>
+        )}
         <div className={`rise-in ${styles.metaRow}`} style={{ '--delay': '0.3s' }}>
           {profile.location && <span className={styles.metaItem}><MapPin strokeWidth={1.5} aria-hidden="true" />{profile.location}</span>}
           {profile.memberSince && <span className={styles.metaItem}><CalendarCheck strokeWidth={1.5} aria-hidden="true" />Member since {profile.memberSince}</span>}
@@ -25,9 +28,16 @@ export function ProfileHeader({ profile }) {
       </div>
 
       <div className={styles.heroActions}>
-        <button type="button" className={`${styles.heroBtn} ${styles.editBtn}`}>
-          <Pencil strokeWidth={1.5} aria-hidden="true" />Edit Profile
-        </button>
+        {profile.editHref ? (
+          // Profile details are edited on the forum.
+          <a href={profile.editHref} target="_blank" rel="noopener noreferrer" className={`${styles.heroBtn} ${styles.editBtn}`}>
+            <Pencil strokeWidth={1.5} aria-hidden="true" />Edit Profile
+          </a>
+        ) : (
+          <button type="button" className={`${styles.heroBtn} ${styles.editBtn}`}>
+            <Pencil strokeWidth={1.5} aria-hidden="true" />Edit Profile
+          </button>
+        )}
         {profile.role && (
           <button type="button" className={`${styles.heroBtn} ${styles.roleBtn}`}>
             <UserRound strokeWidth={1.5} aria-hidden="true" />{profile.role}

@@ -4,26 +4,37 @@ import styles from './HeroBanner.module.css';
 import { Button } from '../ui/Button';
 import { ArrowLeft, ArrowRight, MessageSquare } from 'lucide-react';
 
-const bannerData = [
-  {
-    image: '/images/herobanner1.jpg',
-    tag: 'FEATURED',
-    title: 'The engagement letter decides what the family keeps',
-    desc: 'Under the AICPA Code, working papers stay with the firm unless a contract says otherwise. Most letters say nothing.',
-    buttonText: 'LEARN',
-    href: '/insights'
-  },
-  {
-    image: '/images/herobanner2.jpg',
-    tag: 'TRENDING',
-    title: "GIFT City's family fund route is open",
-    desc: 'Three years after the framework arrived, the first full registration went to a foreign structure.',
-    buttonText: 'READ',
-    href: '/insights'
-  }
-];
+// Sample slides, shown when Discourse is not connected.
+const sampleArticle = {
+  image: '/images/herobanner1.jpg',
+  tag: 'FEATURED',
+  title: 'The engagement letter decides what the family keeps',
+  desc: 'Under the AICPA Code, working papers stay with the firm unless a contract says otherwise. Most letters say nothing.',
+  buttonText: 'LEARN',
+  href: '/insights'
+};
 
-export function HeroBanner() {
+// The banner leads with the newest article, then the next event.
+function slidesFor({ article, event }) {
+  const articleSlide = article
+    ? { image: article.image || '/images/herobanner1.jpg', tag: 'LATEST ARTICLE', title: article.title, desc: article.desc, buttonText: 'READ', href: article.href }
+    : sampleArticle;
+  const slides = [articleSlide];
+  if (event) {
+    slides.push({
+      image: '/images/herobanner2.jpg',
+      tag: event.upcoming === false ? 'LATEST EVENT' : 'UPCOMING EVENT',
+      title: event.title,
+      desc: [event.fullDate, event.time, event.location].filter(Boolean).join(' · '),
+      buttonText: event.upcoming === false ? 'VIEW' : 'REGISTER',
+      href: '/events'
+    });
+  }
+  return slides;
+}
+
+export function HeroBanner({ article = null, event = null }) {
+  const bannerData = slidesFor({ article, event });
   const [currentSlide, setCurrentSlide] = useState(0);
   // The first slide's text waits for the welcome heading; later slides don't.
   const [hasSlid, setHasSlid] = useState(false);
@@ -39,7 +50,7 @@ export function HeroBanner() {
       setCurrentSlide((prev) => (prev + 1) % bannerData.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, [currentSlide]);
+  }, [currentSlide, bannerData.length]);
 
   const nextSlide = () => goTo((prev) => (prev + 1) % bannerData.length);
   const prevSlide = () => goTo((prev) => (prev === 0 ? bannerData.length - 1 : prev - 1));

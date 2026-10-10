@@ -13,7 +13,7 @@ export default function EventDetail({ event, onRegister }) {
     { label: 'Related\nDiscussion', value: 'Join the conversation with community members.' },
     { label: 'Post-event\nresources', value: 'Slides, reading materials and reference links.' },
     { label: 'Recording', value: 'Recording will be available after the events.' }
-  ];
+  ].filter((detail) => detail.value); // Forum events have no speaker or agenda.
 
   return (
     <div className={`flex flex-col ${styles.panel}`}>

@@ -6,7 +6,8 @@ import { ResourcesCarousel } from '@/components/home/ResourcesCarousel';
 import { PollWidget } from '@/components/home/PollWidget';
 import { UpdateList } from '@/components/home/UpdateList';
 import { CommunityPulse } from '@/components/home/CommunityPulse';
-import { loadHome } from '@/lib/discourse/lists';
+import { SAMPLE_EVENTS } from '@/components/events/sampleEvents';
+import { loadHome, orderEvents, withUpcoming } from '@/lib/discourse/lists';
 
 export default async function Home() {
   // Live forum data when Discourse is connected; each widget keeps its sample content otherwise.
@@ -14,7 +15,7 @@ export default async function Home() {
 
   return (
     <main className={`container ${styles.main}`}>
-      <HeroBanner />
+      <HeroBanner article={live?.hero.article} event={live?.hero.event || orderEvents(withUpcoming(SAMPLE_EVENTS))[0]} />
       <DiscussionForum topics={live?.forum} />
       <ResourcesCarousel resources={live?.resources} />
 
