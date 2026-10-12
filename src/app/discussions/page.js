@@ -90,13 +90,19 @@ const samplePoll = {
 
 // A forum topic or poll, in the shape FeedCard takes.
 const fromTopic = (t) => ({ ...t, body: t.description ? [t.description] : [] });
-const fromPoll = (p) => ({
+const fromPoll = (p, topic) => ({
+  ...topic,
   id: p.topicId,
   title: p.question,
-  author: { name: 'Poll', avatar: '/images/pollicon.png' },
-  timeAgo: p.time,
+  author: topic?.author || { name: 'Poll', avatar: '/images/pollicon.png' },
+  timeAgo: topic?.timeAgo || p.time,
   category: p.category,
-  pollOptions: p.options.map((o) => o.label),
+  body: [],
+  // Polls are read with the site key, so its votes are not this visitor's.
+  poll: { ...p, userVotes: [] },
+  replies: topic?.replies ?? p.replies,
+  likes: topic?.likes ?? p.likes,
+  views: topic?.views ?? p.views,
 });
 const sidebarPoll = (p) => ({
   question: p.question,
@@ -113,8 +119,13 @@ export default async function DiscussionPage({ searchParams }) {
     : sampleCategories;
   const active = categories.some((c) => c.name === category && !c.isAll) ? category : null;
 
-  let feed = live?.feed.length ? live.feed.map(fromTopic) : sampleFeed;
-  if (live?.feedPoll) feed.splice(1, 0, fromPoll(live.feedPoll));
+  // Poll topics in the feed become votable polls; one open poll is added
+  // near the top if none is there already.
+  const pollsByTopic = new Map((live?.polls || []).map((p) => [p.topicId, p]));
+  let feed = live?.feed.length
+    ? live.feed.map((t) => (pollsByTopic.has(t.id) ? fromPoll(pollsByTopic.get(t.id), t) : fromTopic(t)))
+    : sampleFeed;
+  if (live?.feedPoll && !feed.some((item) => item.id === live.feedPoll.topicId)) feed.splice(1, 0, fromPoll(live.feedPoll));
   if (active) feed = feed.filter((item) => item.category === active);
   feed = feed.slice(0, 8);
 

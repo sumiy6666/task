@@ -85,22 +85,23 @@ export function CategoryField({ categories, value, onChange, readOnly = false, c
   );
 }
 
-// `initialTitle` and `initialCategory` (a category name) prefill the form,
-// e.g. from the composer on the discussions page.
-export function ComposeFlow({ user, categories, initialType = 'discussion', initialTitle = '', initialCategory }) {
+// `initialTitle`, `initialCategory` (a category name) and `initialBody` (e.g.
+// images and links added there) prefill the form from the composer on the
+// discussions page.
+export function ComposeFlow({ user, categories, initialType = 'discussion', initialTitle = '', initialCategory, initialBody = '' }) {
   const router = useRouter();
   const keyOf = (c) => String(c.id ?? c.name);
   const defaultKey = (type) => keyOf(categories.find((c) => (type === 'poll' ? c.isPoll : !c.isPoll)) || categories[0]);
 
   const [step, setStep] = useState('edit');
   // What is being posted: 'article' | 'poll' | 'insight'; null shows the type cards.
-  const [kind, setKind] = useState(initialType === 'poll' ? 'poll' : null);
+  const [kind, setKind] = useState(initialType === 'poll' ? 'poll' : initialBody ? 'article' : null);
   const [categoryKey, setCategoryKey] = useState(() => {
     const named = initialCategory && categories.find((c) => c.name === initialCategory);
     return named ? keyOf(named) : defaultKey(initialType);
   });
   const [title, setTitle] = useState(initialTitle);
-  const [body, setBody] = useState('');
+  const [body, setBody] = useState(initialBody);
   const [options, setOptions] = useState(initialOptions);
   const [allowMultiple, setAllowMultiple] = useState(false);
   const [anonymous, setAnonymous] = useState(true);

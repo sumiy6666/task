@@ -55,7 +55,7 @@ export function PollVote({ postId, poll: initialPoll }) {
             <li key={o.id}>
               <button type="button" className={styles.pollOption} aria-pressed={selected.includes(o.id)} disabled={closed || busy} onClick={() => toggle(o.id)}>
                 {showResults && <span className={styles.pollBar} style={{ width: `${pct}%` }} aria-hidden />}
-                <span>{o.text}</span>
+                <span className={styles.pollText}>{o.text}</span>
                 {showResults && <span>{pct}%</span>}
               </button>
             </li>

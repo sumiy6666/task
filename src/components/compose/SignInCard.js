@@ -12,6 +12,9 @@ export function SignInCard({ returnTo, title = 'Sign in to start a conversation'
             Sign in with AV Community
           </a>
         </div>
+        <p className={styles.successText}>
+          New to AV Community? <a href="/signup" className="underline" style={{ color: 'var(--color-primary)' }}>Request to join</a>
+        </p>
       </div>
     </section>
   );

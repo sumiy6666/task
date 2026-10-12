@@ -3,12 +3,13 @@ import Link from 'next/link';
 import { Reveal } from '../ui/Reveal';
 import { CommentBox } from '../ui/CommentBox';
 import { BookmarkButton } from './BookmarkButton';
+import { FeedLike } from './FeedLike';
+import { FeedPoll } from './FeedPoll';
 import { CommentIcon, EyeIcon, LikeIcon } from './icons';
 import { compactNumber } from '@/lib/discourse/format';
 import { hasSampleConversation } from '../topic/sampleConversations';
 import styles from './Feed.module.css';
 
-const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const isLive = (id) => typeof id === 'number' || /^\d+$/.test(String(id));
 export const topicHref = (id) => (isLive(id) || hasSampleConversation(id) ? `/conversations/${id}` : '/discussions');
 
@@ -27,12 +28,17 @@ function Author({ item }) {
   );
 }
 
+// A sample poll's labels, in the shape FeedPoll takes (it can't be voted on).
+const samplePoll = (labels) => ({ options: labels.map((label) => ({ id: label, label, votes: 0 })) });
+
 // One post in the discussions feed. Optional parts, in design order:
-// `pollOptions` (a poll: options first, author last, no stats), `image`,
-// `body` (paragraphs), `reply` (the latest reply, with a reply box under it).
+// `poll` or `pollOptions` (a poll: options first, author after), `image`,
+// `body` (paragraphs), the like/comment/view counts, `reply` (the latest
+// reply, with a reply box under it).
 export function FeedCard({ item, currentUser }) {
   const href = topicHref(item.id);
-  const isPoll = Boolean(item.pollOptions?.length);
+  const poll = item.poll || (item.pollOptions?.length ? samplePoll(item.pollOptions) : null);
+  const isPoll = Boolean(poll);
 
   return (
     <Reveal as="article" className={styles.card}>
@@ -44,17 +50,7 @@ export function FeedCard({ item, currentUser }) {
       </div>
 
       {isPoll ? (
-        <ul className={styles.options}>
-          {item.pollOptions.map((option, i) => (
-            <li key={option}>
-              {/* Votes are cast on the discussion page. */}
-              <Link prefetch={false} href={href} className={styles.option}>
-                <span className={styles.optionLetter}>{LETTERS[i]}</span>
-                {option}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <FeedPoll poll={poll} href={href} />
       ) : (
         <Author item={item} />
       )}
@@ -67,12 +63,13 @@ export function FeedCard({ item, currentUser }) {
         </div>
       )}
 
-      {isPoll ? (
-        <div className={styles.pollAuthor}><Author item={item} /></div>
-      ) : (
+      {isPoll && <div className={styles.pollAuthor}><Author item={item} /></div>}
+
+      {/* Every post, poll and article shows its comments, likes and views. */}
+      {(item.replies != null || item.likes != null) && (
         <div className={styles.stats}>
-          <span className={styles.stat}><CommentIcon />{item.replies}<span className="sr-only"> replies</span></span>
-          <span className={styles.stat}><LikeIcon />{item.likes}<span className="sr-only"> likes</span></span>
+          <Link prefetch={false} href={href} className={styles.stat}><CommentIcon />{item.replies ?? 0}<span className="sr-only"> replies</span></Link>
+          <FeedLike topicId={item.id} initialCount={item.likes ?? 0} live={isLive(item.id)} />
           {item.views != null && <span className={styles.stat}><EyeIcon />{compactNumber(item.views)} views</span>}
           {item.lastActivity && <span className={styles.lastActivity}>Last activity {item.lastActivity}</span>}
         </div>

@@ -367,6 +367,52 @@
   flex-shrink: 0;
 }
 
+/* Feed polls vote in place: the chosen option is filled and ticked, and
+   once you have voted each option shows its share. */
+button.option {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  text-align: left;
+  cursor: pointer;
+}
+button.option:disabled { cursor: default; }
+.option > span { position: relative; }
+.optionSelected,
+.optionSelected:hover {
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 500;
+}
+.optionSelected .optionBar { background: rgba(255, 255, 255, 0.18); }
+.optionLetter svg { display: block; }
+.optionBar {
+  position: absolute !important;
+  inset: 0 auto 0 0;
+  background: rgba(17, 160, 219, 0.14);
+  transition: width 0.4s;
+}
+.optionText { flex: 1; min-width: 0; }
+.optionShare { margin-left: 1rem; font-size: 0.95rem; }
+
+.pollMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 45.5rem;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+.pollLink { color: var(--color-primary); }
+.pollLink:hover { text-decoration: underline; }
+.pollError { color: #b42318; }
+
+/* Like and comment counts are buttons/links on every card. */
+.statButton { cursor: pointer; color: inherit; transition: color 0.2s; }
+a.stat:hover, .statButton:hover:not(:disabled), .statActive { color: var(--color-primary); }
+
 .pollAuthor {
   margin-top: 1rem;
 }
@@ -667,3 +713,18 @@ li:last-child > .categoryRow::after {
     width: 2rem;
   }
 }
+
+/* Images and links added in the "Start a Discussion" box. */
+.attachments { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.75rem; font-size: 0.8rem; }
+.attachment {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 16rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-full);
+  background: #E8EDF1;
+  color: #385E87;
+}
+.attachmentLabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.attachment button { display: inline-flex; color: inherit; cursor: pointer; }

@@ -163,6 +163,9 @@ async function fetchPolls(categories, limit = 12) {
       category: category.name,
       time: timeAgo(topics[i].created_at),
       voters: poll.voters,
+      replies: Math.max(0, (topics[i].posts_count || 1) - 1),
+      likes: topics[i].like_count || 0,
+      views: topics[i].views ?? null,
       closed: poll.status === 'closed' || Boolean(poll.closesAt && new Date(poll.closesAt) <= new Date()),
       userVotes: poll.userVotes,
       options: poll.options.map((o) => ({
@@ -205,6 +208,8 @@ export function loadDiscussions() {
       feed: mapList(latest, categoriesById).filter((t) => !t.pinned).slice(0, 30),
       // An open poll for the feed, and the most-voted one for the sidebar.
       feedPoll: openPolls.find((p) => p !== sidePoll) || null,
+      // Every poll we know, so poll topics in the feed can be voted on there.
+      polls,
       poll: sidePoll,
       latest: mapList(latest, categoriesById).slice(0, 4),
       trending: mapList(top, categoriesById).slice(0, 4),

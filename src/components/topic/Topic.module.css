@@ -229,7 +229,8 @@ button.stat:hover svg { color: var(--color-primary); }
   background: #fff;
 }
 .pollOption:not(:disabled):hover { border-color: var(--color-primary); }
-.pollOption[aria-pressed='true'] { border-color: var(--color-primary); }
+.pollOption[aria-pressed='true'] { border-color: var(--color-primary); background: rgba(0, 164, 228, 0.08); color: var(--color-primary); font-weight: 600; }
+.pollOption[aria-pressed='true'] .pollText::before { content: '✓ '; }
 .pollOption .pollBar { position: absolute; inset: 0 auto 0 0; background: rgba(0, 164, 228, 0.12); transition: width 0.4s; }
 .pollOption span { position: relative; }
 .pollFooter { display: flex; align-items: center; gap: calc(16 * var(--px)); margin-top: calc(16 * var(--px)); font-size: calc(13 * var(--px)); color: #a3a3a3; }
