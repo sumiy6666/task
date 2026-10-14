@@ -199,6 +199,10 @@ export async function loadMessageThreads(username) {
 export async function loadMessageThread(topicId, username) {
   const data = await discourseFetch(`/t/${Number(topicId)}.json`, MINE);
   if (data.archetype !== 'private_message') return [];
+  // Only to someone in the conversation (the site key could read any of them).
+  const allowed = (data.details?.allowed_users || []).map((u) => u.username);
+  const inGroup = (data.details?.allowed_groups || []).length > 0;
+  if (!allowed.includes(username) && !inGroup) return [];
   return (data.post_stream?.posts || [])
     .filter((p) => p.post_type === 1)
     .map((p) => ({

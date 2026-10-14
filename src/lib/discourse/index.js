@@ -4,6 +4,7 @@ import { cache } from 'react';
 import { actingUsername, discourseFetch, DiscourseError, hasAdminKey, isDiscourseConfigured, isSignInEnabled } from './client';
 import { getUserAuth } from './session';
 import { mapCategory, mapPolls, mapTopic, mapUser } from './mappers';
+import { isPublicTopic, restrictedCategoryIds } from './privacy';
 import { loadDemo, recordDemoOp } from './demo-session';
 import { mockCategories, mockGetTopic, mockUser, nextTopicId } from './mock';
 
@@ -46,8 +47,16 @@ export async function getCategories() {
 
 export async function getTopic(id) {
   if (!isDiscourseConfigured()) return mockGetTopic((await loadDemo()).store, id);
-  // Read as the member, so their own votes, likes and bookmark show.
-  const [topic, categories] = await Promise.all([discourseFetch(`/t/${encodeURIComponent(id)}.json`, { personal: true }), getCategories()]);
+  // Read as the member, so their own votes, likes and bookmark show. A guest's
+  // read uses the site key (an admin), so it is only shown when the topic is
+  // public: never another member's private message or a staff-only topic.
+  const member = isSignInEnabled() ? await getUserAuth() : null;
+  const [topic, categories, restricted] = await Promise.all([
+    discourseFetch(`/t/${encodeURIComponent(id)}.json`, { personal: true }),
+    getCategories(),
+    member ? null : restrictedCategoryIds(),
+  ]);
+  if (restricted && !isPublicTopic(topic, restricted)) throw new DiscourseError('Not found.', 404);
   return mapTopic(topic, new Map(categories.map((c) => [c.id, c])));
 }
 

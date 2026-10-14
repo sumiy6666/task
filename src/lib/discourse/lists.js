@@ -6,6 +6,7 @@ import { connection } from 'next/server';
 import { avatarUrl, discourseFetch, isDiscourseConfigured } from './client';
 import { compactNumber, timeAgo } from './format';
 import { mapPolls } from './mappers';
+import { isPublicTopic, restrictedCategoryIds } from './privacy';
 
 const isAboutTopic = (t) => /^About the .+ category$/i.test(t.title);
 
@@ -34,8 +35,12 @@ async function safely(label, load) {
   }
 }
 
+// Staff-only categories, refreshed with every category read (see mapList).
+let restricted = new Set();
+
 async function loadCategories() {
-  const data = await discourseFetch('/categories.json');
+  const [data, hidden] = await Promise.all([discourseFetch('/categories.json'), restrictedCategoryIds()]);
+  restricted = hidden;
   return (data.category_list?.categories || []).filter((c) => !c.read_restricted && c.slug !== 'uncategorized');
 }
 
@@ -72,8 +77,12 @@ function topicMapper(list, categoriesById) {
 
 // Site Feedback topics are notes to the team, so they stay out of the public lists.
 const isFeedback = (t, categoriesById) => /feedback/i.test(categoriesById.get(t.category_id)?.name || '');
+// Lists are read with the site key, whose account is an admin, so they also
+// hold topics from staff-only categories; those are left out.
 const mapList = (list, categoriesById) =>
-  topicsOf(list).filter((t) => !isFeedback(t, categoriesById)).map(topicMapper(list, categoriesById));
+  topicsOf(list)
+    .filter((t) => isPublicTopic(t, restricted) && !isFeedback(t, categoriesById))
+    .map(topicMapper(list, categoriesById));
 
 // Articles newest first. A category list puts pinned topics and recent
 // activity ahead of new topics, so sort by when each was published.
