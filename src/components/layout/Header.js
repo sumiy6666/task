@@ -136,9 +136,15 @@ export function Header({ user = null, canSignIn = false, live = false }) {
               )}
             </div>
           ) : canSignIn ? (
-            <a href={`/api/auth/login?return=${encodeURIComponent(pathname)}`} className={styles.signIn}>
-              Sign in
-            </a>
+            <>
+              {/* New members ask to join; an admin approves them on the forum. */}
+              <Link href="/signup" className={styles.join} onClick={closePanels}>
+                Join
+              </Link>
+              <a href={`/api/auth/login?return=${encodeURIComponent(pathname)}`} className={styles.signIn}>
+                Sign in
+              </a>
+            </>
           ) : null}
 
           <button className={`${styles.menuButton} ${isMenuOpen ? styles.menuButtonOpen : ''}`} aria-label="Menu" aria-expanded={isMenuOpen} onClick={() => toggle('menu')}>
@@ -181,6 +187,10 @@ export function Header({ user = null, canSignIn = false, live = false }) {
           {/* Close once a link is chosen; several share the current path, so
               waiting for the route to change would leave the menu open. */}
           <div className={styles.sideMenuInner} onClick={(e) => e.target.closest('a') && closePanels()}>
+            {/* On phones "Join" moves here from the header. */}
+            {!user && canSignIn && (
+              <Link href="/signup" className={styles.menuJoin}>Request to join AV Community</Link>
+            )}
             <AccordionMenu />
           </div>
         </div>
