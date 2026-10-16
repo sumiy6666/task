@@ -427,11 +427,34 @@
   }
 }
 
-/* The menu's "Request to join" link, shown on phones only. */
+/* The menu also carries a "Request to join" link on phones. */
 .menuJoin { display: none; }
 
+/* Phones keep both "Join" and "Sign in" in the header: smaller logo, icons
+   and pills so they fit beside the search and menu buttons. */
 @media (max-width: 480px) {
-  .join { display: none; }
+  .logo img {
+    width: 116px;
+  }
+
+  .actions {
+    gap: 0.35rem;
+  }
+
+  .iconButton,
+  .profile,
+  .menuButton {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+
+  .signIn,
+  .join {
+    height: 2.25rem;
+    padding: 0 0.7rem;
+    font-size: 12px;
+  }
+
   .menuJoin {
     display: flex;
     align-items: center;
@@ -443,5 +466,20 @@
     color: var(--color-primary);
     font-size: 14px;
     font-weight: 500;
+  }
+}
+
+@media (max-width: 360px) {
+  .logo img {
+    width: 96px;
+  }
+
+  .actions {
+    gap: 0.25rem;
+  }
+
+  .signIn,
+  .join {
+    padding: 0 0.55rem;
   }
 }
