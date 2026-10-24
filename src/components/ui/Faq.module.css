@@ -1,0 +1,64 @@
+/* FAQ card: light blue pills that open into an answer. Desktop sizes follow
+   the window up to the 1300px page container, then hold. (Spacing can't use
+   Tailwind classes: the global `* { padding: 0; margin: 0 }` reset outranks
+   them.) */
+
+.card {
+  height: 100%;
+  background: #fff;
+  border-radius: 2rem;
+  padding: min(4.62vw, 60px) min(4.15vw, 54px) min(4.62vw, 60px) min(4.62vw, 60px);
+  box-shadow: 0 20px 40px rgba(19, 39, 66, 0.08);
+}
+.title { font-size: 1.47rem; font-weight: 500; color: #000; margin-bottom: min(2.31vw, 30px); }
+.list { list-style: none; display: flex; flex-direction: column; gap: min(1.08vw, 14px); }
+
+.item {
+  background: #ecf2fd;
+  border-radius: min(1.54vw, 20px);
+  box-shadow: 0 min(0.46vw, 6px) min(1.08vw, 14px) rgba(19, 39, 66, 0.08);
+}
+.question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: min(4.15vw, 54px);
+  padding: min(0.92vw, 12px) min(2.69vw, 35px) min(0.92vw, 12px) min(1.69vw, 22px);
+  font-size: min(1.23vw, 16px);
+  color: #111;
+  text-align: left;
+  text-transform: capitalize;
+}
+.question:hover, .open .question { color: var(--color-primary); }
+.sign { flex-shrink: 0; font-size: min(1.54vw, 20px); font-weight: 300; line-height: 1; color: #111; }
+
+.answerWrap { padding: 0 min(2.69vw, 35px) min(1.23vw, 16px) min(1.69vw, 22px); }
+.answer {
+  border-top: 1px solid #d0d6e0;
+  padding-top: min(1.08vw, 14px);
+  font-size: min(1.12vw, 14.5px);
+  line-height: 1.5;
+  color: #333;
+  animation: drop 0.25s ease-out;
+}
+@keyframes drop { from { opacity: 0; transform: translateY(-4px); } }
+
+@media (max-width: 1024px) {
+  .card { padding: 36px 32px; }
+  .title { font-size: 1.35rem; margin-bottom: 22px; }
+  .list { gap: 12px; }
+  .item { border-radius: 18px; box-shadow: 0 4px 12px rgba(19, 39, 66, 0.08); }
+  .question { min-height: 52px; padding: 12px 24px 12px 20px; font-size: 16px; }
+  .sign { font-size: 20px; }
+  .answerWrap { padding: 0 24px 16px 20px; }
+  .answer { padding-top: 12px; font-size: 15px; }
+}
+
+@media (max-width: 768px) {
+  .card { padding: 1.75rem 1.25rem 2rem; border-radius: var(--radius-xl); }
+  .title { font-size: 1.1rem; }
+  .question { font-size: 15px; padding: 12px 18px 12px 16px; }
+  .answerWrap { padding: 0 18px 14px 16px; }
+}

@@ -138,7 +138,7 @@ export function Header({ user = null, canSignIn = false, live = false }) {
           ) : canSignIn ? (
             <>
               {/* New members ask to join; an admin approves them on the forum. */}
-              <Link href="/signup" className={styles.join} onClick={closePanels}>
+              <Link href="/join" className={styles.join} onClick={closePanels}>
                 Join
               </Link>
               <a href={`/api/auth/login?return=${encodeURIComponent(pathname)}`} className={styles.signIn}>
@@ -189,7 +189,7 @@ export function Header({ user = null, canSignIn = false, live = false }) {
           <div className={styles.sideMenuInner} onClick={(e) => e.target.closest('a') && closePanels()}>
             {/* On phones "Join" moves here from the header. */}
             {!user && canSignIn && (
-              <Link href="/signup" className={styles.menuJoin}>Request to join AV Community</Link>
+              <Link href="/join" className={styles.menuJoin}>Request to join AV Community</Link>
             )}
             <AccordionMenu />
           </div>

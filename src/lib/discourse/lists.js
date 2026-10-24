@@ -244,6 +244,19 @@ export function loadMembers() {
   return safely('members', () => loadMemberProfiles(50));
 }
 
+// Join page: the most-voted open poll, and the categories offered as topics
+// of interest.
+export function loadJoin() {
+  return safely('join', async () => {
+    const categories = await loadCategories();
+    const polls = await fetchPolls(categories, 6).catch(() => []);
+    return {
+      poll: mostVoted(polls.filter((p) => !p.closed)),
+      topics: categories.map((c) => c.name).filter((name) => !/poll/i.test(name)),
+    };
+  });
+}
+
 // Home page: the newest article and next event, the most-voted open poll,
 // the trending carousel, the forum cards, the resources carousel, the pulse
 // numbers and the news list.
