@@ -60,7 +60,7 @@ function topicMapper(list, categoriesById) {
       title: cleanTitle(t.title),
       description: cleanExcerpt(t.excerpt),
       image: t.image_url || null,
-      author: { name: op?.name || op?.username || 'Member', avatar: avatarUrl(op?.avatar_template) },
+      author: { name: op?.name || op?.username || 'Member', username: op?.username || '', avatar: avatarUrl(op?.avatar_template) },
       authorIsStaff: Boolean(op?.admin || op?.moderator),
       timeAgo: timeAgo(t.created_at),
       createdAt: t.created_at,
@@ -189,18 +189,52 @@ async function fetchPolls(categories, limit = 12) {
   return polls;
 }
 
+// The newest reply in each topic, from the forum's latest posts (one request
+// for the whole feed). Older conversations simply show no reply preview.
+function withLatestReplies(feed, recentPosts) {
+  const latestReply = new Map();
+  for (const p of recentPosts?.latest_posts || []) {
+    if (p.post_number > 1 && p.post_type === 1 && !p.hidden && !latestReply.has(p.topic_id)) latestReply.set(p.topic_id, p);
+  }
+  return feed.map((t) => {
+    const p = latestReply.get(t.id);
+    if (!p) return t;
+    return {
+      ...t,
+      reply: {
+        author: { name: p.name || p.username, avatar: avatarUrl(p.avatar_template) },
+        text: cleanExcerpt(plainText(p.cooked)),
+        timeAgo: timeAgo(p.created_at),
+        likes: p.like_count ?? p.actions_summary?.find((a) => a.id === 2)?.count ?? 0,
+        replies: p.reply_count || 0,
+      },
+    };
+  });
+}
+
+// A post's HTML as plain text; images become "[image]".
+const plainText = (html = '') =>
+  html
+    // An image's caption bar (file name, size) is not part of the text.
+    .replace(/<div class="meta">[\s\S]*?<\/div>/g, ' ')
+    .replace(/<img[^>]*class="emoji[^"]*"[^>]*alt="([^"]*)"[^>]*>/g, '$1')
+    .replace(/<img[^>]*>/g, ' [image] ')
+    .replace(/<(script|style)[\s\S]*?<\/\1>/g, ' ')
+    .replace(/<[^>]+>/g, ' ');
+
 const mostVoted = (polls) => [...polls].sort((a, b) => (b.voters || 0) - (a.voters || 0))[0] || null;
 
 export function loadDiscussions() {
   return safely('discussions', async () => {
     const categories = await loadCategories();
-    const [latest, active, top, members, tags, polls] = await Promise.all([
+    const [latest, active, top, members, tags, polls, recentPosts] = await Promise.all([
       discourseFetch('/latest.json?order=created'),
       discourseFetch('/latest.json'),
       discourseFetch('/top.json?period=all'),
       loadTopMembers(6).catch(() => []),
       discourseFetch('/tags.json').catch(() => null),
       fetchPolls(categories, 6).catch(() => []),
+      discourseFetch('/posts.json').catch(() => null),
     ]);
     const categoriesById = new Map(categories.map((c) => [c.id, c]));
 
@@ -213,8 +247,10 @@ export function loadDiscussions() {
     const sidePoll = mostVoted(openPolls);
 
     return {
-      // The discussions feed; the page filters it by category and trims it.
-      feed: mapList(latest, categoriesById).filter((t) => !t.pinned).slice(0, 30),
+      // The discussions feed, latest activity first (a new reply brings a
+      // conversation back to the top), each with its latest reply. The page
+      // filters it by category and trims it.
+      feed: withLatestReplies(mapList(active, categoriesById).filter((t) => !t.pinned).slice(0, 30), recentPosts),
       // An open poll for the feed, and the most-voted one for the sidebar.
       feedPoll: openPolls.find((p) => p !== sidePoll) || null,
       // Every poll we know, so poll topics in the feed can be voted on there.

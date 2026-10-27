@@ -88,20 +88,23 @@ export function CategoryField({ categories, value, onChange, readOnly = false, c
 // `initialTitle`, `initialCategory` (a category name) and `initialBody` (e.g.
 // images and links added there) prefill the form from the composer on the
 // discussions page.
-export function ComposeFlow({ user, categories, initialType = 'discussion', initialTitle = '', initialCategory, initialBody = '' }) {
+export function ComposeFlow({ user, categories, initialType = 'discussion', initialTitle = '', initialCategory, initialBody = '', initialImages = [] }) {
   const router = useRouter();
   const keyOf = (c) => String(c.id ?? c.name);
   const defaultKey = (type) => keyOf(categories.find((c) => (type === 'poll' ? c.isPoll : !c.isPoll)) || categories[0]);
 
   const [step, setStep] = useState('edit');
   // What is being posted: 'article' | 'poll' | 'insight'; null shows the type cards.
-  const [kind, setKind] = useState(initialType === 'poll' ? 'poll' : initialBody ? 'article' : null);
+  const [kind, setKind] = useState(initialType === 'poll' ? 'poll' : initialBody || initialImages.length ? 'article' : null);
   const [categoryKey, setCategoryKey] = useState(() => {
     const named = initialCategory && categories.find((c) => c.name === initialCategory);
     return named ? keyOf(named) : defaultKey(initialType);
   });
   const [title, setTitle] = useState(initialTitle);
   const [body, setBody] = useState(initialBody);
+  // Attached images, shown as pictures under the text and added to the post's
+  // markdown when it is sent: { name, url, markdown }.
+  const [images, setImages] = useState(initialImages);
   const [options, setOptions] = useState(initialOptions);
   const [allowMultiple, setAllowMultiple] = useState(false);
   const [anonymous, setAnonymous] = useState(true);
@@ -147,6 +150,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
     setKind(null);
     setTitle('');
     setBody('');
+    setImages([]);
     setOptions(initialOptions());
     setAllowMultiple(false);
     setAnonymous(true);
@@ -158,6 +162,9 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
     setCreated(null);
   };
 
+  // The text with the attached images after it.
+  const fullBody = () => [body.trim(), ...images.map((i) => i.markdown)].filter(Boolean).join('\n\n');
+
   const validate = () => {
     if (!kind) return 'Choose Article, Poll or Insight.';
     if (!title.trim()) return isPoll ? 'Please write your question.' : 'Please add what this conversation is about.';
@@ -166,7 +173,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
       if (new Set(filledOptions.map((o) => o.toLowerCase())).size !== filledOptions.length) return 'Each option must be different.';
       if (endDate && !close) return 'Please enter a valid end date and time.';
       if (close?.isPast) return 'The end date and time must be in the future.';
-    } else if (!body.trim()) {
+    } else if (!body.trim() && images.length === 0) {
       return 'Please write something before posting.';
     }
     return '';
@@ -185,7 +192,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
             categoryId: category?.id ?? null,
             poll: { options: filledOptions, allowMultiple, anonymous, closesAt: close?.iso || null },
           }
-        : { type: 'discussion', title: title.trim(), body, categoryId: category?.id ?? null };
+        : { type: 'discussion', title: title.trim(), body: fullBody(), categoryId: category?.id ?? null };
       const { topicId, pending } = await postJson('/api/topics', payload);
       setCreated({ topicId, isPoll, pending: Boolean(pending) });
       setStep('success');
@@ -210,7 +217,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
     try {
       const data = {
         title,
-        reply: body,
+        reply: fullBody(),
         categoryId: category?.id ?? null,
         archetypeId: 'regular',
         poll: isPoll ? { options: filledOptions, allowMultiple, anonymous, endDate, endTime } : undefined,
@@ -226,7 +233,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
   };
 
   const discard = () => {
-    const dirty = title || body || options.some((o) => o.text);
+    const dirty = title || body || images.length || options.some((o) => o.text);
     if (dirty && !window.confirm('Discard this conversation?')) return;
     reset();
   };
@@ -242,7 +249,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
       if (redirectIfSignedOut(res)) return;
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Upload failed.');
-      setBody((b) => insertAtCursor(bodyRef.current, b, `\n${data.markdown}\n`));
+      setImages((all) => [...all, { name: data.name || file.name, url: data.url, markdown: data.markdown }]);
     } catch (e) {
       setError(e.message);
     } finally {
@@ -413,6 +420,19 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
           <KindHeader kind={kind} onBack={() => setKind(null)} />
           <label className={styles.srOnly} htmlFor="compose-body">Message</label>
           <textarea id="compose-body" ref={bodyRef} className={styles.bodyInput} value={body} onChange={(e) => setBody(e.target.value)} />
+          {(images.length > 0 || uploading) && (
+            <div className={styles.imageList} aria-label="Attached images">
+              {images.map((img, i) => (
+                <figure key={`${img.url}-${i}`} className={styles.imageThumb}>
+                  <img src={img.url} alt={img.name} />
+                  <button type="button" className={styles.imageRemove} aria-label={`Remove ${img.name}`} onClick={() => setImages((all) => all.filter((_, j) => j !== i))}>
+                    <CloseIcon />
+                  </button>
+                </figure>
+              ))}
+              {uploading && <div className={`${styles.imageThumb} ${styles.imageUploading}`}>Uploading…</div>}
+            </div>
+          )}
         </>
       )}
 

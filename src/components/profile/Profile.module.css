@@ -312,6 +312,18 @@
   background: #11A0DB;
   color: #fff;
 }
+.backBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #11A0DB;
+}
+.backBtn:hover { background: #f1f8fd; }
+.backBtn svg { width: 22px; height: 22px; }
 .roundBtn:hover { background: #0e8ec4; }
 .roundBtn svg { width: 22px; height: 22px; }
 
@@ -384,6 +396,22 @@
 .accept:hover { background: #0e8ec4; }
 .decline { border: 1px solid #11A0DB; color: #11A0DB; }
 .decline:hover { background: #f1f8fd; }
+.inviteIntro { margin-top: 16px; font-size: 15px; line-height: 22px; color: #6b7280; }
+.inviteForm { display: grid; gap: 18px; max-width: 620px; margin-top: 24px; }
+.inviteLabel { display: grid; gap: 8px; font-size: 14.5px; color: #000; }
+.inviteInput {
+  width: 100%;
+  border: 1px solid #D5DAE1;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font: inherit;
+  font-size: 15px;
+  outline: none;
+}
+.inviteInput:focus { border-color: #11A0DB; }
+.inviteNoteInput { resize: vertical; }
+.inviteButtons { display: flex; flex-wrap: wrap; gap: 16px; }
+.inviteMessage { font-size: 14px; color: #11A0DB; }
 .inviteStatus { font-size: 14.5px; color: #11A0DB; margin-right: 49px; }
 
 /* ---- Badges ---- */

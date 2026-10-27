@@ -1,7 +1,7 @@
 // Data access used by pages and route handlers. Talks to Discourse when it is
 // configured and falls back to demo data otherwise.
 import { cache } from 'react';
-import { actingUsername, discourseFetch, DiscourseError, hasAdminKey, isDiscourseConfigured, isSignInEnabled } from './client';
+import { absoluteUrl, actingUsername, discourseFetch, DiscourseError, hasAdminKey, isDiscourseConfigured, isSignInEnabled } from './client';
 import { getUserAuth } from './session';
 import { mapCategory, mapPolls, mapTopic, mapUser } from './mappers';
 import { isPublicTopic, restrictedCategoryIds } from './privacy';
@@ -45,14 +45,20 @@ export async function getCategories() {
   return categories;
 }
 
-export async function getTopic(id) {
+// `track` counts the visit as a view of the topic: the forum only counts a
+// view when a member asks for it (all requests come from this server, so
+// guests' visits can't be told apart).
+export async function getTopic(id, { track = false } = {}) {
   if (!isDiscourseConfigured()) return mockGetTopic((await loadDemo()).store, id);
   // Read as the member, so their own votes, likes and bookmark show. A guest's
   // read uses the site key (an admin), so it is only shown when the topic is
   // public: never another member's private message or a staff-only topic.
   const member = isSignInEnabled() ? await getUserAuth() : null;
   const [topic, categories, restricted] = await Promise.all([
-    discourseFetch(`/t/${encodeURIComponent(id)}.json`, { personal: true }),
+    discourseFetch(`/t/${encodeURIComponent(id)}.json${track && member ? '?track_visit=true' : ''}`, {
+      personal: true,
+      headers: track && member ? { 'Discourse-Track-View': 'true', 'Discourse-Track-View-Topic-Id': String(Number(id)) } : undefined,
+    }),
     getCategories(),
     member ? null : restrictedCategoryIds(),
   ]);
@@ -113,7 +119,9 @@ export async function uploadImage(file) {
   form.append('file', file, file.name);
   const upload = await discourseFetch('/uploads.json', { method: 'POST', formData: form });
   const size = upload.width && upload.height ? `|${upload.width}x${upload.height}` : '';
-  return { url: upload.url, markdown: `![${upload.original_filename}${size}](${upload.short_url || upload.url})` };
+  // `url` is for the composer's preview; the post itself uses the forum's
+  // short upload link.
+  return { url: absoluteUrl(upload.url), name: upload.original_filename, markdown: `![${upload.original_filename}${size}](${upload.short_url || upload.url})` };
 }
 
 // Events come from the Discourse Calendar plugin (discourse-post-event).

@@ -126,6 +126,7 @@ export function Header({ user = null, canSignIn = false, live = false }) {
                 <div className={styles.profileMenu}>
                   <span className={styles.profileName}>{user.name}</span>
                   <Link href="/profile" className={styles.signOut} onClick={closePanels}>My Profile</Link>
+                  {user.staff && <Link href="/approvals" className={styles.signOut} onClick={closePanels}>Join requests</Link>}
                   {canSignIn && (
                     <form action="/api/auth/logout" method="post">
                       <input type="hidden" name="return" value={pathname} />

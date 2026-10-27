@@ -1,0 +1,56 @@
+/* Staff page listing join requests. Matches the My Profile cards. */
+.card {
+  margin-bottom: 2.5rem;
+  padding: 38px 40px 40px;
+  background: #fff;
+  border-radius: 19px;
+  box-shadow: 0 12px 30px rgba(19, 39, 66, 0.08);
+}
+.title { font-size: 29px; font-weight: 400; color: #000; }
+.intro { margin-top: 10px; font-size: 15px; line-height: 22px; color: #6b7280; }
+.status { margin-top: 24px; font-size: 15px; color: #6b7280; }
+.error { margin-top: 12px; font-size: 14px; color: #b42318; }
+
+.request {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 25px 0 28px;
+  border-bottom: 1px solid #D5DAE1;
+}
+.request:last-child { border-bottom: 0; }
+.avatar { flex-shrink: 0; width: 45px; height: 45px; border-radius: 50%; object-fit: cover; }
+.person { flex: 1; min-width: 0; }
+.name { font-size: 16.5px; font-weight: 600; color: #000; }
+.meta { margin-top: 2px; font-size: 14.5px; line-height: 20px; color: #6b7280; overflow-wrap: anywhere; }
+.details { margin-top: 10px; display: grid; gap: 4px; font-size: 14px; line-height: 20px; color: #132742; white-space: pre-line; overflow-wrap: anywhere; }
+.details a { color: #11A0DB; }
+.details a:hover { text-decoration: underline; }
+
+.actions { display: flex; gap: 16px; flex-shrink: 0; }
+.approve, .decline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 97px;
+  height: 37px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 14.5px;
+  letter-spacing: 0.04em;
+}
+.approve { background: #11A0DB; color: #fff; box-shadow: 0 6px 14px rgba(17, 160, 219, 0.3); }
+.approve:hover { background: #0e8ec4; }
+.decline { border: 1px solid #11A0DB; color: #11A0DB; }
+.decline:hover { background: #f1f8fd; }
+.approve:disabled, .decline:disabled { opacity: 0.6; cursor: default; }
+.done { flex-shrink: 0; font-size: 14.5px; color: #11A0DB; }
+
+@media (max-width: 768px) {
+  .card { padding: 24px 18px 28px; border-radius: 16px; }
+  .title { font-size: 24px; }
+  .request { flex-wrap: wrap; gap: 14px; }
+  .person { flex-basis: calc(100% - 60px); }
+  .actions { width: 100%; padding-left: 59px; }
+  .done { padding-left: 59px; }
+}

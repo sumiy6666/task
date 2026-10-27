@@ -70,12 +70,11 @@ export function JoinHero({ topics = [] }) {
           <div className={styles.sent} role="status">
             <h2 className={styles.sentTitle}>Thanks, your request is in</h2>
             <p>
-              We&apos;ve sent a confirmation link to <strong>{form.email}</strong>. Please confirm your email; our team will then
-              review your request.
+              Your request is awaiting approval. Our team will review it and email <strong>{form.email}</strong> once
+              you&apos;re approved.
             </p>
             <p>
-              You&apos;ll get an email once you&apos;re approved. Then choose Sign in and enter <strong>{form.email}</strong>: ask
-              for a login link by email, or set a password with &ldquo;Forgot password&rdquo;.
+              That email has the link to log in to AV Community, where you set your password.
             </p>
             <Link href="/" className={styles.sentLink}>Back to home</Link>
           </div>

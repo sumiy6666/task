@@ -4,6 +4,7 @@
 // tab is opened, to spare the member key's tight rate limit.
 import { avatarUrl, discourseBaseUrl, discourseFetch, isDiscourseConfigured } from './client';
 import { timeAgo } from './format';
+import { isApprovalNotice } from './approvals';
 
 const PROFILE_SECONDS = 300;
 const MINE = { personal: true, requireUser: true };
@@ -106,6 +107,7 @@ export async function loadProfile(username) {
       location: user.location || '',
       memberSince: monthYear(user.created_at),
       role: user.title || (user.admin ? 'Admin' : user.moderator ? 'Moderator' : 'Member'),
+      staff: Boolean(user.admin || user.moderator),
       editHref: `${discourseBaseUrl()}/u/${name}/preferences/account`,
     },
     glance: [
@@ -149,6 +151,16 @@ function dayGroup(iso) {
   return 'Earlier';
 }
 
+// Staff's "users waiting for approval" notice opens the join requests; a
+// private message opens in Messages; anything else on a topic opens it.
+function notificationHref(n, subject) {
+  if (isApprovalNotice(subject) || isApprovalNotice(n.fancy_title)) return '/approvals';
+  if (!n.topic_id) return null;
+  const fromBot = /^(system|discobot)$/i.test(n.data?.original_username || n.data?.display_username || '');
+  if (!fromBot && ([6, 7].includes(n.notification_type) || n.data?.message === 'private_message')) return `/profile?tab=messages&thread=${n.topic_id}`;
+  return `/conversations/${n.topic_id}`;
+}
+
 export async function loadNotifications() {
   const data = await discourseFetch('/notifications.json?limit=30', MINE);
   return (data.notifications || []).map((n) => {
@@ -164,7 +176,7 @@ export async function loadNotifications() {
       lines: subject ? [subject] : [],
       time: timeAgo(n.created_at),
       unread: !n.read,
-      href: n.topic_id ? `/conversations/${n.topic_id}` : null,
+      href: notificationHref(n, subject),
     };
   });
 }
@@ -174,26 +186,52 @@ export async function markNotificationsRead() {
   return { ok: true };
 }
 
-// The member's private message threads, newest first. Messages are loaded
-// per thread when it is opened.
+// The member's conversations with other members (direct messages), newest
+// first. The forum's own notices (from "system": welcome messages, "users
+// waiting for approval"…) are notifications, not chats, so they are left out.
+// Messages are loaded per conversation when it is opened.
 export async function loadMessageThreads(username) {
   const data = await discourseFetch(`/topics/private-messages/${encodeURIComponent(username)}.json`, MINE);
   const users = new Map((data.users || []).map((u) => [u.id, u]));
-  return (data.topic_list?.topics || []).map((t) => {
-    const others = [...(t.participants || []), ...(t.posters || [])]
-      .map((p) => users.get(p.user_id))
-      .filter((u) => u && u.username !== username);
-    const other = others[0] || users.get(t.posters?.[0]?.user_id);
-    return {
-      id: t.id,
-      name: other ? other.name || other.username : 'AV Community',
-      avatar: avatarUrl(other?.avatar_template),
-      preview: cleanTitle(t.title),
-      time: timeAgo(t.last_posted_at || t.created_at),
-      unread: (t.unread_posts || 0) + (t.new_posts || 0) > 0 || t.unseen === true,
-      messages: null,
-    };
+  return (data.topic_list?.topics || [])
+    .map((t) => {
+      const people = [...(t.participants || []), ...(t.posters || [])]
+        .map((p) => users.get(p.user_id))
+        .filter(Boolean);
+      // Forum bots ("system", "discobot") have negative ids.
+      const others = people.filter((u) => u.username !== username && u.id > 0);
+      if (others.length === 0) return null;
+      const other = others[0];
+      return {
+        id: t.id,
+        username: other.username,
+        name: other.name || other.username,
+        avatar: avatarUrl(other.avatar_template),
+        preview: plainText(t.excerpt || '') || cleanTitle(t.title),
+        time: timeAgo(t.last_posted_at || t.created_at),
+        unread: (t.unread_posts || 0) + (t.new_posts || 0) > 0 || t.unseen === true,
+        messages: null,
+      };
+    })
+    .filter(Boolean);
+}
+
+// People a member can start a conversation with: everyone in the community.
+export async function loadPeople(username) {
+  const group = await discourseFetch('/groups/trust_level_0/members.json?limit=200&order=last_seen_at&asc=false', { revalidate: PROFILE_SECONDS });
+  return (group.members || [])
+    .filter((m) => m.id > 0 && m.username !== username)
+    .map((m) => ({ username: m.username, name: m.name || m.username, avatar: avatarUrl(m.avatar_template), title: m.title || '' }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+// Starts a conversation: a private message to one member.
+export async function startConversation(from, to, text) {
+  const post = await discourseFetch('/posts.json', {
+    method: 'POST',
+    body: { title: `${from.name || from.username} and ${to}`, raw: text, archetype: 'private_message', target_recipients: to },
   });
+  return { id: post?.topic_id };
 }
 
 export async function loadMessageThread(topicId, username) {

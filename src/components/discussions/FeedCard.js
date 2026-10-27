@@ -69,27 +69,36 @@ export function FeedCard({ item, currentUser }) {
       {(item.replies != null || item.likes != null) && (
         <div className={styles.stats}>
           <Link prefetch={false} href={href} className={styles.stat}><CommentIcon />{item.replies ?? 0}<span className="sr-only"> replies</span></Link>
-          <FeedLike topicId={item.id} initialCount={item.likes ?? 0} live={isLive(item.id)} />
+          <FeedLike
+            topicId={item.id}
+            initialCount={item.likes ?? 0}
+            live={isLive(item.id)}
+            own={Boolean(currentUser?.username && currentUser.username === item.author?.username)}
+          />
           {item.views != null && <span className={styles.stat}><EyeIcon />{compactNumber(item.views)} views</span>}
           {item.lastActivity && <span className={styles.lastActivity}>Last activity {item.lastActivity}</span>}
         </div>
       )}
 
       {item.reply && (
-        <>
-          <div className={styles.reply}>
-            <img className={styles.replyAvatar} src={item.reply.author.avatar} alt="" />
-            <div className="min-w-0">
-              <div className={styles.authorName}>{item.reply.author.name}</div>
-              <p className={styles.replyText}>{item.reply.text}</p>
-              <div className={styles.replyStats}>
-                <span className={styles.stat}><LikeIcon />{item.reply.likes}</span>
-                <span className={styles.stat}><CommentIcon />{item.reply.replies}</span>
-              </div>
+        <div className={styles.reply}>
+          <img className={styles.replyAvatar} src={item.reply.author.avatar} alt="" />
+          <div className="min-w-0">
+            <div className={styles.authorName}>
+              {item.reply.author.name}
+              {item.reply.timeAgo && <span className={styles.replyTime}> · {item.reply.timeAgo}</span>}
+            </div>
+            <p className={styles.replyText}>{item.reply.text}</p>
+            <div className={styles.replyStats}>
+              <span className={styles.stat}><LikeIcon />{item.reply.likes}</span>
+              <Link prefetch={false} href={href} className={styles.stat}><CommentIcon />{item.reply.replies}</Link>
             </div>
           </div>
-          <CommentBox topicId={item.id} avatar={currentUser?.avatar} placeholder="Write a reply" className={styles.replyBox} />
-        </>
+        </div>
+      )}
+      {/* Every forum post (and the sample with a reply) can be answered here. */}
+      {(item.reply || (isLive(item.id) && !isPoll)) && (
+        <CommentBox topicId={item.id} avatar={currentUser?.avatar} placeholder="Write a reply" className={styles.replyBox} />
       )}
     </Reveal>
   );

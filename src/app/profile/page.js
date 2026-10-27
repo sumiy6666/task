@@ -11,7 +11,7 @@ export const metadata = { title: 'My Profile | AV Community' };
 // here, and their notifications and messages when those tabs are opened.
 // Guests are asked to sign in; without the forum the profile is a sample.
 export default async function ProfilePage({ searchParams }) {
-  const { tab } = await searchParams;
+  const { tab, thread } = await searchParams;
   const user = await getCurrentUser().catch(() => null);
   const overSample = (u) => ({ ...SAMPLE_PROFILE, name: u.name || SAMPLE_PROFILE.name, username: u.username || SAMPLE_PROFILE.username, avatar: u.avatar || SAMPLE_PROFILE.avatar });
   // Without the forum, the demo member's name and photo over the sample profile.
@@ -32,5 +32,5 @@ export default async function ProfilePage({ searchParams }) {
   });
   // If the forum can't be read right now, show who they are over the sample.
   const profile = live?.profile || overSample(user);
-  return <ProfilePageView profile={profile} live={live} initialTab={tab} />;
+  return <ProfilePageView profile={profile} live={live} initialTab={tab} initialThread={thread} />;
 }

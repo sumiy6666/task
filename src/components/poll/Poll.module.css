@@ -91,9 +91,11 @@
 .takeOption {
   display: flex;
   align-items: center;
-  height: 39px;
-  padding: 0 17px 0 32px;
-  border-radius: 999px;
+  /* Long answers wrap inside the pill instead of spilling out of it. */
+  min-height: 39px;
+  padding: 8px 17px 8px 32px;
+  line-height: 22px;
+  border-radius: 22px;
   background: #fff;
   color: #385e87;
   font-size: 16.5px;
@@ -102,9 +104,9 @@
   transition: background-color 0.2s;
 }
 .takeOption:hover { background: #f5f8fb; }
-.takeLetter { width: 61px; }
-.takeText { flex: 1; }
-.takePct { font-size: 15.5px; }
+.takeLetter { width: 61px; flex-shrink: 0; }
+.takeText { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.takePct { flex-shrink: 0; margin-left: 12px; font-size: 15.5px; }
 
 /* ---- Closed polls ---- */
 

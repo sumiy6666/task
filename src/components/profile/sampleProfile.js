@@ -76,16 +76,6 @@ export const THREADS = [
   { id: 't5', name: 'Isha Verma', avatar: ROHAN, preview: 'Let me know once the notes are ready.', time: '3d ago', messages: [{ from: 'them', text: 'Let me know once the notes are ready.', time: '3d ago' }] },
 ];
 
-const invite = (id) => ({ id, name: 'Rohan Kapoor', avatar: ROHAN, role: 'Principal', company: 'Kapoor Family Office', time: '2d ago' });
-
-export const INVITES = {
-  received: [invite('i1'), invite('i2'), invite('i3')],
-  sent: [
-    { id: 's1', name: 'Neha Shah', avatar: ROHAN, role: 'Director', company: 'Shah Family Office', time: '1d ago' },
-    { id: 's2', name: 'Arvind Rajan', avatar: ROHAN, role: 'CIO', company: 'Rajan Holdings', time: '4d ago' },
-  ],
-};
-
 export const EARNED_BADGES = [
   { icon: 'chat', name: 'Conversation Starter', text: 'Started 10 discussions', earned: '12 Aug 2026' },
   { icon: 'users', name: 'Active Member', text: 'Posted 25 replies', earned: '25 Aug 2026' },

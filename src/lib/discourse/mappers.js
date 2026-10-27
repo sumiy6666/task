@@ -7,6 +7,8 @@ export function mapUser(user) {
     username: user.username,
     name: user.name || user.username,
     avatar: avatarUrl(user.avatar_template),
+    // Admins and moderators approve new members.
+    staff: Boolean(user.admin || user.moderator || user.staff),
   };
 }
 

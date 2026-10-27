@@ -64,18 +64,22 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 // signed-in member's key is only used for writes and for `personal` reads
 // (who they are, their own votes and likes). Everything else is read with the
 // site key and shared through the cache.
-export async function discourseFetch(path, { method = 'GET', body, formData, username, revalidate = SHARED_READ_SECONDS, personal = false, requireUser = method !== 'GET' } = {}, attempt = 0) {
+//
+// `asSite` always uses the site key, even for a signed-in member: for admin
+// work (approving members) that the app has already checked they may do.
+export async function discourseFetch(path, { method = 'GET', body, formData, username, revalidate = SHARED_READ_SECONDS, personal = false, requireUser = method !== 'GET', asSite = false, headers: extraHeaders } = {}, attempt = 0) {
   if (!isDiscourseConfigured()) {
     throw new DiscourseError('Discourse is not configured (set DISCOURSE_URL).', 503);
   }
 
-  const headers = { Accept: 'application/json' };
-  const member = SIGN_IN_ENABLED ? await getUserAuth() : null;
+  const headers = { Accept: 'application/json', ...extraHeaders };
+  if (asSite && !API_KEY) throw new DiscourseError('This needs the forum’s admin API key (DISCOURSE_API_KEY).', 503);
+  const member = SIGN_IN_ENABLED && !asSite ? await getUserAuth() : null;
   const user = member && (method !== 'GET' || personal || !API_KEY) ? member : null;
   if (user) {
     headers['User-Api-Key'] = user.key;
     headers['User-Api-Client-Id'] = user.clientId;
-  } else if (API_KEY && !(SIGN_IN_ENABLED && requireUser)) {
+  } else if (API_KEY && (asSite || !(SIGN_IN_ENABLED && requireUser))) {
     // The site key reads for guests. It only posts on someone's behalf while
     // sign-in is off; with sign-in on, members post as themselves.
     headers['Api-Key'] = API_KEY;
@@ -110,7 +114,7 @@ export async function discourseFetch(path, { method = 'GET', body, formData, use
     const wait = Number(data?.extras?.wait_seconds ?? res.headers.get('retry-after'));
     if (res.status === 429 && method === 'GET' && attempt === 0 && wait > 0 && wait <= MAX_RETRY_WAIT_SECONDS) {
       await sleep(wait * 1000);
-      return discourseFetch(path, { method, body, formData, username, revalidate, personal, requireUser }, 1);
+      return discourseFetch(path, { method, body, formData, username, revalidate, personal, requireUser, asSite, headers: extraHeaders }, 1);
     }
     // A revoked or expired member key comes back as 403 "invalid_access".
     if (user && (res.status === 401 || (res.status === 403 && data?.error_type === 'invalid_access'))) {
@@ -131,6 +135,14 @@ export function avatarUrl(template, size = 120) {
   if (/^https?:\/\//.test(url)) return url;
   if (url.startsWith('//')) return `https:${url}`;
   return `${BASE_URL}${url}`;
+}
+
+// A forum path such as "/uploads/…" as a full URL the browser can load.
+export function absoluteUrl(url) {
+  if (!url) return '';
+  if (/^https?:\/\//.test(url)) return url;
+  if (url.startsWith('//')) return `https:${url}`;
+  return `${BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
 }
 
 // Route handlers turn DiscourseError into a JSON response the UI can show.

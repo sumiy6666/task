@@ -21,7 +21,7 @@ const loadTopic = cache(async (id) => {
   const sample = getSampleConversation(id);
   if (sample) return sample;
   try {
-    return await getTopic(id);
+    return await getTopic(id, { track: true });
   } catch (error) {
     // A private topic (or a login-only forum) asks guests to sign in first.
     if (error instanceof DiscourseError && error.status === 403 && !(await getCurrentUser())) {

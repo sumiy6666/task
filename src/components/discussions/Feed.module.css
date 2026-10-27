@@ -310,6 +310,8 @@
   object-fit: cover;
 }
 
+.replyTime { font-weight: 400; color: #8a8a8a; }
+
 .replyText {
   margin-top: 0.35rem;
   max-width: 34rem;

@@ -18,7 +18,7 @@ export function DiscussionComposer({ avatar, categories }) {
   const options = categories.map((c) => ({ name: c.name }));
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState(options[0]?.name || '');
-  const [attachments, setAttachments] = useState([]); // { label, markdown }
+  const [attachments, setAttachments] = useState([]); // { label, markdown, image? }
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
 
@@ -27,7 +27,11 @@ export function DiscussionComposer({ avatar, categories }) {
     const params = new URLSearchParams();
     if (title.trim()) params.set('title', title.trim());
     if (category) params.set('category', category);
-    if (attachments.length) params.set('body', attachments.map((a) => a.markdown).join('\n\n'));
+    // Links go into the text; images are shown as pictures in the full composer.
+    const links = attachments.filter((a) => !a.image);
+    const images = attachments.filter((a) => a.image).map((a) => a.image);
+    if (links.length) params.set('body', links.map((a) => a.markdown).join('\n\n'));
+    if (images.length) params.set('images', JSON.stringify(images));
     router.push(`/conversations/new${params.size ? `?${params}` : ''}`);
   };
 
@@ -42,7 +46,7 @@ export function DiscussionComposer({ avatar, categories }) {
       if (redirectIfSignedOut(res)) return;
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Upload failed.');
-      setAttachments((all) => [...all, { label: file.name, markdown: data.markdown }]);
+      setAttachments((all) => [...all, { label: file.name, markdown: data.markdown, image: { name: data.name || file.name, url: data.url, markdown: data.markdown } }]);
     } catch (err) {
       setError(err.message);
     } finally {

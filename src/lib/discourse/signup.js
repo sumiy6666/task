@@ -45,12 +45,15 @@ export async function requestSignup({ name, email, organisation, role, title, lo
   const about = `${role} at ${organisation}`;
   for (const f of fields) if (f.required && !user_fields[f.id]) user_fields[f.id] = about;
 
-  // Created with the site key, so no member is signed in; Discourse sends its
-  // own "confirm your email" message and keeps the account pending approval.
+  // Created with the site key (an admin) as already active, so Discourse
+  // sends no "confirm your email" message: on this forum, which signs members
+  // in through the AV Community login (DiscourseConnect), that link only
+  // leads to a "page not found". The account stays pending until staff
+  // approve it; Discourse then emails the member that they can log in.
   const result = await discourseFetch('/users.json', {
     method: 'POST',
-    requireUser: false,
-    body: { name, email, username, password, user_fields },
+    asSite: true,
+    body: { name, email, username, password, user_fields, active: true, approved: false },
   });
   // Discourse answers 200 with `success: false` when a field is refused.
   if (!result?.success) {
@@ -74,7 +77,7 @@ export async function requestSignup({ name, email, organisation, role, title, lo
   if (Object.keys(profile).length) {
     await discourseFetch(`/u/${encodeURIComponent(username)}.json`, {
       method: 'PUT',
-      requireUser: false,
+      asSite: true,
       body: profile,
     }).catch((error) => console.error('Could not save the new member’s profile details', error));
   }

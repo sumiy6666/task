@@ -25,7 +25,7 @@ export const PROFILE_TABS = [
 // address (?tab=badges) so it can be linked to and survives a reload. `live`
 // carries the member's forum stats, activity and badges; without it the tabs
 // show sample content.
-export function ProfilePageView({ profile, live = null, initialTab = 'summary' }) {
+export function ProfilePageView({ profile, live = null, initialTab = 'summary', initialThread = null }) {
   const [tab, setTab] = useState(PROFILE_TABS.some((t) => t.id === initialTab) ? initialTab : 'summary');
 
   const show = (id) => {
@@ -46,8 +46,8 @@ export function ProfilePageView({ profile, live = null, initialTab = 'summary' }
         {tab === 'summary' && <SummaryPanel glance={live?.glance} topBadges={live?.badges.earned.slice(0, 2)} onShowBadges={() => show('badges')} />}
         {tab === 'activity' && <ActivityPanel items={live?.activity} live={Boolean(live)} />}
         {tab === 'notifications' && <NotificationsPanel live={Boolean(live)} />}
-        {tab === 'messages' && <MessagesPanel live={Boolean(live)} />}
-        {tab === 'invites' && <InvitesPanel />}
+        {tab === 'messages' && <MessagesPanel live={Boolean(live)} initialThreadId={/^\d+$/.test(String(initialThread || '')) ? initialThread : null} />}
+        {tab === 'invites' && <InvitesPanel staff={Boolean(profile?.staff)} />}
         {tab === 'badges' && <BadgesPanel earnedBadges={live?.badges.earned} upcomingBadges={live?.badges.upcoming} />}
       </div>
     </main>
