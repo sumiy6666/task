@@ -11,6 +11,7 @@ import styles from '@/components/insights/Article.module.css';
 import { getCurrentUser, getTopic, isDiscourseConfigured } from '@/lib/discourse';
 import { absoluteUrl, DiscourseError } from '@/lib/discourse/client';
 import { loadRelatedArticles } from '@/lib/discourse/lists';
+import { takeLeadImage } from '@/lib/discourse/lead-image';
 
 // Sample article, shown when Discourse is not connected.
 const articleData = {
@@ -89,20 +90,6 @@ function longDate(iso) {
   const day = d.getDate();
   const suffix = day % 10 === 1 && day !== 11 ? 'st' : day % 10 === 2 && day !== 12 ? 'nd' : day % 10 === 3 && day !== 13 ? 'rd' : 'th';
   return `${day}${suffix}, ${d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}`;
-}
-
-// The article's first picture becomes the banner under the heading, and is
-// taken out of the text so it doesn't show twice. Discourse wraps uploaded
-// pictures in a "lightbox" link with a caption bar holding the file name.
-function takeLeadImage(html = '') {
-  const lightbox = html.match(/<div class="lightbox-wrapper">[\s\S]*?<\/div>\s*<\/a>\s*<\/div>/);
-  if (lightbox) {
-    const src = lightbox[0].match(/<img[^>]*\ssrc="([^"]+)"/)?.[1];
-    if (src) return { image: src, html: html.replace(lightbox[0], '').replace(/<p>\s*<\/p>/g, '') };
-  }
-  const img = html.match(/<img(?![^>]*class="[^"]*(emoji|avatar|site-icon)[^"]*")[^>]*src="([^"]+)"[^>]*>/);
-  if (img) return { image: img[2], html: html.replace(img[0], '').replace(/<p>\s*(<br\s*\/?>\s*)*<\/p>/g, '') };
-  return { image: null, html };
 }
 
 const readTime = (html = '') => `${Math.max(1, Math.round(html.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length / 200))} min read`;

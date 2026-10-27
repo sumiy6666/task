@@ -9,7 +9,8 @@ import { Replies } from '@/components/topic/Replies';
 import { LikeButton } from '@/components/topic/LikeButton';
 import { CommentIcon, EyeIcon, LikeIcon } from '@/components/topic/icons';
 import { getCurrentUser, getTopic } from '@/lib/discourse';
-import { DiscourseError } from '@/lib/discourse/client';
+import { absoluteUrl, DiscourseError } from '@/lib/discourse/client';
+import { takeLeadImage } from '@/lib/discourse/lead-image';
 import { compactNumber, timeAgo } from '@/lib/discourse/format';
 import { loadRecentDiscussions } from '@/lib/discourse/lists';
 import { getSampleConversation, hasSampleConversation } from '@/components/topic/sampleConversations';
@@ -53,6 +54,9 @@ export default async function ConversationPage({ params }) {
   }
 
   const first = topic.firstPost;
+  // The post's first picture shows as a banner under the title, not wherever
+  // it sits in the text (polls keep their own layout).
+  const lead = first && !first.polls?.length ? takeLeadImage(first.html) : null;
 
   return (
     <main className="container min-h-screen">
@@ -65,6 +69,8 @@ export default async function ConversationPage({ params }) {
             <h1 className={styles.title}>{topic.title}</h1>
             {first && <TopicActions topicId={topic.id} postId={first.id} title={topic.title} initiallyBookmarked={first.bookmarked} />}
           </div>
+
+          {lead?.image && <img className={styles.leadImage} src={absoluteUrl(lead.image)} alt="" />}
 
           {first && (
             <>
@@ -87,7 +93,7 @@ export default async function ConversationPage({ params }) {
               </div>
 
               {/* Discourse sanitises "cooked" HTML server-side before returning it. */}
-              <div className={styles.cooked} dangerouslySetInnerHTML={{ __html: first.html }} />
+              <div className={styles.cooked} dangerouslySetInnerHTML={{ __html: lead ? lead.html : first.html }} />
               {first.polls?.map((poll) => (
                 <PollVote key={poll.name} postId={first.id} poll={poll} />
               ))}

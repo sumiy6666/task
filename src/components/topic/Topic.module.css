@@ -63,6 +63,16 @@
 .authorMeta { font-size: calc(16 * var(--px)); color: #a3a3a3; margin-top: calc(2 * var(--px)); }
 .tags { display: flex; flex-wrap: wrap; gap: calc(4 * var(--px)); margin-top: calc(10 * var(--px)); font-size: calc(14 * var(--px)); color: var(--color-primary); }
 
+/* The post's first picture, under the title. */
+.leadImage {
+  display: block;
+  width: 100%;
+  max-height: calc(412 * var(--px));
+  margin: calc(24 * var(--px)) 0 calc(8 * var(--px));
+  border-radius: calc(14 * var(--px));
+  object-fit: cover;
+}
+
 .cooked {
   margin-top: calc(28 * var(--px));
   font-size: calc(16 * var(--px));
@@ -312,3 +322,7 @@ button.stat:hover svg { color: var(--color-primary); }
 /* Uploaded pictures: Discourse's caption bar (file name, size) is hidden. */
 .cooked :global(.lightbox-wrapper .meta) { display: none; }
 .cooked :global(.lightbox-wrapper img) { max-width: 100%; height: auto; border-radius: 0.6rem; }
+
+@media (max-width: 640px) {
+  .leadImage { max-height: 240px; margin: 18px 0 4px; border-radius: 12px; }
+}
