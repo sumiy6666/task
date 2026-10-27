@@ -39,9 +39,24 @@ export async function loadPendingMembers() {
   );
 }
 
+// Approving also emails the member a "set your password" link: join requests
+// are created with a random password, so that is how they choose their own.
+// This works when the forum uses its own accounts; while it signs members in
+// through an outside login (DiscourseConnect) the forum refuses password
+// emails, and only its "you've been approved" email goes out.
 export async function approveMember(id) {
   await discourseFetch(`/admin/users/${Number(id)}/approve.json`, { method: 'PUT', asSite: true });
-  return { ok: true };
+  const user = await discourseFetch(`/admin/users/${Number(id)}.json`, ADMIN).catch(() => null);
+  const login = user?.email || user?.username;
+  const passwordEmail = login
+    ? await discourseFetch('/session/forgot_password.json', { method: 'POST', asSite: true, body: { login } })
+        .then(() => true)
+        .catch((error) => {
+          console.error('Could not send the approved member a set-password email', error);
+          return false;
+        })
+    : false;
+  return { ok: true, passwordEmail };
 }
 
 // A declined request removes the waiting account, so the same email can ask

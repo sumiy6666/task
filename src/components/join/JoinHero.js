@@ -74,7 +74,7 @@ export function JoinHero({ topics = [] }) {
               you&apos;re approved.
             </p>
             <p>
-              That email has the link to log in to AV Community, where you set your password.
+              That email has a link to set your password. Then choose Sign in and use your email and that password.
             </p>
             <Link href="/" className={styles.sentLink}>Back to home</Link>
           </div>

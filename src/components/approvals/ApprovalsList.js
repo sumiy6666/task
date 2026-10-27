@@ -35,7 +35,8 @@ export function ApprovalsList() {
       if (redirectIfSignedOut(res)) return;
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'That didn’t work. Please try again.');
-      setAnswers((a) => ({ ...a, [item.id]: action === 'approve' ? 'Approved: login email sent' : 'Declined' }));
+      const approved = data.passwordEmail ? 'Approved: email to set a password sent' : 'Approved: login email sent';
+      setAnswers((a) => ({ ...a, [item.id]: action === 'approve' ? approved : 'Declined' }));
     } catch (e) {
       setError(e.message);
     } finally {
@@ -47,8 +48,8 @@ export function ApprovalsList() {
     <section className={styles.card} aria-labelledby="approvals-title">
       <h1 id="approvals-title" className={styles.title}>Join requests</h1>
       <p className={styles.intro}>
-        People who asked to join from the Join page. Approve someone and they get an email with the link to log in and set
-        their password.
+        People who asked to join from the Join page. Approve someone and they get an email with a link to set their
+        password; they then sign in with their email and that password.
       </p>
       {error && <p role="alert" className={styles.error}>{error}</p>}
       {items === null && !error && <p className={styles.status}>Loading…</p>}
