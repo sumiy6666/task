@@ -413,6 +413,19 @@ export function loadRelatedArticles(excludeId) {
   });
 }
 
+// Recent conversations for the side column of a conversation page, when the
+// forum suggests too few related ones itself.
+export function loadRecentDiscussions(excludeId, limit = 4) {
+  return safely('recent discussions', async () => {
+    const categories = await loadCategories();
+    const items = mapList(await discourseFetch('/latest.json'), new Map(categories.map((c) => [c.id, c])));
+    return items
+      .filter((t) => t.id !== Number(excludeId))
+      .slice(0, limit)
+      .map((t) => ({ id: t.id, title: t.title, avatar: t.author.avatar }));
+  });
+}
+
 // Events come from the Discourse Calendar and Event plugin. Without it the
 // events endpoint is a 404, which fetch does not cache, so remember the miss
 // for a while rather than asking on every page view.

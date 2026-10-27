@@ -198,15 +198,16 @@ export async function loadMessageThreads(username) {
       const people = [...(t.participants || []), ...(t.posters || [])]
         .map((p) => users.get(p.user_id))
         .filter(Boolean);
-      // Forum bots ("system", "discobot") have negative ids.
+      // Forum bots ("system", "discobot") have negative ids: a notice from
+      // one of them, with no other member in it, is not a chat.
       const others = people.filter((u) => u.username !== username && u.id > 0);
-      if (others.length === 0) return null;
+      if (others.length === 0 && people.some((u) => u.id < 0)) return null;
       const other = others[0];
       return {
         id: t.id,
-        username: other.username,
-        name: other.name || other.username,
-        avatar: avatarUrl(other.avatar_template),
+        username: other?.username || '',
+        name: other ? other.name || other.username : cleanTitle(t.title),
+        avatar: avatarUrl(other?.avatar_template),
         preview: plainText(t.excerpt || '') || cleanTitle(t.title),
         time: timeAgo(t.last_posted_at || t.created_at),
         unread: (t.unread_posts || 0) + (t.new_posts || 0) > 0 || t.unseen === true,
@@ -231,7 +232,9 @@ export async function startConversation(from, to, text) {
     method: 'POST',
     body: { title: `${from.name || from.username} and ${to}`, raw: text, archetype: 'private_message', target_recipients: to },
   });
-  return { id: post?.topic_id };
+  // A new member's message may wait for a moderator ("enqueued"): no
+  // conversation exists yet.
+  return post?.topic_id ? { id: post.topic_id } : { pending: true };
 }
 
 export async function loadMessageThread(topicId, username) {

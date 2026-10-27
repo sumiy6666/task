@@ -11,6 +11,7 @@ import { CommentIcon, EyeIcon, LikeIcon } from '@/components/topic/icons';
 import { getCurrentUser, getTopic } from '@/lib/discourse';
 import { DiscourseError } from '@/lib/discourse/client';
 import { compactNumber, timeAgo } from '@/lib/discourse/format';
+import { loadRecentDiscussions } from '@/lib/discourse/lists';
 import { getSampleConversation, hasSampleConversation } from '@/components/topic/sampleConversations';
 
 // Forum topics and sample conversations open here; other sample ids go back to the list.
@@ -42,6 +43,14 @@ export default async function ConversationPage({ params }) {
   const { id } = await params;
   const [topic, currentUser] = await Promise.all([loadTopic(id), getCurrentUser()]);
   if (!topic) notFound();
+
+  // The side column always lists other conversations: the forum's own
+  // suggestions, topped up with the latest ones when it has few.
+  let related = topic.related;
+  if (related.length < 3 && /^\d+$/.test(String(topic.id))) {
+    const recent = (await loadRecentDiscussions(topic.id)) || [];
+    related = [...related, ...recent.filter((r) => !related.some((x) => x.id === r.id))].slice(0, 4);
+  }
 
   const first = topic.firstPost;
 
@@ -106,10 +115,10 @@ export default async function ConversationPage({ params }) {
           <Replies topicId={topic.id} replies={topic.replies} currentUser={currentUser} />
         </article>
 
-        {topic.related.length > 0 && (
+        {related.length > 0 && (
           <aside className={`${styles.card} ${styles.side}`} aria-labelledby="related-heading">
             <h2 id="related-heading" className={styles.relatedHeading}>Related Discussions</h2>
-            {topic.related.map((item, i) => (
+            {related.map((item, i) => (
               <Reveal key={item.id} delay={150 + i * 120} href={conversationHref(item.id)} className={styles.relatedItem}>
                 <img className={styles.avatarLg} src={item.avatar} alt="" />
                 <span className={styles.relatedTitle}>{item.title}</span>

@@ -95,6 +95,13 @@ export function MessagesPanel({ live = false, initialThreadId = null }) {
       if (redirectIfSignedOut(res)) return;
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Could not send your message.');
+      // The forum is holding the message for a moderator: say so rather than
+      // showing it as sent.
+      if (data.pending) {
+        setMessages(active.id, before);
+        setError('Your message is waiting for a moderator to approve it. It will appear here once approved.');
+        return;
+      }
       if (active.isNew && data.id) {
         setThreads((all) => all.map((t) => (t.id === active.id ? { ...t, id: data.id, isNew: false, preview: text } : t)));
         setChosenId(data.id);
