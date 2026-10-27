@@ -90,7 +90,8 @@ function threadReplies(posts) {
 }
 
 export function mapTopic(topic, categoriesById = new Map()) {
-  const posts = (topic.post_stream?.posts || []).map(mapPost);
+  // Admins (the site key) also get deleted posts; nobody else sees them.
+  const posts = (topic.post_stream?.posts || []).filter((p) => p.post_number === 1 || !(p.deleted_at || p.user_deleted)).map(mapPost);
   const [first, ...rest] = posts;
   const tags = (topic.tags || []).map((t) => (typeof t === 'string' ? t : t.name));
 

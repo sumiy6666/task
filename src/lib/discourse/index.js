@@ -63,6 +63,9 @@ export async function getTopic(id, { track = false } = {}) {
     member ? null : restrictedCategoryIds(),
   ]);
   if (restricted && !isPublicTopic(topic, restricted)) throw new DiscourseError('Not found.', 404);
+  // A deleted (or author-withdrawn) topic is gone, even though an admin key can still read it.
+  const opening = topic.post_stream?.posts?.find((p) => p.post_number === 1);
+  if (topic.deleted_at || opening?.deleted_at || opening?.user_deleted) throw new DiscourseError('Not found.', 404);
   return mapTopic(topic, new Map(categories.map((c) => [c.id, c])));
 }
 

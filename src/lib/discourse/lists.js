@@ -49,7 +49,10 @@ const PROFILE_SECONDS = 300;
 
 const findCategory = (categories, pattern) => categories.find((c) => pattern.test(c.name));
 const categoryPath = (c) => `/c/${encodeURIComponent(c.slug)}/${c.id}.json`;
-const topicsOf = (list) => (list?.topic_list?.topics || []).filter((t) => !isAboutTopic(t));
+// The site key is an admin's, so lists can include topics that were deleted
+// or withdrawn by their author; those are left out like on the forum.
+const isGone = (t) => Boolean(t.deleted_at || t.user_deleted || /^\(topic (withdrawn|deleted) by (the )?author/i.test(t.excerpt || ''));
+const topicsOf = (list) => (list?.topic_list?.topics || []).filter((t) => !isAboutTopic(t) && !isGone(t));
 
 function topicMapper(list, categoriesById) {
   const users = new Map((list.users || []).map((u) => [u.id, u]));
@@ -194,7 +197,7 @@ async function fetchPolls(categories, limit = 12) {
 function withLatestReplies(feed, recentPosts) {
   const latestReply = new Map();
   for (const p of recentPosts?.latest_posts || []) {
-    if (p.post_number > 1 && p.post_type === 1 && !p.hidden && !latestReply.has(p.topic_id)) latestReply.set(p.topic_id, p);
+    if (p.post_number > 1 && p.post_type === 1 && !p.hidden && !p.deleted_at && !p.user_deleted && !latestReply.has(p.topic_id)) latestReply.set(p.topic_id, p);
   }
   return feed.map((t) => {
     const p = latestReply.get(t.id);
