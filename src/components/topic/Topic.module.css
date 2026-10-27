@@ -308,3 +308,7 @@ button.stat:hover svg { color: var(--color-primary); }
   .relatedItem .avatarLg { width: 56px; height: 56px; }
   .relatedTitle { font-size: 16px; line-height: 23px; }
 }
+
+/* Uploaded pictures: Discourse's caption bar (file name, size) is hidden. */
+.cooked :global(.lightbox-wrapper .meta) { display: none; }
+.cooked :global(.lightbox-wrapper img) { max-width: 100%; height: auto; border-radius: 0.6rem; }

@@ -5,7 +5,8 @@ import { Carousel } from '../ui/Carousel';
 import { Reveal } from '../ui/Reveal';
 import styles from './Article.module.css';
 
-const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=600&auto=format&fit=crop';
+// Shown for articles without a picture of their own.
+const FALLBACK_IMAGE = '/images/article-placeholder.jpg';
 
 // A related article: photo card with the title and summary over a navy wash.
 export function RelatedArticleGridCard({ article }) {

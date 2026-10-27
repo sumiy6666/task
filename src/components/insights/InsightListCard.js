@@ -7,7 +7,7 @@ export function InsightListCard({ article }) {
   return (
     <div className="flex max-sm:flex-col border-b border-[#e5e7eb]" style={{ gap: 'calc(1.45 * var(--sa))', padding: 'calc(2.4 * var(--sa)) 0' }}>
       <img
-        src={article.image || 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=300&auto=format&fit=crop'}
+        src={article.image || '/images/article-placeholder.jpg'}
         alt={article.title}
         className="object-cover flex-shrink-0 max-sm:w-full! max-sm:h-[180px]!"
         style={{ width: 'calc(15.2 * var(--da) + var(--db))', height: 'calc(8.2 * var(--da) + var(--db))', borderRadius: 'calc(0.75 * var(--sa))', boxShadow: '0 calc(0.5 * var(--sa)) calc(1 * var(--sa)) rgba(0, 0, 0, 0.2)' }}

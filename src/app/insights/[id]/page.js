@@ -9,7 +9,7 @@ import { LikeIcon } from '@/components/discussions/icons';
 import { LikeButton } from '@/components/topic/LikeButton';
 import styles from '@/components/insights/Article.module.css';
 import { getCurrentUser, getTopic, isDiscourseConfigured } from '@/lib/discourse';
-import { DiscourseError } from '@/lib/discourse/client';
+import { absoluteUrl, DiscourseError } from '@/lib/discourse/client';
 import { loadRelatedArticles } from '@/lib/discourse/lists';
 
 // Sample article, shown when Discourse is not connected.
@@ -91,6 +91,20 @@ function longDate(iso) {
   return `${day}${suffix}, ${d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}`;
 }
 
+// The article's first picture becomes the banner under the heading, and is
+// taken out of the text so it doesn't show twice. Discourse wraps uploaded
+// pictures in a "lightbox" link with a caption bar holding the file name.
+function takeLeadImage(html = '') {
+  const lightbox = html.match(/<div class="lightbox-wrapper">[\s\S]*?<\/div>\s*<\/a>\s*<\/div>/);
+  if (lightbox) {
+    const src = lightbox[0].match(/<img[^>]*\ssrc="([^"]+)"/)?.[1];
+    if (src) return { image: src, html: html.replace(lightbox[0], '').replace(/<p>\s*<\/p>/g, '') };
+  }
+  const img = html.match(/<img(?![^>]*class="[^"]*(emoji|avatar|site-icon)[^"]*")[^>]*src="([^"]+)"[^>]*>/);
+  if (img) return { image: img[2], html: html.replace(img[0], '').replace(/<p>\s*(<br\s*\/?>\s*)*<\/p>/g, '') };
+  return { image: null, html };
+}
+
 const readTime = (html = '') => `${Math.max(1, Math.round(html.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length / 200))} min read`;
 
 // A forum article (a topic in the Articles category), or null to show the sample.
@@ -127,17 +141,18 @@ export default async function InsightDetailPage({ params }) {
 
   const { topic, related } = live;
   const post = topic.firstPost;
+  const lead = takeLeadImage(post?.html);
   const article = {
     id: topic.id,
     title: topic.title,
-    image: null,
+    image: lead.image ? absoluteUrl(lead.image) : '/images/article-placeholder.jpg',
     author: post?.author.name,
     readTime: readTime(post?.html),
     date: longDate(post?.createdAt),
     sources: [],
     category: topic.categoryName,
     // Discourse sanitises "cooked" HTML server-side before returning it.
-    body: <div dangerouslySetInnerHTML={{ __html: post?.html || '' }} />,
+    body: <div dangerouslySetInnerHTML={{ __html: lead.html }} />,
     post,
     likeCount: topic.likeCount,
     comments: topic.replies,
