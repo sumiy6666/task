@@ -49,7 +49,21 @@ export async function requestSignup({ name, email, phone, organisation, role, ti
   if (phoneField) user_fields[phoneField.id] = phone;
   if (organisationField) user_fields[organisationField.id] = organisation;
   if (roleField) user_fields[roleField.id] = role;
-  const about = `${role} at ${organisation}`;
+  // Every answer from the Join form, on one line: admins see this field in
+  // the forum's user admin and review screens, which don't show "About me".
+  // (Fields like this one are set not to show on public profiles, so the
+  // phone number stays private.)
+  const about = [
+    `${[title, name].filter(Boolean).join(' ')}: ${role} at ${organisation}`,
+    email && `Email: ${email}`,
+    phone && `Phone: ${phone}`,
+    location && `Location: ${location}`,
+    profileLink && `Profile: ${profileLink}`,
+    topics.length > 0 && `Topics: ${topics.join(', ')}`,
+  ]
+    .filter(Boolean)
+    .join(' · ')
+    .slice(0, 1000);
   for (const f of fields) if (f.required && !user_fields[f.id]) user_fields[f.id] = about;
 
   // Created with the site key (an admin) as already active, so Discourse
