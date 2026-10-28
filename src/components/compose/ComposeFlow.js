@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import styles from './Compose.module.css';
 import { GradientBadge } from './GradientBadge';
 import { EmojiButton, insertAtCursor } from './EmojiButton';
+import { FormatToolbar } from './FormatToolbar';
 import { PollOptionsEditor } from './PollOptionsEditor';
 import { ArticleIcon, ChevronDownIcon, ChevronLeftIcon, CloseIcon, ImageIcon, InsightIcon, LinkIcon, PaperPlaneIcon, PollIcon } from './icons';
 
@@ -419,7 +420,8 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
         <>
           <KindHeader kind={kind} onBack={() => setKind(null)} />
           <label className={styles.srOnly} htmlFor="compose-body">Message</label>
-          <textarea id="compose-body" ref={bodyRef} className={styles.bodyInput} value={body} onChange={(e) => setBody(e.target.value)} />
+          <FormatToolbar textareaRef={bodyRef} value={body} onChange={setBody} />
+          <textarea id="compose-body" ref={bodyRef} className={`${styles.bodyInput} ${styles.bodyInputWithBar}`} value={body} onChange={(e) => setBody(e.target.value)} />
           {(images.length > 0 || uploading) && (
             <div className={styles.imageList} aria-label="Attached images">
               {images.map((img, i) => (

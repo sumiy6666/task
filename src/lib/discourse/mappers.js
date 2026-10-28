@@ -1,4 +1,5 @@
 import { avatarUrl } from './client';
+import { withEmoji } from './emoji';
 
 export { compactNumber, timeAgo } from './format';
 
@@ -99,7 +100,7 @@ export function mapTopic(topic, categoriesById = new Map()) {
 
   return {
     id: topic.id,
-    title: topic.title,
+    title: withEmoji(topic.title),
     categoryName: categoriesById.get(topic.category_id)?.name || '',
     tags,
     firstPost: first || null,
@@ -112,7 +113,7 @@ export function mapTopic(topic, categoriesById = new Map()) {
       const poster = t.posters?.[0]?.user;
       return {
         id: t.id,
-        title: t.fancy_title || t.title,
+        title: withEmoji(t.title || t.fancy_title),
         avatar: poster ? avatarUrl(poster.avatar_template) : '/images/avatar-placeholder.svg',
       };
     }),

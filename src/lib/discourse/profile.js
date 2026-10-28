@@ -4,12 +4,13 @@
 // tab is opened, to spare the member key's tight rate limit.
 import { avatarUrl, discourseBaseUrl, discourseFetch, isDiscourseConfigured } from './client';
 import { timeAgo } from './format';
+import { withEmoji } from './emoji';
 import { isApprovalNotice } from './approvals';
 
 const PROFILE_SECONDS = 300;
 const MINE = { personal: true, requireUser: true };
 
-const cleanTitle = (title = '') => title.replace(/\s*:[a-z0-9_+-]+:/gi, '').trim();
+const cleanTitle = (title = '') => withEmoji(title);
 const plainText = (html = '') =>
   html
     .replace(/<[^>]+>/g, ' ')

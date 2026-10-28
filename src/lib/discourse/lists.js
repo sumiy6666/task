@@ -5,20 +5,20 @@
 import { connection } from 'next/server';
 import { avatarUrl, discourseFetch, isDiscourseConfigured } from './client';
 import { compactNumber, timeAgo } from './format';
+import { withEmoji } from './emoji';
 import { mapPolls } from './mappers';
 import { isPublicTopic, restrictedCategoryIds } from './privacy';
 
 const isAboutTopic = (t) => /^About the .+ category$/i.test(t.title);
 
 // Discourse keeps emoji as :shortcodes: and ends excerpts with an HTML entity.
-const cleanTitle = (title = '') => title.replace(/\s*:[a-z0-9_+-]+:/gi, '').trim();
+const cleanTitle = (title = '') => withEmoji(title);
 const cleanExcerpt = (excerpt = '') =>
-  excerpt
+  withEmoji(excerpt)
     .replace(/&hellip;/g, '…')
     .replace(/&amp;/g, '&')
     .replace(/&quot;/g, '"')
     .replace(/&#39;|&rsquo;/g, '’')
-    .replace(/\s*:[a-z0-9_+-]+:/gi, '')
     .replace(/\s+/g, ' ')
     .trim()
     // A post that is only a poll has the excerpt "poll": no text to show.
