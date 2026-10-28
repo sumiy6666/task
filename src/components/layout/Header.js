@@ -125,7 +125,6 @@ export function Header({ user = null, canSignIn = false, live = false }) {
                 <span className={styles.avatar}>
                   <img src={user.avatar} alt="" />
                 </span>
-                <span className={styles.dot} aria-hidden="true" />
                 {/* The member's country, from the location on their profile. */}
                 {user.flag && <img className={styles.flag} src={user.flag} alt={user.country} title={user.country} />}
               </button>

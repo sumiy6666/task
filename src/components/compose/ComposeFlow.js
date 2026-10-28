@@ -4,10 +4,17 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './Compose.module.css';
 import { GradientBadge } from './GradientBadge';
-import { EmojiButton, insertAtCursor } from './EmojiButton';
-import { FormatToolbar } from './FormatToolbar';
+import dynamic from 'next/dynamic';
+import { EmojiButton } from './EmojiButton';
+import { isBlankHtml, markdownLinksToHtml, toMarkdown } from './markdown';
+
+// The rich editor uses the browser's DOM (Summernote), so it is not rendered on the server.
+const RichEditor = dynamic(() => import('./RichEditor').then((m) => m.RichEditor), {
+  ssr: false,
+  loading: () => <div className={styles.richEditorLoading}>Loading editor…</div>,
+});
 import { PollOptionsEditor } from './PollOptionsEditor';
-import { ArticleIcon, ChevronDownIcon, ChevronLeftIcon, CloseIcon, ImageIcon, InsightIcon, LinkIcon, PaperPlaneIcon, PollIcon } from './icons';
+import { ArticleIcon, ChevronDownIcon, ChevronLeftIcon, CloseIcon, ImageIcon, InsightIcon, PaperPlaneIcon, PollIcon } from './icons';
 
 const KINDS = [
   { id: 'article', label: 'ARTICLE', Icon: ArticleIcon },
@@ -102,7 +109,9 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
     return named ? keyOf(named) : defaultKey(initialType);
   });
   const [title, setTitle] = useState(initialTitle);
-  const [body, setBody] = useState(initialBody);
+  // The post text as the editor's HTML; it goes to the forum as Markdown.
+  const [initialHtml] = useState(() => markdownLinksToHtml(initialBody));
+  const [body, setBody] = useState(initialHtml);
   // Attached images, shown as pictures under the text and added to the post's
   // markdown when it is sent: { name, url, markdown }.
   const [images, setImages] = useState(initialImages);
@@ -151,6 +160,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
     setKind(null);
     setTitle('');
     setBody('');
+    bodyRef.current?.clear();
     setImages([]);
     setOptions(initialOptions());
     setAllowMultiple(false);
@@ -164,7 +174,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
   };
 
   // The text with the attached images after it.
-  const fullBody = () => [body.trim(), ...images.map((i) => i.markdown)].filter(Boolean).join('\n\n');
+  const fullBody = () => [toMarkdown(isBlankHtml(body) ? '' : body), ...images.map((i) => i.markdown)].filter(Boolean).join('\n\n');
 
   const validate = () => {
     if (!kind) return 'Choose Article, Poll or Insight.';
@@ -174,7 +184,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
       if (new Set(filledOptions.map((o) => o.toLowerCase())).size !== filledOptions.length) return 'Each option must be different.';
       if (endDate && !close) return 'Please enter a valid end date and time.';
       if (close?.isPast) return 'The end date and time must be in the future.';
-    } else if (!body.trim() && images.length === 0) {
+    } else if (isBlankHtml(body) && images.length === 0) {
       return 'Please write something before posting.';
     }
     return '';
@@ -234,7 +244,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
   };
 
   const discard = () => {
-    const dirty = title || body || images.length || options.some((o) => o.text);
+    const dirty = title || !isBlankHtml(body) || images.length || options.some((o) => o.text);
     if (dirty && !window.confirm('Discard this conversation?')) return;
     reset();
   };
@@ -257,14 +267,6 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
       setUploading(false);
       if (fileRef.current) fileRef.current.value = '';
     }
-  };
-
-  const insertLink = () => {
-    const url = window.prompt('Link URL', 'https://');
-    if (!url || url === 'https://') return;
-    const el = bodyRef.current;
-    const selected = el ? body.slice(el.selectionStart, el.selectionEnd) : '';
-    setBody((b) => insertAtCursor(el, b, `[${selected || url}](${url})`));
   };
 
   const closeButton = (
@@ -419,9 +421,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
       ) : (
         <>
           <KindHeader kind={kind} onBack={() => setKind(null)} />
-          <label className={styles.srOnly} htmlFor="compose-body">Message</label>
-          <FormatToolbar textareaRef={bodyRef} value={body} onChange={setBody} />
-          <textarea id="compose-body" ref={bodyRef} className={`${styles.bodyInput} ${styles.bodyInputWithBar}`} value={body} onChange={(e) => setBody(e.target.value)} />
+          <RichEditor ref={bodyRef} initialHtml={initialHtml} onChange={setBody} />
           {(images.length > 0 || uploading) && (
             <div className={styles.imageList} aria-label="Attached images">
               {images.map((img, i) => (
@@ -443,14 +443,11 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
           <span />
         ) : (
           <div className={styles.tools}>
-            <EmojiButton onPick={(emoji) => setBody((b) => insertAtCursor(bodyRef.current, b, emoji))} />
+            <EmojiButton onPick={(emoji) => bodyRef.current?.insertText(emoji)} />
             <button type="button" className={styles.toolButton} aria-label="Attach image" disabled={uploading} onClick={() => fileRef.current?.click()}>
               <ImageIcon />
             </button>
             <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => attachImage(e.target.files?.[0])} />
-            <button type="button" className={styles.toolButton} aria-label="Insert link" onClick={insertLink}>
-              <LinkIcon />
-            </button>
           </div>
         )}
         <div className={styles.actions} style={{ alignItems: 'center' }}>

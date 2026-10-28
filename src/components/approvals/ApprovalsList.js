@@ -66,7 +66,11 @@ export function ApprovalsList() {
                 {item.fields.map((f) => <div key={f.label}><strong>{f.label}:</strong> {f.value}</div>)}
                 {item.location && <div><strong>Location:</strong> {item.location}</div>}
                 {item.website && <div><strong>Profile:</strong> <a href={item.website} target="_blank" rel="noreferrer">{item.website}</a></div>}
-                {item.about && <div>{item.about}</div>}
+                {/* "About me" lines such as "Phone: …", with the label in bold. */}
+                {item.about.split('\n').filter((line) => line.trim()).map((line, i) => {
+                  const [, label, value] = line.match(/^([^:]{1,40}):\s*(.*)$/) || [];
+                  return label ? <div key={i}><strong>{label}:</strong> {value}</div> : <div key={i}>{line}</div>;
+                })}
               </div>
             </div>
             {answers[item.id] ? (

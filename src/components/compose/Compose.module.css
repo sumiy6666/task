@@ -140,30 +140,23 @@
   outline: none;
 }
 
-/* Formatting buttons joined to the top of the message box. */
-.formatBar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px;
+/* The rich text editor (Summernote) in the compose card. */
+.richEditor { margin-top: calc(25 * var(--px)); }
+.richEditor :global(.note-editor.note-frame) { border: 1px solid var(--color-input-border); border-radius: calc(8 * var(--px)); }
+.richEditor :global(.note-toolbar) { border-radius: calc(8 * var(--px)) calc(8 * var(--px)) 0 0; background: #f7f9fb; }
+.richEditor :global(.note-editable) { font-family: inherit; font-size: 15px; line-height: 1.6; color: #111; }
+.richEditor :global(.note-statusbar) { border-radius: 0 0 calc(8 * var(--px)) calc(8 * var(--px)); }
+.richEditorLoading {
   margin-top: calc(25 * var(--px));
-  padding: 6px 8px;
-  border: 1px solid var(--color-input-border);
-  border-bottom: 0;
-  border-radius: calc(8 * var(--px)) calc(8 * var(--px)) 0 0;
-  background: #f7f9fb;
-}
-.formatButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 32px;
-  border-radius: 6px;
-  color: #4b5563;
+  height: 330px;
+  border: 1px solid var(--color-input-border);
+  border-radius: calc(8 * var(--px));
+  color: #6b7280;
+  font-size: 14px;
 }
-.formatButton:hover { background: #e8eef4; color: var(--color-primary); }
-.formatButton svg { width: 18px; height: 18px; }
-.bodyInputWithBar { margin-top: 0; border-top-left-radius: 0; border-top-right-radius: 0; }
 
 /* Attached images, under the message box. */
 .imageList {
