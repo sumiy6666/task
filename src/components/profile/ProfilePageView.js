@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Activity, Bell, MessageSquare, Shield, UserPlus, UserRound } from 'lucide-react';
+import { Activity, Bell, MessageSquare, Shield, UserRound } from 'lucide-react';
 import { Breadcrumb } from '../ui/Breadcrumb';
 import { ProfileHeader } from './ProfileHeader';
 import { ProfileTabs } from './ProfileTabs';
@@ -8,7 +8,6 @@ import { SummaryPanel } from './SummaryPanel';
 import { ActivityPanel } from './ActivityPanel';
 import { NotificationsPanel } from './NotificationsPanel';
 import { MessagesPanel } from './MessagesPanel';
-import { InvitesPanel } from './InvitesPanel';
 import { BadgesPanel } from './BadgesPanel';
 import styles from './Profile.module.css';
 
@@ -17,7 +16,6 @@ export const PROFILE_TABS = [
   { id: 'activity', label: 'Activity', icon: Activity },
   { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'messages', label: 'Messages', icon: MessageSquare },
-  { id: 'invites', label: 'Invites', icon: UserPlus },
   { id: 'badges', label: 'Badges', icon: Shield },
 ];
 
@@ -47,7 +45,6 @@ export function ProfilePageView({ profile, live = null, initialTab = 'summary', 
         {tab === 'activity' && <ActivityPanel items={live?.activity} live={Boolean(live)} />}
         {tab === 'notifications' && <NotificationsPanel live={Boolean(live)} />}
         {tab === 'messages' && <MessagesPanel live={Boolean(live)} initialThreadId={/^\d+$/.test(String(initialThread || '')) ? initialThread : null} />}
-        {tab === 'invites' && <InvitesPanel staff={Boolean(profile?.staff)} />}
         {tab === 'badges' && <BadgesPanel earnedBadges={live?.badges.earned} upcomingBadges={live?.badges.upcoming} />}
       </div>
     </main>

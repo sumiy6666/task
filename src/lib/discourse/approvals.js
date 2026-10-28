@@ -5,6 +5,7 @@
 // signed-in member is staff first.
 import { avatarUrl, discourseFetch } from './client';
 import { timeAgo } from './format';
+import { PHONE_LINE } from './signup';
 
 const ADMIN = { asSite: true, revalidate: 0 };
 
@@ -47,6 +48,7 @@ export async function loadPendingMembers() {
 export async function approveMember(id) {
   await discourseFetch(`/admin/users/${Number(id)}/approve.json`, { method: 'PUT', asSite: true });
   const user = await discourseFetch(`/admin/users/${Number(id)}.json`, ADMIN).catch(() => null);
+  await removePhoneFromBio(user?.username);
   const login = user?.email || user?.username;
   const passwordEmail = login
     ? await discourseFetch('/session/forgot_password.json', { method: 'POST', asSite: true, body: { login } })
@@ -57,6 +59,17 @@ export async function approveMember(id) {
         })
     : false;
   return { ok: true, passwordEmail };
+}
+
+// The Join form leaves the phone number in "About me" when the forum has no
+// private phone field; once approved the profile is public, so it comes out.
+async function removePhoneFromBio(username) {
+  if (!username) return;
+  const profile = await discourseFetch(`/u/${encodeURIComponent(username)}.json`, ADMIN).then((d) => d.user).catch(() => null);
+  const bio = profile?.bio_raw || '';
+  if (!PHONE_LINE.test(bio)) return;
+  await discourseFetch(`/u/${encodeURIComponent(username)}.json`, { method: 'PUT', asSite: true, body: { bio_raw: bio.replace(PHONE_LINE, '').trim() } })
+    .catch((error) => console.error('Could not remove the phone number from an approved member’s profile', error));
 }
 
 // A declined request removes the waiting account, so the same email can ask

@@ -1,4 +1,4 @@
-import { CalendarCheck, ChevronDown, MapPin, Pencil, UserRound } from 'lucide-react';
+import { BadgeCheck, CalendarCheck, MapPin, Pencil, UserRound } from 'lucide-react';
 import styles from './Profile.module.css';
 
 // Blue header card: photo, name, handle, bio, follow counts and actions.
@@ -7,7 +7,9 @@ export function ProfileHeader({ profile }) {
     <section className={styles.hero} aria-label="Profile">
       <div className={`rise-in ${styles.avatarWrap}`}>
         <img className={styles.avatar} src={profile.avatar} alt="" />
-        <span className={styles.online} title="Online" />
+        <span className={styles.verified} title="Verified member" aria-label="Verified member" role="img">
+          <BadgeCheck aria-hidden="true" />
+        </span>
       </div>
 
       <div className={styles.heroInfo}>
@@ -38,11 +40,11 @@ export function ProfileHeader({ profile }) {
             <Pencil strokeWidth={1.5} aria-hidden="true" />Edit Profile
           </button>
         )}
+        {/* The member's role on the forum, shown as a label (it opens nothing). */}
         {profile.role && (
-          <button type="button" className={`${styles.heroBtn} ${styles.roleBtn}`}>
+          <span className={`${styles.heroBtn} ${styles.roleBtn}`}>
             <UserRound strokeWidth={1.5} aria-hidden="true" />{profile.role}
-            <ChevronDown strokeWidth={1.5} className={styles.chevron} aria-hidden="true" />
-          </button>
+          </span>
         )}
       </div>
     </section>

@@ -494,6 +494,30 @@
 }
 .successActions .btn { width: calc(219 * var(--px)); }
 
+/* Sign-in card: one wide pill that keeps its label on one line. */
+.successActions.signInActions { margin-top: calc(44 * var(--px)); }
+.successActions .signInBtn {
+  width: auto;
+  height: calc(46 * var(--px));
+  padding: 0 calc(30 * var(--px));
+  gap: calc(10 * var(--px));
+  white-space: nowrap;
+  font-size: calc(14.5 * var(--px));
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  box-shadow: 0 calc(6 * var(--px)) calc(16 * var(--px)) rgba(0, 164, 228, 0.3);
+}
+.signInBtn svg { width: calc(18 * var(--px)); height: calc(18 * var(--px)); flex-shrink: 0; }
+.signInNote { margin-top: calc(22 * var(--px)); }
+.signInNote a { color: var(--color-primary); text-decoration: underline; text-underline-offset: 3px; }
+.signInNote a:hover { color: var(--color-primary-dark); }
+@media (max-width: 1024px) {
+  .successActions.signInActions { margin-top: 32px; }
+  .successActions .signInBtn { height: 46px; padding: 0 28px; gap: 10px; font-size: 14px; }
+  .signInBtn svg { width: 18px; height: 18px; }
+  .signInNote { margin-top: 20px; font-size: 14px; }
+}
+
 /* Emoji picker */
 .emojiPanel {
   position: absolute;

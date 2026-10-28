@@ -7,6 +7,7 @@ import { mapCategory, mapPolls, mapTopic, mapUser } from './mappers';
 import { isPublicTopic, restrictedCategoryIds } from './privacy';
 import { loadDemo, recordDemoOp } from './demo-session';
 import { mockCategories, mockGetTopic, mockUser, nextTopicId } from './mock';
+import { countryOf, flagUrl } from '../locations';
 
 export { isDiscourseConfigured, isSignInEnabled };
 
@@ -17,7 +18,7 @@ export const getCurrentUser = cache(async () => {
   if (isSignInEnabled() && (await getUserAuth())) {
     try {
       const data = await discourseFetch('/session/current.json', { personal: true });
-      return data?.current_user ? mapUser(data.current_user) : null;
+      return data?.current_user ? withCountry(mapUser(data.current_user)) : null;
     } catch (error) {
       if (error instanceof DiscourseError && [401, 403, 404].includes(error.status)) return null;
       throw error;
@@ -26,10 +27,22 @@ export const getCurrentUser = cache(async () => {
   // With sign-in off, everyone acts as the site's API user.
   if (!isSignInEnabled() && hasAdminKey()) {
     const data = await discourseFetch(`/u/${encodeURIComponent(actingUsername())}.json`);
-    return mapUser(data.user);
+    return withCountry(mapUser(data.user), data.user.location);
   }
   return null;
 });
+
+// The member's country, from the location on their profile, with its flag
+// for the header avatar. The session doesn't carry the location, so it is
+// read from the profile (cached, as profiles change slowly).
+async function withCountry(user, location) {
+  if (location === undefined) {
+    const data = await discourseFetch(`/u/${encodeURIComponent(user.username)}.json`, { revalidate: 300 }).catch(() => null);
+    location = data?.user?.location;
+  }
+  const country = countryOf(location);
+  return country ? { ...user, country: country.name, flag: flagUrl(country.code) } : user;
+}
 
 export async function getCategories() {
   if (!isDiscourseConfigured()) return mockCategories;

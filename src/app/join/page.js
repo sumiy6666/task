@@ -7,6 +7,7 @@ import { WhyJoin } from '@/components/join/WhyJoin';
 import { MemberVoices } from '@/components/join/MemberVoices';
 import { getCurrentUser, isSignInEnabled } from '@/lib/discourse';
 import { loadJoin } from '@/lib/discourse/lists';
+import { listCountries } from '@/lib/locations';
 import home from '@/app/page.module.css';
 import styles from '@/components/join/Join.module.css';
 
@@ -35,7 +36,7 @@ export default async function JoinPage() {
   return (
     <main className={`container min-h-screen ${home.main} ${styles.page}`}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Join' }]} />
-      <JoinHero topics={live?.topics?.length ? live.topics : SAMPLE_TOPICS} />
+      <JoinHero topics={live?.topics?.length ? live.topics : SAMPLE_TOPICS} countries={listCountries()} />
       <WhyJoin />
       <MemberVoices />
 

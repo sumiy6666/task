@@ -65,6 +65,21 @@
   margin-bottom: 2rem;
 }
 
+/* Forum excerpts run long: titles and text stop after a few lines with "…". */
+.featured h3,
+.featured p,
+.itemContent h4,
+.itemContent p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.featured h3 { -webkit-line-clamp: 3; line-clamp: 3; }
+.itemContent h4 { -webkit-line-clamp: 2; line-clamp: 2; }
+.featured p,
+.itemContent p { -webkit-line-clamp: 2; line-clamp: 2; }
+
 .featured p {
   font-size: 1rem;
   line-height: 1.55;
@@ -112,9 +127,14 @@
   border-bottom: none;
 }
 
+.itemContent {
+  min-width: 0;
+}
+
 .itemContent h4 {
   font-size: 1.15rem;
   font-weight: 400;
+  line-height: 1.35;
   color: #385E87;
   margin-bottom: 0.85rem;
 }

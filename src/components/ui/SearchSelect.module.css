@@ -1,0 +1,55 @@
+/* Type-to-filter dropdown. The box itself takes the form's input class; this
+   adds the arrow and the floating list. */
+
+.root { position: relative; }
+.root > input { padding-right: 38px; cursor: pointer; text-overflow: ellipsis; }
+.root > input:focus { cursor: text; }
+.root > input:disabled { background: #f5f6f8; color: #9a9a9a; cursor: not-allowed; }
+
+.chevron {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  width: 16px;
+  height: 16px;
+  color: #707070;
+  transform: translateY(-50%);
+  transition: transform 0.2s;
+  pointer-events: none;
+}
+.open .chevron { transform: translateY(-50%) rotate(180deg); color: #11a0db; }
+
+.list {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 264px;
+  overflow-y: auto;
+  padding: 6px;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #e3e7ee;
+  border-radius: 10px;
+  box-shadow: 0 12px 28px rgba(15, 40, 90, 0.16);
+  animation: drop 0.15s ease-out;
+}
+@keyframes drop { from { opacity: 0; transform: translateY(-4px); } }
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 15px;
+  line-height: 1.3;
+  color: #111;
+  cursor: pointer;
+}
+.active { background: #eef7fc; }
+.selected { color: #11a0db; font-weight: 500; }
+.custom { color: #11a0db; font-style: italic; }
+.icon { flex-shrink: 0; font-size: 17px; line-height: 1; }
+.note { padding: 8px 12px; font-size: 13px; color: #8a8a8a; }

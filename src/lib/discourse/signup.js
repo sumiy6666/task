@@ -11,6 +11,11 @@ import { DiscourseError, discourseFetch, isDiscourseConfigured } from './client'
 // forum asks for "About You"); otherwise they go into the member's "About me".
 const ORGANISATION_FIELD = /organi[sz]ation|company|firm|office/i;
 const ROLE_FIELD = /role|title|designation|position/i;
+// A phone number is kept off the public profile: it goes to a forum user
+// field named "Phone" when there is one (set it not to show on profiles);
+// otherwise into "About me" for the approver, and approving removes it.
+const PHONE_FIELD = /phone|mobile/i;
+export const PHONE_LINE = /^Phone: .*$\n?/m;
 
 async function userFields() {
   const site = await discourseFetch('/site.json').catch(() => null);
@@ -31,15 +36,17 @@ async function freeUsername(name, email) {
 // The join form asks for no username or password: the forum gets a free
 // username and a random password, and once approved the member signs in with
 // an emailed login link or by setting a password ("Forgot password").
-export async function requestSignup({ name, email, organisation, role, title, location, profileLink, topics = [] }) {
+export async function requestSignup({ name, email, phone, organisation, role, title, location, profileLink, topics = [] }) {
   if (!isDiscourseConfigured()) return { ok: true, demo: true };
   const username = await freeUsername(name, email);
   const password = randomBytes(24).toString('base64url');
 
   const fields = await userFields();
-  const organisationField = fields.find((f) => ORGANISATION_FIELD.test(f.name));
-  const roleField = fields.find((f) => ROLE_FIELD.test(f.name));
+  const phoneField = fields.find((f) => PHONE_FIELD.test(f.name));
+  const organisationField = fields.find((f) => f !== phoneField && ORGANISATION_FIELD.test(f.name));
+  const roleField = fields.find((f) => f !== phoneField && ROLE_FIELD.test(f.name));
   const user_fields = {};
+  if (phoneField) user_fields[phoneField.id] = phone;
   if (organisationField) user_fields[organisationField.id] = organisation;
   if (roleField) user_fields[roleField.id] = role;
   const about = `${role} at ${organisation}`;
@@ -65,6 +72,7 @@ export async function requestSignup({ name, email, organisation, role, title, lo
   // own location and website fields, and "About me" holds what is left.
   const bio = [
     title && `Title: ${title}`,
+    !phoneField && phone && `Phone: ${phone}`,
     !roleField && `Role: ${role}`,
     !organisationField && `Organisation: ${organisation}`,
     topics.length > 0 && `Topics of interest: ${topics.join(', ')}`,

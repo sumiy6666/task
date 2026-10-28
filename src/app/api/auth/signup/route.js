@@ -1,18 +1,22 @@
 import { errorResponse } from '@/lib/discourse/client';
 import { requestSignup } from '@/lib/discourse/signup';
+import { isCountry } from '@/lib/locations';
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const TEXT_FIELDS = ['title', 'firstName', 'lastName', 'email', 'company', 'designation', 'location', 'profileLink'];
+const TITLES = ['Mr', 'Ms', 'Mrs', 'Dr', 'Prof'];
+const TEXT_FIELDS = ['title', 'firstName', 'lastName', 'email', 'phone', 'company', 'designation', 'city', 'country', 'profileLink'];
 
 // "https://", added when a member types "linkedin.com/in/…".
 const withScheme = (link) => (link && !/^https?:\/\//i.test(link) ? `https://${link}` : link);
-const isUrl = (link) => {
+const isLinkedIn = (link) => {
   try {
-    return Boolean(new URL(link).hostname.includes('.'));
+    return /(^|\.)linkedin\.com$/i.test(new URL(link).hostname);
   } catch {
     return false;
   }
 };
+// "+91 98765 43210", "(020) 7946 0958": digits with the usual separators.
+const isPhone = (phone) => /^\+?[\d\s().-]+$/.test(phone) && phone.replace(/\D/g, '').length >= 7 && phone.replace(/\D/g, '').length <= 15;
 
 export async function POST(request) {
   try {
@@ -26,13 +30,18 @@ export async function POST(request) {
     // A hidden field people never see; bots fill it in.
     if (String(body.website || '').trim()) return Response.json({ ok: true }, { status: 201 });
 
+    // Everything but the topics is required.
     const missing = [
+      !TITLES.includes(form.title) && 'your title',
       !form.firstName && 'your first name',
       !form.lastName && 'your last name',
-      !EMAIL.test(form.email) && 'a valid work email',
+      !EMAIL.test(form.email) && 'a valid business email',
+      !isPhone(form.phone) && 'a valid phone number',
       !form.company && 'your company',
       !form.designation && 'your designation',
-      form.profileLink && !isUrl(form.profileLink) && 'a valid website or LinkedIn link',
+      !form.city && 'your city',
+      !isCountry(form.country) && 'your country',
+      !isLinkedIn(form.profileLink) && 'your LinkedIn profile link',
     ].filter(Boolean);
     if (missing.length) return Response.json({ error: `Please enter ${missing.join(', ')}.` }, { status: 422 });
 
@@ -42,6 +51,7 @@ export async function POST(request) {
         name: `${form.firstName} ${form.lastName}`,
         organisation: form.company,
         role: form.designation,
+        location: `${form.city}, ${form.country}`,
       }),
       { status: 201 }
     );

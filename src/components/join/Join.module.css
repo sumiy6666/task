@@ -13,7 +13,7 @@
   grid-template-rows: 1fr auto;
   grid-template-areas: 'intro form' 'action form';
   column-gap: calc(48 * var(--u));
-  min-height: calc(653 * var(--u));
+  min-height: calc(600 * var(--u));
   margin-bottom: calc(26 * var(--u));
   padding: calc(36 * var(--u)) calc(48 * var(--u)) calc(35 * var(--u));
   border-radius: calc(24 * var(--u));
@@ -57,19 +57,20 @@
   background: #fff;
   color: #111;
   border-radius: calc(20 * var(--u));
-  padding: calc(41 * var(--u)) calc(27 * var(--u)) calc(61 * var(--u));
+  padding: calc(28 * var(--u)) calc(27 * var(--u)) calc(30 * var(--u));
   box-shadow: 0 calc(10 * var(--u)) calc(30 * var(--u)) rgba(10, 30, 80, 0.18);
 }
 
-/* Rows as in the design: Title | First | Last, then Email | Company and
-   Designation | Location at about 56/44, then full-width rows. */
-.form { display: flex; flex-direction: column; gap: calc(31 * var(--u)); }
+/* Rows: Title | First | Last, then pairs of equal fields, then full-width
+   rows. */
+.form { display: flex; flex-direction: column; gap: calc(16 * var(--u)); }
 .nameRow, .pairRow { display: grid; gap: calc(8 * var(--u)); }
 .nameRow { grid-template-columns: minmax(0, 83fr) minmax(0, 200fr) minmax(0, 200fr); }
-.pairRow { grid-template-columns: minmax(0, 274fr) minmax(0, 217fr); }
+.pairRow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .field { display: block; min-width: 0; }
 
-.label { display: block; margin-bottom: calc(8 * var(--u)); font-size: calc(13.5 * var(--u)); color: #7d7d7d; }
+.label { display: block; margin-bottom: calc(6 * var(--u)); font-size: calc(13.5 * var(--u)); color: #7d7d7d; }
+.required { color: #11a0db; }
 .input {
   display: block;
   width: 100%;
@@ -143,7 +144,7 @@ select.input {
 }
 .chipInput::placeholder { color: #8a8a8a; }
 
-.error { margin-top: calc(-18 * var(--u)); font-size: calc(13 * var(--u)); color: #c62828; }
+.error { margin-top: calc(-6 * var(--u)); font-size: calc(13 * var(--u)); color: #c62828; }
 .trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 
 .sent { display: flex; flex-direction: column; gap: calc(14 * var(--u)); font-size: calc(15 * var(--u)); line-height: 1.55; color: #333; }
@@ -240,8 +241,8 @@ select.input {
 @media (max-width: 640px) {
   .hero { padding: 24px 16px; border-radius: 16px; }
   .formCard { padding: 24px 16px; border-radius: 16px; }
-  .form { gap: 18px; }
-  .nameRow, .pairRow { row-gap: 18px; }
+  .form { gap: 14px; }
+  .nameRow, .pairRow { row-gap: 14px; }
   .nameRow { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
   .nameRow > :last-child { grid-column: 1 / -1; }
   .pairRow { grid-template-columns: minmax(0, 1fr); }

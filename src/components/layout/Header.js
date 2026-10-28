@@ -20,6 +20,10 @@ export function Header({ user = null, canSignIn = false, live = false }) {
   const closePanels = () => setOpenPanel(null);
   const headerRef = useRef(null);
   const [isMessagesOpen, setIsMessagesOpen] = useState(false);
+  // The dot on the message icon shows only while there are new messages, and
+  // goes once the messages have been opened (until more arrive).
+  const [seenMessages, setSeenMessages] = useState(0);
+  const hasNewMessages = (user?.unreadMessages || 0) > seenMessages;
   // Once the page scrolls, the sticky header gets its own background.
   const [isScrolled, setIsScrolled] = useState(false);
   const [query, setQuery] = useState('');
@@ -75,15 +79,16 @@ export function Header({ user = null, canSignIn = false, live = false }) {
           <button
             type="button"
             className={`${styles.iconButton} ${styles.chatButton}`}
-            aria-label="Messages"
+            aria-label={hasNewMessages ? `Messages (${user.unreadMessages} new)` : 'Messages'}
             aria-haspopup="dialog"
             onClick={() => {
               closePanels();
               setIsMessagesOpen(true);
+              setSeenMessages(user?.unreadMessages || 0);
             }}
           >
             <MessageSquare size={22} strokeWidth={1.6} />
-            <span className={styles.dot} aria-hidden="true" />
+            {hasNewMessages && <span className={styles.dot} aria-hidden="true" />}
           </button>
 
           <form className={styles.searchPill} role="search" onSubmit={submitSearch}>
@@ -121,6 +126,8 @@ export function Header({ user = null, canSignIn = false, live = false }) {
                   <img src={user.avatar} alt="" />
                 </span>
                 <span className={styles.dot} aria-hidden="true" />
+                {/* The member's country, from the location on their profile. */}
+                {user.flag && <img className={styles.flag} src={user.flag} alt={user.country} title={user.country} />}
               </button>
               {isProfileOpen && (
                 <div className={styles.profileMenu}>

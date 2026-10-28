@@ -20,7 +20,9 @@ const cleanExcerpt = (excerpt = '') =>
     .replace(/&#39;|&rsquo;/g, '’')
     .replace(/\s*:[a-z0-9_+-]+:/gi, '')
     .replace(/\s+/g, ' ')
-    .trim();
+    .trim()
+    // A post that is only a poll has the excerpt "poll": no text to show.
+    .replace(/^poll$/i, '');
 
 async function safely(label, load) {
   // Render at request time: the lists change whenever someone posts, and the
