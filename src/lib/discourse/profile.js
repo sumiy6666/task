@@ -245,6 +245,14 @@ export async function loadMessageThread(topicId, username) {
   const allowed = (data.details?.allowed_users || []).map((u) => u.username);
   const inGroup = (data.details?.allowed_groups || []).length > 0;
   if (!allowed.includes(username) && !inGroup) return [];
+  // Opening a conversation reads it, as on the forum, so it stops counting
+  // as unread (the header's message dot).
+  const numbers = (data.post_stream?.posts || []).map((p) => p.post_number);
+  if (numbers.length) {
+    const timings = Object.fromEntries(numbers.map((n) => [`timings[${n}]`, '3000']));
+    const form = new URLSearchParams({ topic_id: String(data.id), topic_time: String(3000 * numbers.length), ...timings });
+    await discourseFetch('/topics/timings', { method: 'POST', formData: form, personal: true }).catch(() => null);
+  }
   return (data.post_stream?.posts || [])
     .filter((p) => p.post_type === 1)
     .map((p) => ({

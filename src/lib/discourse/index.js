@@ -8,6 +8,7 @@ import { isPublicTopic, restrictedCategoryIds } from './privacy';
 import { loadDemo, recordDemoOp } from './demo-session';
 import { mockCategories, mockGetTopic, mockUser, nextTopicId } from './mock';
 import { countryOf, flagUrl } from '../locations';
+import { loadMessageThreads } from './profile';
 
 export { isDiscourseConfigured, isSignInEnabled };
 
@@ -27,10 +28,20 @@ export const getCurrentUser = cache(async () => {
   // With sign-in off, everyone acts as the site's API user.
   if (!isSignInEnabled() && hasAdminKey()) {
     const data = await discourseFetch(`/u/${encodeURIComponent(actingUsername())}.json`);
-    return withCountry(mapUser(data.user), data.user.location);
+    return withUnreadChats(await withCountry(mapUser(data.user), data.user.location));
   }
   return null;
 });
+
+// The header's message dot counts unread conversations with other members.
+// The forum's own count also includes its notices ("users waiting for
+// approval", welcome messages), which are not chats, so when it says there is
+// something unread the conversations themselves are checked.
+async function withUnreadChats(user) {
+  if (!user.unreadMessages) return user;
+  const threads = await loadMessageThreads(user.username).catch(() => null);
+  return { ...user, unreadMessages: threads ? threads.filter((t) => t.unread).length : 0 };
+}
 
 // The member's country, from the location on their profile, with its flag
 // for the header avatar. The session doesn't carry the location, so it is
