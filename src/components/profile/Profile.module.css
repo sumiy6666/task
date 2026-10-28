@@ -292,7 +292,8 @@
 .messages { display: flex; overflow: hidden; }
 .threads { width: 595px; flex-shrink: 0; padding: 40px 0 40px 24px; }
 .threadsHead { padding-left: 33px; }
-.threadSearch { display: flex; align-items: center; gap: 12px; margin: 28px 0 22px 26px; }
+/* Right margin keeps the "New message" button off the chat pane's border. */
+.threadSearch { display: flex; align-items: center; gap: 12px; margin: 28px 24px 22px 26px; }
 .searchBox {
   flex: 1;
   display: flex;
