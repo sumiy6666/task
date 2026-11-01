@@ -57,11 +57,12 @@ async function withCountry(user, location) {
 
 export async function getCategories() {
   if (!isDiscourseConfigured()) return mockCategories;
-  const data = await discourseFetch('/categories.json');
+  const data = await discourseFetch('/categories.json?include_subcategories=true');
   // Staff-only and "Uncategorized" are not offered to members in the composer.
+  // Subcategories (e.g. the article topics under Articles) follow their parent.
   const categories = (data.category_list?.categories || [])
     .filter((c) => !c.read_restricted && c.slug !== 'uncategorized')
-    .map(mapCategory);
+    .flatMap((c) => [mapCategory(c), ...(c.subcategory_list || []).filter((s) => !s.read_restricted).map((s) => ({ ...mapCategory(s), parentName: c.name }))]);
   // The design treats "Poll" as a category that switches the composer into poll
   // mode. If the forum has no such category, offer it anyway; the poll is then
   // posted without a category.
@@ -127,13 +128,35 @@ export async function saveDraft({ data, sequence = 0 }) {
   return { sequence: result?.draft_sequence ?? sequence + 1 };
 }
 
+// Bookmarks the post. Already bookmarked (e.g. from another page) counts as done.
 export async function bookmarkPost(postId) {
-  if (!isDiscourseConfigured()) return { ok: true };
-  await discourseFetch('/bookmarks.json', {
-    method: 'POST',
-    body: { bookmarkable_id: Number(postId), bookmarkable_type: 'Post' },
-  });
-  return { ok: true };
+  if (!isDiscourseConfigured()) return { bookmarked: true };
+  try {
+    await discourseFetch('/bookmarks.json', {
+      method: 'POST',
+      body: { bookmarkable_id: Number(postId), bookmarkable_type: 'Post' },
+    });
+  } catch (error) {
+    if (!(error instanceof DiscourseError && /twice|already/i.test(error.message))) throw error;
+  }
+  return { bookmarked: true };
+}
+
+// Removes the member's bookmark from a topic's opening post (or `postId`).
+export async function unbookmarkTopic(topicId, postId) {
+  if (!isDiscourseConfigured()) return { bookmarked: false };
+  const topic = await discourseFetch(`/t/${encodeURIComponent(topicId)}.json`, { personal: true, requireUser: true });
+  const posts = topic.post_stream?.posts || [];
+  const post = postId ? posts.find((p) => p.id === Number(postId)) : posts.find((p) => p.post_number === 1);
+  if (post?.bookmark_id) await discourseFetch(`/bookmarks/${post.bookmark_id}.json`, { method: 'DELETE' });
+  return { bookmarked: false };
+}
+
+// The topics the member has bookmarked, so lists can show filled bookmarks.
+export async function bookmarkedTopicIds(username) {
+  if (!isDiscourseConfigured() || !username || !isSignInEnabled()) return new Set();
+  const data = await discourseFetch(`/u/${encodeURIComponent(username)}/bookmarks.json`, { personal: true }).catch(() => null);
+  return new Set((data?.user_bookmark_list?.bookmarks || []).map((b) => b.topic_id).filter(Boolean));
 }
 
 export async function uploadImage(file) {

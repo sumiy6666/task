@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { PollWidget } from '@/components/ui/PollWidget';
@@ -121,9 +122,27 @@ const recommendedArticles = [
   { id: 'r4', title: 'Impact investing: Beyond Trends', readTime: '5 min read' }
 ];
 
-export default async function InsightsListingPage() {
-  // Articles come from the forum's Articles category when Discourse is connected.
-  const live = await loadInsights();
+// Article topics (subcategories of Articles on the forum) as filter chips.
+function ArticleTopics({ topics, active }) {
+  const chip = (isActive) => ({
+    display: 'inline-flex', alignItems: 'center', height: 34, padding: '0 16px', borderRadius: 999, fontSize: 14,
+    border: '1px solid #11a0db', background: isActive ? '#11a0db' : '#fff', color: isActive ? '#fff' : '#11a0db',
+  });
+  return (
+    <nav aria-label="Article topics" style={{ display: 'flex', flexWrap: 'wrap', gap: 10, margin: '0 0 24px' }}>
+      <Link href="/insights" style={chip(!active)}>All</Link>
+      {topics.map((t) => (
+        <Link key={t.slug} href={`/insights?category=${encodeURIComponent(t.slug)}`} style={chip(t.slug === active)}>{t.name}</Link>
+      ))}
+    </nav>
+  );
+}
+
+export default async function InsightsListingPage({ searchParams }) {
+  // Articles come from the forum's Articles category when Discourse is connected;
+  // ?category= narrows them to one article topic (from the menu).
+  const { category } = await searchParams;
+  const live = await loadInsights(typeof category === 'string' ? category : undefined);
   const featured = live?.featured.map((a) => ({ ...a, author: { name: a.author, avatar: a.authorAvatar } }));
   const articles = live?.latest || latestInsights;
   const discussions = live?.discussions.length ? live.discussions : relatedDiscussions;
@@ -136,7 +155,12 @@ export default async function InsightsListingPage() {
 
   return (
     <div className="container min-h-screen" style={{ paddingBottom: 'calc(2.5 * var(--sa))' }}>
-      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Insights' }]} />
+      <Breadcrumb items={live?.topic ? [{ label: 'Home', href: '/' }, { label: 'Insights', href: '/insights' }, { label: live.topic.name }] : [{ label: 'Home', href: '/' }, { label: 'Insights' }]} />
+
+      {live?.topics?.length > 0 && <ArticleTopics topics={live.topics} active={live.topic?.slug} />}
+      {live?.topic && live.latest.length === 0 && (
+        <p style={{ margin: '0 0 24px', color: '#6b7280' }}>No articles in {live.topic.name} yet.</p>
+      )}
 
       <FeaturedInsight slides={featured} />
 

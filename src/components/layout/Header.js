@@ -9,7 +9,7 @@ import { MessagesModal } from '../profile/MessagesModal';
 
 // `user` is the signed-in Discourse member (null for a guest). `canSignIn`
 // is false in demo mode, where there is no forum to sign in to.
-export function Header({ user = null, canSignIn = false, live = false }) {
+export function Header({ user = null, canSignIn = false, live = false, menu = null }) {
   // Only one of the menu, the profile menu and the phone search box is open
   // at a time: opening one closes the others.
   const [openPanel, setOpenPanel] = useState(null); // 'menu' | 'profile' | 'search'
@@ -64,7 +64,7 @@ export function Header({ user = null, canSignIn = false, live = false }) {
     const term = query.trim();
     if (!term) return;
     closePanels();
-    router.push(`/discussions?q=${encodeURIComponent(term)}`);
+    router.push(`/search?q=${encodeURIComponent(term)}`);
   };
 
 
@@ -198,7 +198,7 @@ export function Header({ user = null, canSignIn = false, live = false }) {
             {!user && canSignIn && (
               <Link href="/join" className={styles.menuJoin}>Request to join AV Community</Link>
             )}
-            <AccordionMenu />
+            <AccordionMenu menu={menu} />
           </div>
         </div>
       </div>

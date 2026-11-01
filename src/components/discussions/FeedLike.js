@@ -53,7 +53,7 @@ export function FeedLike({ topicId, initialCount = 0, live, own = false }) {
   return (
     <>
       <button type="button" className={`${styles.stat} ${styles.statButton} ${liked ? styles.statActive : ''}`} aria-pressed={liked} aria-label="Like" disabled={busy} onClick={toggle}>
-        <LikeIcon />{compactNumber(count)}
+        <LikeIcon fill={liked ? 'currentColor' : 'none'} />{compactNumber(count)}
       </button>
       {error && <span role="alert" className={styles.pollError}>{error}</span>}
     </>

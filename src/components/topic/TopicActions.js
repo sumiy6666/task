@@ -14,21 +14,22 @@ export function TopicActions({ topicId, postId, title, initiallyBookmarked }) {
     setTimeout(() => setMessage(''), 2500);
   };
 
+  // Pressing again removes the bookmark.
   const bookmark = async () => {
-    if (bookmarked) return flash('Already bookmarked');
-    setBookmarked(true);
+    const next = !bookmarked;
+    setBookmarked(next);
     const res = await fetch(`/api/topics/${topicId}/bookmark`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ postId }),
+      body: JSON.stringify(next ? { postId } : { postId, remove: true }),
     });
     if (redirectIfSignedOut(res)) return;
     if (!res.ok) {
-      setBookmarked(false);
+      setBookmarked(!next);
       const data = await res.json().catch(() => ({}));
-      return flash(data.error || 'Could not bookmark');
+      return flash(data.error || 'Could not update the bookmark');
     }
-    flash('Bookmarked');
+    flash(next ? 'Bookmarked' : 'Bookmark removed');
   };
 
   const share = async () => {
@@ -46,7 +47,7 @@ export function TopicActions({ topicId, postId, title, initiallyBookmarked }) {
 
   return (
     <div className={styles.titleActions} style={{ position: 'relative' }}>
-      <button type="button" className={styles.iconButton} aria-label="Bookmark" aria-pressed={bookmarked} onClick={bookmark}>
+      <button type="button" className={styles.iconButton} aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark'} aria-pressed={bookmarked} onClick={bookmark}>
         <BookmarkIcon filled={bookmarked} />
       </button>
       <button type="button" className={styles.iconButton} aria-label="Share" onClick={share}>

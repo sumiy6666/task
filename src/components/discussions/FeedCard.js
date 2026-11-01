@@ -46,7 +46,7 @@ export function FeedCard({ item, currentUser }) {
         <h2 className={styles.title}>
           <Link prefetch={false} href={href}>{item.title}</Link>
         </h2>
-        <BookmarkButton topicId={item.id} />
+        <BookmarkButton topicId={item.id} initiallyBookmarked={Boolean(item.bookmarked)} />
       </div>
 
       {isPoll ? (

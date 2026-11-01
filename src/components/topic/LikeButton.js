@@ -32,7 +32,8 @@ export function LikeButton({ postId, initialLiked, initialCount }) {
 
   return (
     <button type="button" className={`${styles.stat} ${liked ? styles.statActive : ''}`} aria-pressed={liked} aria-label="Like" disabled={busy} onClick={toggle}>
-      <LikeIcon /> {compactNumber(count)}
+      {/* Liked: a solid blue thumb, not just a blue outline. */}
+      <LikeIcon fill={liked ? 'currentColor' : 'none'} /> {compactNumber(count)}
     </button>
   );
 }

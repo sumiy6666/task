@@ -41,9 +41,28 @@ async function safely(label, load) {
 let restricted = new Set();
 
 async function loadCategories() {
-  const [data, hidden] = await Promise.all([discourseFetch('/categories.json'), restrictedCategoryIds()]);
+  const [data, hidden] = await Promise.all([discourseFetch('/categories.json?include_subcategories=true'), restrictedCategoryIds()]);
   restricted = hidden;
   return (data.category_list?.categories || []).filter((c) => !c.read_restricted && c.slug !== 'uncategorized');
+}
+
+// Subcategories of a category, e.g. the article topics under Articles.
+const subcategoriesOf = (category) => (category?.subcategory_list || []).filter((s) => !s.read_restricted);
+// Every category and subcategory by id, so topics in a subcategory get its name.
+const withSubcategories = (categories) => categories.flatMap((c) => [c, ...subcategoriesOf(c)]);
+
+// The side menu's lists: discussion categories and article topics, from the forum.
+export function loadMenu() {
+  return safely('menu', async () => {
+    const categories = await loadCategories();
+    const articles = findCategory(categories, /article|insight/i);
+    return {
+      discussions: categories
+        .filter((c) => c !== articles && !/poll|feedback/i.test(c.name))
+        .map((c) => ({ name: c.name, href: `/discussions?category=${encodeURIComponent(c.name)}` })),
+      articles: subcategoriesOf(articles).map((c) => ({ name: c.name, href: `/insights?category=${encodeURIComponent(c.slug)}` })),
+    };
+  });
 }
 
 // Profiles and site stats change slowly; cache them longer to spare the rate limit.
@@ -371,29 +390,33 @@ export function loadHome() {
 }
 
 // Insights are the topics in the forum's Articles category.
-export function loadInsights() {
+// `categorySlug` narrows the articles to one article topic (a subcategory of Articles).
+export function loadInsights(categorySlug) {
   return safely('insights', async () => {
     const categories = await loadCategories();
-    const categoriesById = new Map(categories.map((c) => [c.id, c]));
+    const categoriesById = new Map(withSubcategories(categories).map((c) => [c.id, c]));
     const articles = findCategory(categories, /article|insight/i);
     if (!articles) return null;
+    const topic = categorySlug ? subcategoriesOf(articles).find((c) => c.slug === categorySlug) : null;
 
     const [list, latest, polls, members] = await Promise.all([
-      discourseFetch(articlesPath(articles)),
+      discourseFetch(articlesPath(topic || articles)),
       discourseFetch('/latest.json'),
       fetchPolls(categories, 6).catch(() => []),
       loadTopMembers(3).catch(() => []),
     ]);
     const items = newestFirst(mapList(list, categoriesById)).map((a) => ({ ...a, author: a.author.name, authorAvatar: a.author.avatar }));
-    if (items.length === 0) return null;
+    if (items.length === 0 && !topic) return null;
 
     const poll = mostVoted(polls.filter((p) => !p.closed));
     return {
+      topic: topic ? { name: topic.name, slug: topic.slug } : null,
+      topics: subcategoriesOf(articles).map((c) => ({ name: c.name, slug: c.slug })),
       featured: items.slice(0, 3),
       latest: items.slice(0, 6),
       recommended: [...items].sort((a, b) => b.views - a.views).slice(0, 4).map((a) => ({ id: a.id, title: a.title, readTime: `${a.views ?? 0} views` })),
       discussions: mapList(latest, categoriesById)
-        .filter((t) => t.category !== articles.name)
+        .filter((t) => t.category !== articles.name && !subcategoriesOf(articles).some((c) => c.name === t.category))
         .slice(0, 4)
         .map((t) => ({ id: t.id, title: t.title, replies: t.replies, timeAgo: t.timeAgo })),
       poll: poll && {
@@ -508,5 +531,38 @@ export function loadEvents() {
   return safely('events', async () => {
     const events = await fetchEvents(await loadCategories());
     return events.length ? events : null;
+  });
+}
+
+// Search: the forum's own search over titles and posts. Results the site key
+// can see but members can't (staff-only categories, private messages,
+// site feedback) are left out, as in the lists.
+export function searchForum(term) {
+  return safely('search', async () => {
+    const q = String(term || '').trim().slice(0, 200);
+    if (q.length < 2) return { term: q, results: [] };
+    const categories = await loadCategories();
+    const categoriesById = new Map(withSubcategories(categories).map((c) => [c.id, c]));
+    const data = await discourseFetch(`/search.json?q=${encodeURIComponent(q)}`, { revalidate: 60 });
+    const posts = new Map();
+    for (const p of data.posts || []) if (!posts.has(p.topic_id)) posts.set(p.topic_id, p);
+    const articles = findCategory(categories, /article|insight/i);
+    const results = (data.topics || [])
+      .filter((t) => isPublicTopic(t, restricted) && categoriesById.has(t.category_id) && !isFeedback(t, categoriesById))
+      .map((t) => {
+        const post = posts.get(t.id);
+        const isArticle = articles && (t.category_id === articles.id || categoriesById.get(t.category_id)?.parent_category_id === articles.id);
+        return {
+          id: t.id,
+          title: cleanTitle(t.title),
+          excerpt: cleanExcerpt(post?.blurb || ''),
+          category: categoriesById.get(t.category_id)?.name || '',
+          author: post ? { name: post.name || post.username, avatar: avatarUrl(post.avatar_template) } : null,
+          timeAgo: timeAgo(t.last_posted_at || t.created_at),
+          replies: Math.max(0, (t.posts_count || 1) - 1),
+          href: isArticle ? `/insights/${t.id}` : `/conversations/${t.id}`,
+        };
+      });
+    return { term: q, results };
   });
 }

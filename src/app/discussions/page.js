@@ -5,7 +5,7 @@ import { DiscussionComposer } from '@/components/discussions/DiscussionComposer'
 import { FeedCard } from '@/components/discussions/FeedCard';
 import { CategoryList } from '@/components/discussions/CategoryList';
 import styles from '@/components/discussions/Feed.module.css';
-import { getCurrentUser } from '@/lib/discourse';
+import { bookmarkedTopicIds, getCurrentUser } from '@/lib/discourse';
 import { loadDiscussions } from '@/lib/discourse/lists';
 
 export const metadata = { title: 'Discussions | AV Community' };
@@ -128,6 +128,9 @@ export default async function DiscussionPage({ searchParams }) {
   if (live?.feedPoll && !feed.some((item) => item.id === live.feedPoll.topicId)) feed.splice(1, 0, fromPoll(live.feedPoll));
   if (active) feed = feed.filter((item) => item.category === active);
   feed = feed.slice(0, 8);
+  // The member's own bookmarks show filled.
+  const bookmarked = live && user ? await bookmarkedTopicIds(user.username) : new Set();
+  feed = feed.map((item) => (bookmarked.has(item.id) ? { ...item, bookmarked: true } : item));
 
   const poll = live?.poll ? sidebarPoll(live.poll) : samplePoll;
 

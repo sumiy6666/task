@@ -3,6 +3,7 @@ import { Header } from '@/components/layout/Header';
 import { SignInNotice } from '@/components/layout/SignInNotice';
 import { getCurrentUser, isDiscourseConfigured, isSignInEnabled } from '@/lib/discourse';
 import { Footer } from '@/components/layout/Footer';
+import { loadMenu } from '@/lib/discourse/lists';
 import { Nunito_Sans } from "next/font/google";
 import "./globals.css";
 
@@ -26,10 +27,13 @@ export default async function RootLayout({ children }) {
     return null;
   });
 
+  // The side menu's categories and article topics, from the forum.
+  const menu = user ? await loadMenu() : null;
+
   return (
     <html lang="en" className={avenirStandIn.variable}>
       <body>
-        <Header user={user} canSignIn={isSignInEnabled()} live={isDiscourseConfigured()} />
+        <Header user={user} canSignIn={isSignInEnabled()} live={isDiscourseConfigured()} menu={menu} />
         <Suspense fallback={null}>
           <SignInNotice />
         </Suspense>

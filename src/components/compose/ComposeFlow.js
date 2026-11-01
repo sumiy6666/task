@@ -146,7 +146,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
     const find = (test) => categories.find(test);
     const target =
       next === 'poll' ? find((c) => c.isPoll)
-      : next === 'insight' ? find((c) => /insight|article/i.test(c.name))
+      : next === 'insight' ? find((c) => !c.parentId && /insight|article/i.test(c.name))
       : category?.isPoll ? find((c) => !c.isPoll)
       : null;
     if (target) setCategoryKey(keyOf(target));

@@ -21,6 +21,7 @@ export function mapCategory(category) {
     name: category.name,
     slug: category.slug,
     isPoll: /poll/i.test(category.name),
+    parentId: category.parent_category_id || null,
   };
 }
 
@@ -72,6 +73,7 @@ function mapPost(post) {
     html: post.polls?.length ? stripPollMarkup(post.cooked) : post.cooked,
     createdAt: post.created_at,
     bookmarked: Boolean(post.bookmarked),
+    bookmarkId: post.bookmark_id || null,
     liked: Boolean(post.actions_summary?.find((a) => a.id === 2)?.acted),
     polls: mapPolls(post),
   };
