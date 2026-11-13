@@ -248,19 +248,57 @@ const plainText = (html = '') =>
 
 const mostVoted = (polls) => [...polls].sort((a, b) => (b.voters || 0) - (a.voters || 0))[0] || null;
 
-export function loadDiscussions() {
+// The discussions feed's filters: what each type shows, by forum category.
+export const FEED_TYPES = ['articles', 'insights', 'polls'];
+
+// `type` narrows the feed to articles, polls or the other conversations
+// ("insights"); `tag` narrows it to one forum tag (a topic).
+export function loadDiscussions({ type, tag } = {}) {
   return safely('discussions', async () => {
     const categories = await loadCategories();
-    const [latest, active, top, members, tags, polls, recentPosts] = await Promise.all([
+    const articles = findCategory(categories, /article|insight/i);
+    const pollCategory = findCategory(categories, /poll/i);
+    const articleIds = new Set(articles ? [articles.id, ...subcategoriesOf(articles).map((c) => c.id)] : []);
+    // A topic or type filter reads its own list, so it is not limited to the latest page.
+    const filtered = tag
+      ? discourseFetch(`/tag/${encodeURIComponent(tag)}.json`).catch(() => null)
+      : type === 'articles' && articles ? discourseFetch(articlesPath(articles))
+      : type === 'polls' && pollCategory ? discourseFetch(categoryPath(pollCategory))
+      : null;
+    const [latest, active, top, members, tags, polls, recentPosts, filteredList] = await Promise.all([
       discourseFetch('/latest.json?order=created'),
       discourseFetch('/latest.json'),
       discourseFetch('/top.json?period=all'),
       loadTopMembers(6).catch(() => []),
       discourseFetch('/tags.json').catch(() => null),
-      fetchPolls(categories, 6).catch(() => []),
+      fetchPolls(categories, type === 'polls' ? 12 : 6).catch(() => []),
       discourseFetch('/posts.json').catch(() => null),
+      filtered,
     ]);
-    const categoriesById = new Map(categories.map((c) => [c.id, c]));
+    const categoriesById = new Map(withSubcategories(categories).map((c) => [c.id, c]));
+    const isArticle = (t) => articleIds.has(t.category_id);
+
+    // Counts for the filter card: articles include the article topics
+    // (subcategories); "insights" are every other public conversation.
+    const countOf = (c) => c?.topic_count || 0;
+    const articleCount = articles ? countOf(articles) + subcategoriesOf(articles).reduce((sum, c) => sum + countOf(c), 0) : 0;
+    const pollCount = countOf(pollCategory);
+    const otherCount = categories
+      .filter((c) => c !== articles && c !== pollCategory && !/feedback/i.test(c.name))
+      .reduce((sum, c) => sum + countOf(c) + subcategoriesOf(c).reduce((s, sub) => s + countOf(sub), 0), 0);
+
+    // The feed list for the current filter.
+    let feedTopics;
+    if (filteredList) feedTopics = mapList(filteredList, categoriesById);
+    else if (type === 'articles' || type === 'polls') feedTopics = [];
+    else {
+      const recent = topicsOf(active)
+        .filter((t) => isPublicTopic(t, restricted) && !isFeedback(t, categoriesById))
+        .filter((t) => type !== 'insights' || (!isArticle(t) && t.category_id !== pollCategory?.id))
+        .map((t) => t.id);
+      const ids = new Set(recent);
+      feedTopics = mapList(active, categoriesById).filter((t) => ids.has(t.id));
+    }
 
     const recentlyActive = mapList(active, categoriesById)
       .slice(0, 3)
@@ -274,7 +312,12 @@ export function loadDiscussions() {
       // The discussions feed, latest activity first (a new reply brings a
       // conversation back to the top), each with its latest reply. The page
       // filters it by category and trims it.
-      feed: withLatestReplies(mapList(active, categoriesById).filter((t) => !t.pinned).slice(0, 30), recentPosts),
+      feed: withLatestReplies(feedTopics.filter((t) => !t.pinned || filteredList).slice(0, 30), recentPosts),
+      filters: [
+        { key: 'articles', name: 'Articles', count: compactNumber(articleCount) },
+        { key: 'insights', name: 'Insights', count: compactNumber(otherCount) },
+        { key: 'polls', name: 'Polls', count: compactNumber(pollCount) },
+      ],
       // An open poll for the feed, and the most-voted one for the sidebar.
       feedPoll: openPolls.find((p) => p !== sidePoll) || null,
       // Every poll we know, so poll topics in the feed can be voted on there.
@@ -288,7 +331,11 @@ export function loadDiscussions() {
         ...categories.map((c) => ({ name: c.name, count: compactNumber(c.topic_count || 0), isActive: false })),
       ],
       members,
-      tags: (tags?.tags || []).slice(0, 8).map((t) => ({ name: t.text || t.name || t.id, count: t.count || 0 })),
+      // Forum tags are the topics, most used first.
+      tags: (tags?.tags || [])
+        .map((t) => ({ name: t.text || t.name || t.id, slug: t.id || t.name || t.text, count: t.count || 0 }))
+        .filter((t) => t.count > 0)
+        .sort((a, b) => b.count - a.count),
     };
   });
 }

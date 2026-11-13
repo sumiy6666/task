@@ -26,7 +26,7 @@
 
 .layout > .composer { grid-column: 1 / -1; }
 .feed { grid-column: 1; grid-row: 2 / span 2; }
-.categoriesCard { grid-column: 2; grid-row: 2; }
+.sideFilters { grid-column: 2; grid-row: 2; display: flex; flex-direction: column; gap: 1.75rem; min-width: 0; }
 .sidePoll { grid-column: 2; grid-row: 3; }
 
 .card,
@@ -474,20 +474,27 @@ li:last-child > .categoryRow::after {
   color: var(--color-primary);
 }
 
-/* The selected row is a grey tab running in from the card's left edge. */
+/* The selected row is blue. */
 .categoryActive {
-  height: 3.1rem;
-  margin-bottom: 0.45rem;
-  background: #D9D9D9;
-  border-radius: 0 var(--radius-full) var(--radius-full) 0;
+  color: var(--color-primary);
 }
 
-.categoryActive::after {
-  display: none;
+/* Topics: a fixed-height list with a thin blue scrollbar. */
+.scrollList {
+  max-height: 24.3rem;
+  overflow-y: auto;
+  padding-right: 0.6rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) transparent;
 }
 
-.categoryActive:hover {
-  color: #000;
+.scrollList::-webkit-scrollbar {
+  width: 3px;
+}
+
+.scrollList::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 3px;
 }
 
 /* The shared PollWidget sets its sizes inline; the sidebar design is larger. */
@@ -522,14 +529,24 @@ li:last-child > .categoryRow::after {
 
   .layout > .composer,
   .feed,
-  .categoriesCard,
+  .sideFilters,
   .sidePoll {
     grid-column: 1;
     grid-row: auto;
   }
 
+  .sideFilters {
+    gap: 1.25rem;
+  }
+
   .categoriesCard {
     padding: 1.5rem 0 1.25rem;
+  }
+
+  .scrollList {
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 1.5rem;
   }
 
   .sideTitle {
@@ -567,7 +584,12 @@ li:last-child > .categoryRow::after {
   }
 
   .categoryActive {
-    background: #D9D9D9;
+    background: var(--color-primary);
+    color: #fff;
+  }
+
+  .categoryActive span:last-child {
+    color: #fff;
   }
 
   .categoryRow::after {

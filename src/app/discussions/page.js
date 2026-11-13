@@ -3,10 +3,10 @@ import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { PollWidget } from '@/components/ui/PollWidget';
 import { DiscussionComposer } from '@/components/discussions/DiscussionComposer';
 import { FeedCard } from '@/components/discussions/FeedCard';
-import { CategoryList } from '@/components/discussions/CategoryList';
+import { TopicFilter, TypeFilter } from '@/components/discussions/FeedFilters';
 import styles from '@/components/discussions/Feed.module.css';
 import { bookmarkedTopicIds, getCurrentUser } from '@/lib/discourse';
-import { loadDiscussions } from '@/lib/discourse/lists';
+import { FEED_TYPES, loadDiscussions } from '@/lib/discourse/lists';
 
 export const metadata = { title: 'Discussions | AV Community' };
 
@@ -77,6 +77,21 @@ const sampleCategories = [
   { name: 'Technology', count: '154' },
 ];
 
+const sampleFilters = [
+  { key: 'articles', name: 'Articles', count: '1.2K' },
+  { key: 'insights', name: 'Insights', count: '236' },
+  { key: 'polls', name: 'Polls', count: '186' },
+];
+
+const sampleTopics = [
+  { slug: 'industry-trends', name: 'Industry Trends', count: 108 },
+  { slug: 'best-practices', name: 'Best Practices', count: 76 },
+  { slug: 'product-av', name: 'Product/AV', count: 45 },
+  { slug: 'family-office', name: 'Family Office', count: 32 },
+  { slug: 'investments', name: 'Investments', count: 13 },
+  { slug: 'accounting', name: 'Accounting', count: 19 },
+];
+
 const samplePoll = {
   question: 'What would you like to see discussed next?',
   options: [
@@ -111,28 +126,43 @@ const sidebarPoll = (p) => ({
 });
 
 export default async function DiscussionPage({ searchParams }) {
-  const { category } = await searchParams;
-  const [live, user] = await Promise.all([loadDiscussions(), getCurrentUser().catch(() => null)]);
+  const { category, type: typeParam, tag: tagParam } = await searchParams;
+  // ?type= (Filter card) and ?tag= (Topics card) narrow the feed; ?category=
+  // comes from the side menu.
+  const type = FEED_TYPES.includes(typeParam) ? typeParam : null;
+  const tag = !type && typeof tagParam === 'string' && tagParam ? tagParam : null;
+  const [live, user] = await Promise.all([loadDiscussions({ type, tag }), getCurrentUser().catch(() => null)]);
 
   const categories = live?.categories.length > 1
     ? live.categories.map((c, i) => ({ name: c.name, count: c.count, isAll: i === 0 }))
     : sampleCategories;
-  const active = categories.some((c) => c.name === category && !c.isAll) ? category : null;
+  const active = !type && !tag && categories.some((c) => c.name === category && !c.isAll) ? category : null;
+  const filters = live?.filters || sampleFilters;
+  const topics = live ? live.tags : sampleTopics;
 
   // Poll topics in the feed become votable polls; one open poll is added
   // near the top if none is there already.
   const pollsByTopic = new Map((live?.polls || []).map((p) => [p.topicId, p]));
-  let feed = live?.feed.length
+  let feed = live && (live.feed.length || type || tag)
     ? live.feed.map((t) => (pollsByTopic.has(t.id) ? fromPoll(pollsByTopic.get(t.id), t) : fromTopic(t)))
     : sampleFeed;
-  if (live?.feedPoll && !feed.some((item) => item.id === live.feedPoll.topicId)) feed.splice(1, 0, fromPoll(live.feedPoll));
+  if (live?.feedPoll && !type && !tag && !feed.some((item) => item.id === live.feedPoll.topicId)) feed.splice(1, 0, fromPoll(live.feedPoll));
   if (active) feed = feed.filter((item) => item.category === active);
+  // Sample feed: filter by the sample's tags and kinds.
+  if (!live && tag) feed = feed.filter((item) => item.tags?.some((t) => t.toLowerCase() === tag.replace(/-/g, '')));
+  if (!live && type === 'polls') feed = feed.filter((item) => item.pollOptions);
+  if (!live && type === 'articles') feed = [];
   feed = feed.slice(0, 8);
   // The member's own bookmarks show filled.
   const bookmarked = live && user ? await bookmarkedTopicIds(user.username) : new Set();
   feed = feed.map((item) => (bookmarked.has(item.id) ? { ...item, bookmarked: true } : item));
 
   const poll = live?.poll ? sidebarPoll(live.poll) : samplePoll;
+  const topicName = tag && (topics.find((t) => t.slug === tag)?.name || tag);
+  const emptyText = type
+    ? `No ${filters.find((f) => f.key === type)?.name.toLowerCase() || 'posts'} yet.`
+    : tag ? `No discussions tagged #${topicName} yet.`
+    : active ? `No discussions in ${active} yet.` : 'No discussions yet.';
 
   return (
     <main className={`container ${styles.page}`}>
@@ -141,13 +171,16 @@ export default async function DiscussionPage({ searchParams }) {
       <div className={styles.layout}>
         <DiscussionComposer avatar={user?.avatar} categories={categories.filter((c) => c.name !== 'All categories')} />
 
-        <CategoryList categories={categories} active={active} />
+        <div className={styles.sideFilters}>
+          <TypeFilter filters={filters} active={type} />
+          <TopicFilter topics={topics} active={tag} />
+        </div>
 
         <section className={styles.feed} aria-label="Discussions">
           {feed.length > 0 ? (
             feed.map((item) => <FeedCard key={item.id} item={item} currentUser={user} />)
           ) : (
-            <div className={`${styles.card} ${styles.empty}`}>No discussions in {active} yet.</div>
+            <div className={`${styles.card} ${styles.empty}`}>{emptyText}</div>
           )}
         </section>
 
