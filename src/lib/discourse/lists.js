@@ -566,3 +566,41 @@ export function searchForum(term) {
     return { term: q, results };
   });
 }
+
+// The side column of an article page: other articles, recent conversations
+// outside Articles, and the most-voted open poll (voteable).
+export function loadArticleSidebar(excludeId) {
+  return safely('article sidebar', async () => {
+    const categories = await loadCategories();
+    const categoriesById = new Map(withSubcategories(categories).map((c) => [c.id, c]));
+    const articles = findCategory(categories, /article|insight/i);
+    const articleCategoryNames = new Set(articles ? [articles.name, ...subcategoriesOf(articles).map((c) => c.name)] : []);
+
+    const [list, latest, polls] = await Promise.all([
+      articles ? discourseFetch(articlesPath(articles)) : null,
+      discourseFetch('/latest.json'),
+      fetchPolls(categories, 6).catch(() => []),
+    ]);
+    const items = list ? mapList(list, categoriesById).filter((a) => a.id !== Number(excludeId)) : [];
+    return {
+      recommended: [...items]
+        .sort((a, b) => (b.views || 0) - (a.views || 0))
+        .slice(0, 4)
+        .map((a) => ({ id: a.id, title: a.title, readTime: `${a.views ?? 0} ${a.views === 1 ? 'view' : 'views'}` })),
+      discussions: mapList(latest, categoriesById)
+        .filter((t) => !articleCategoryNames.has(t.category) && t.id !== Number(excludeId))
+        .slice(0, 4)
+        .map((t) => ({ id: t.id, title: t.title, replies: t.replies, timeAgo: t.timeAgo })),
+      poll: mostVoted(polls.filter((p) => !p.closed)),
+    };
+  });
+}
+
+// The next forum event that has not finished, for the footer.
+export function loadNextEvent() {
+  return safely('next event', async () => {
+    const events = await fetchEvents(await loadCategories());
+    const next = events.find((e) => e.upcoming);
+    return next ? { id: next.id, topicId: next.topicId, title: next.title, date: `${next.day} ${next.month}`, time: next.time } : null;
+  });
+}

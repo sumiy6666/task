@@ -29,7 +29,8 @@ const LEGAL_LINKS = [
   { href: '/feedback', label: 'Site Feedback' },
 ];
 
-export function Footer() {
+// `nextEvent` is the forum's next upcoming event (see loadNextEvent).
+export function Footer({ nextEvent }) {
   const pathname = usePathname();
   if (NO_FOOTER.includes(pathname)) return null;
 
@@ -39,13 +40,26 @@ export function Footer() {
         <div className={styles.top}>
           <div className={styles.loop}>
             <h3>STAY IN LOOP</h3>
-            <p>Subscribe to get the latest insights,<br className={styles.desktopBreak} /> events and updates from AV COMMUNITY.</p>
-            <form className={styles.loopForm}>
-              <input type="email" placeholder="Enter your email" aria-label="Email address" />
-              <button type="submit" aria-label="Subscribe">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
-              </button>
-            </form>
+            {nextEvent ? (
+              <div className={styles.upcoming}>
+                <p className={styles.upcomingText}>
+                  <span className={styles.upcomingLabel}>Upcoming:</span> {nextEvent.title}
+                  {nextEvent.date && <span className={styles.upcomingDate}>{nextEvent.date}{nextEvent.time ? ` · ${nextEvent.time}` : ''}</span>}
+                </p>
+                <Link href="/events" className={styles.notify}>
+                  NOTIFY ME
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+                </Link>
+              </div>
+            ) : (
+              <div className={styles.upcoming}>
+                <p className={styles.upcomingText}>Latest insights, events and updates<br className={styles.desktopBreak} /> from AV COMMUNITY.</p>
+                <Link href="/events" className={styles.notify}>
+                  SEE EVENTS
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+                </Link>
+              </div>
+            )}
 
             <div className={styles.iconLinks}>
               {ICON_LINKS.map((link) => (

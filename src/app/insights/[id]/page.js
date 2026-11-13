@@ -7,10 +7,12 @@ import { RelatedArticles } from '@/components/insights/RelatedArticleGridCard';
 import { BookmarkButton } from '@/components/discussions/BookmarkButton';
 import { LikeIcon } from '@/components/discussions/icons';
 import { LikeButton } from '@/components/topic/LikeButton';
+import { ArticleSidebar } from '@/components/insights/ArticleSidebar';
+import { ShareButton } from '@/components/insights/ShareButton';
 import styles from '@/components/insights/Article.module.css';
 import { getCurrentUser, getTopic, isDiscourseConfigured } from '@/lib/discourse';
 import { absoluteUrl, DiscourseError } from '@/lib/discourse/client';
-import { loadRelatedArticles } from '@/lib/discourse/lists';
+import { loadArticleSidebar, loadRelatedArticles } from '@/lib/discourse/lists';
 import { takeLeadImage } from '@/lib/discourse/lead-image';
 
 // Sample article, shown when Discourse is not connected.
@@ -83,6 +85,30 @@ const relatedArticles = [
   }
 ];
 
+// Sample side column, shown when Discourse is not connected.
+const sampleSidebar = {
+  recommended: [
+    { id: 's1', title: 'Reporting Standards for Multi-Entity Structures', readTime: '5 min read' },
+    { id: 's2', title: 'AI in Family Office Operations', readTime: '4 min read' },
+    { id: 's3', title: 'Cross-Border Structures and Compliance', readTime: '6 min read' },
+  ],
+  discussions: [
+    { id: 'd1', title: 'How are you consolidating private market data?', replies: 12, timeAgo: '2h ago' },
+    { id: 'd2', title: 'Best tools for capital call tracking', replies: 8, timeAgo: '5h ago' },
+    { id: 'd3', title: 'Handling K-1 delays at quarter end', replies: 5, timeAgo: '1d ago' },
+  ],
+  poll: {
+    question: 'How long before a new asset class appears in consolidated reporting?',
+    voters: 64,
+    options: [
+      { id: 'a', label: 'Same month', votes: 29 },
+      { id: 'b', label: 'Within a quarter', votes: 18 },
+      { id: 'c', label: 'Two quarters or more', votes: 11 },
+      { id: 'd', label: 'It never fully does', votes: 6 },
+    ],
+  },
+};
+
 // "9th, January 2027", as in the design.
 function longDate(iso) {
   const d = new Date(iso);
@@ -94,12 +120,23 @@ function longDate(iso) {
 
 const readTime = (html = '') => `${Math.max(1, Math.round(html.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length / 200))} min read`;
 
+// A paragraph starting "Sources:" in the post becomes the grey sources line
+// at the bottom of the article card instead of body text.
+const SOURCES = /<p>\s*(?:<(?:strong|b|em)>)?\s*Sources?\s*(?::\s*(?:<\/(?:strong|b|em)>)?|<\/(?:strong|b|em)>\s*:)\s*([\s\S]*?)<\/p>/i;
+function takeSources(html = '') {
+  const match = html.match(SOURCES);
+  if (!match) return { sources: [], html };
+  const text = match[1].replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').trim();
+  const sources = text.split(/\s*[;,\n]\s*/).map((s) => s.trim()).filter(Boolean);
+  return { sources, html: html.replace(match[0], '') };
+}
+
 // A forum article (a topic in the Articles category), or null to show the sample.
 async function loadArticle(id) {
   if (!/^\d+$/.test(id) || !isDiscourseConfigured()) return null;
   try {
-    const [topic, related] = await Promise.all([getTopic(id), loadRelatedArticles(id)]);
-    return { topic, related: related || [] };
+    const [topic, related, sidebar] = await Promise.all([getTopic(id), loadRelatedArticles(id), loadArticleSidebar(id)]);
+    return { topic, related: related || [], sidebar };
   } catch (error) {
     if (error instanceof DiscourseError && (error.status === 404 || error.status === 403)) notFound();
     throw error;
@@ -121,14 +158,16 @@ export default async function InsightDetailPage({ params }) {
       <ArticleView
         article={{ ...articleData, body: <ArticleContent blocks={articleData.blocks} /> }}
         related={relatedArticles}
+        sidebar={sampleSidebar}
         currentUser={user}
       />
     );
   }
 
-  const { topic, related } = live;
+  const { topic, related, sidebar } = live;
   const post = topic.firstPost;
   const lead = takeLeadImage(post?.html);
+  const { sources, html } = takeSources(lead.html);
   const article = {
     id: topic.id,
     title: topic.title,
@@ -136,19 +175,22 @@ export default async function InsightDetailPage({ params }) {
     author: post?.author.name,
     readTime: readTime(post?.html),
     date: longDate(post?.createdAt),
-    sources: [],
+    sources,
     category: topic.categoryName,
     // Discourse sanitises "cooked" HTML server-side before returning it.
-    body: <div dangerouslySetInnerHTML={{ __html: lead.html }} />,
+    body: <div dangerouslySetInnerHTML={{ __html: html }} />,
     post,
     likeCount: topic.likeCount,
     comments: topic.replies,
   };
-  return <ArticleView article={article} related={related} currentUser={user} />;
+  return <ArticleView article={article} related={related} sidebar={sidebar} currentUser={user} />;
 }
 
-function ArticleView({ article, related, currentUser }) {
+// Title, byline and picture on the page; then the article and its comments
+// in white cards beside a column of recommended articles, discussions and a poll.
+function ArticleView({ article, related, sidebar, currentUser }) {
   const fullTitle = [article.title, article.titleLead, article.titleHighlight].filter(Boolean).join(' ');
+  const byline = [article.date, article.readTime].filter(Boolean);
 
   return (
     <main className={`container ${styles.page}`}>
@@ -158,46 +200,50 @@ function ArticleView({ article, related, currentUser }) {
         { label: fullTitle }
       ]} />
 
-      <article className={styles.card}>
+      <header className={styles.head}>
         <h1 className={`${styles.title} rise-in`}>
           {article.title}
           {article.titleHighlight && (
-            <>
-              <br className={styles.titleBreak} /> {article.titleLead} <span className={styles.highlight}>{article.titleHighlight}</span>
-            </>
+            <> {article.titleLead} <span className={styles.highlight}>{article.titleHighlight}</span></>
           )}
         </h1>
+        <p className={styles.byline}>
+          {article.author && <span className={styles.bylineAuthor}>{article.author}</span>}
+          {article.author && byline.length > 0 && <span aria-hidden="true"> · </span>}
+          {byline.join(' | ')}
+        </p>
+      </header>
 
-        {article.image && <img className={`${styles.hero} rise-in`} style={{ '--delay': '0.15s' }} src={article.image} alt="" />}
+      {article.image && <img className={`${styles.hero} rise-in`} style={{ '--delay': '0.15s' }} src={article.image} alt="" />}
 
-        <div className={styles.main}>
-          <div className={styles.body}>{article.body}</div>
+      <div className={styles.layout}>
+        <div className={styles.mainColumn}>
+          <article className={styles.card}>
+            <div className={styles.body}>{article.body}</div>
 
-          <aside className={styles.meta} aria-label="About this article">
-            <div className={styles.metaAuthor}>{article.author}</div>
-            <div>{article.readTime}</div>
-            {article.date && <div>{article.date}</div>}
+            <div className={styles.actions}>
+              {article.category && <span className={styles.tag}>{article.category}</span>}
+              <ShareButton title={fullTitle} />
+              <BookmarkButton topicId={article.id} initiallyBookmarked={Boolean(article.post?.bookmarked)} />
+              {article.post ? (
+                <LikeButton postId={article.post.id} initialLiked={Boolean(article.post.liked)} initialCount={article.likeCount} />
+              ) : (
+                <span className={styles.like} aria-label="Likes"><LikeIcon /></span>
+              )}
+            </div>
+
             {article.sources.length > 0 && (
-              <ul className={styles.sources}>
-                <li>Sources:</li>
-                {article.sources.map((source) => <li key={source}>{source}</li>)}
-              </ul>
+              <p className={styles.sources}>Sources: {article.sources.join(', ')}</p>
             )}
-          </aside>
+          </article>
+
+          <section className={`${styles.card} ${styles.commentsCard}`}>
+            <ArticleComments topicId={article.id} comments={article.comments} currentUser={currentUser} />
+          </section>
         </div>
 
-        <div className={styles.actions}>
-          {article.category && <span className={styles.tag}>{article.category}</span>}
-          <BookmarkButton topicId={article.id} initiallyBookmarked={Boolean(article.post?.bookmarked)} />
-          {article.post ? (
-            <LikeButton postId={article.post.id} initialLiked={Boolean(article.post.liked)} initialCount={article.likeCount} />
-          ) : (
-            <span className={styles.like} aria-label="Likes"><LikeIcon /></span>
-          )}
-        </div>
-
-        <ArticleComments topicId={article.id} comments={article.comments} currentUser={currentUser} />
-      </article>
+        <ArticleSidebar {...(sidebar || {})} />
+      </div>
 
       {related.length > 0 && <RelatedArticles articles={related} />}
     </main>

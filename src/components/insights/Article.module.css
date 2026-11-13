@@ -12,23 +12,33 @@
   }
 }
 
-.card {
-  background: var(--color-surface);
-  border-radius: 1.25rem;
-  box-shadow: 0 12px 30px rgba(19, 39, 66, 0.08);
-  padding: 3.5rem 6.75rem 5rem;
-  margin-bottom: 3.75rem;
+/* Title and byline sit on the page, left-aligned and wide. */
+.head {
+  max-width: 64rem;
+  margin-top: 0.5rem;
 }
 
 .title {
-  padding-left: 2.4rem;
-  font-size: 3.5rem;
+  font-size: 3rem;
   font-weight: 800;
-  line-height: 1.4;
+  line-height: 1.2;
   color: #000;
+  text-align: left;
+  text-wrap: balance;
 }
 
 .highlight {
+  color: #1D9FD8;
+}
+
+.byline {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #6B7480;
+}
+
+.bylineAuthor {
+  font-weight: 600;
   color: #1D9FD8;
 }
 
@@ -42,18 +52,37 @@
   box-shadow: 0 14px 26px rgba(0, 0, 0, 0.2);
 }
 
-/* Body text beside a right-aligned column of author, date and sources. */
-.main {
+/* The article and comments (about 60%) beside the side column. */
+.layout {
   display: grid;
-  grid-template-columns: 37.3rem 1fr;
-  gap: 3rem;
-  margin-top: 4rem;
-  padding: 0 3.7rem 0 2.4rem;
+  grid-template-columns: minmax(0, 1fr) 24rem;
+  gap: 1.75rem;
+  align-items: start;
+  margin: 2.25rem 0 3.75rem;
+}
+
+.mainColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  min-width: 0;
+}
+
+.card {
+  background: var(--color-surface);
+  border-radius: 1.25rem;
+  box-shadow: 0 12px 30px rgba(19, 39, 66, 0.08);
+  padding: 3rem 3.25rem 2.5rem;
+}
+
+.commentsCard {
+  padding-top: 1.5rem;
+  padding-bottom: 2.5rem;
 }
 
 .body {
-  font-size: 0.94rem;
-  line-height: 1.65;
+  font-size: 0.98rem;
+  line-height: 1.7;
   color: #333;
 }
 
@@ -68,7 +97,7 @@
 .body h3,
 .body h4 {
   margin: 0.4rem 0 1.4rem;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: #000;
 }
@@ -87,38 +116,82 @@
   border-radius: 0.75rem;
 }
 
-.meta {
-  text-align: right;
-  font-size: 0.85rem;
-  line-height: 1.9;
+.sources {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #EEF1F4;
+  font-size: 0.78rem;
+  line-height: 1.6;
   color: #9AA3AD;
 }
 
-.metaAuthor {
-  font-size: 0.98rem;
-  color: #1D9FD8;
-  margin-bottom: 0.3rem;
-}
-
-.sources {
-  margin-top: 2.25rem;
-  list-style: none;
-}
-
-/* Category tag, bookmark and like under the body. */
+/* Category tag on the left; share, bookmark and like on the right. */
 .actions {
   display: flex;
   align-items: center;
-  gap: 1.75rem;
-  margin-top: 3.5rem;
-  padding: 0 0 0 2.3rem;
-  width: calc(37.3rem + 2.4rem);
+  gap: 1.5rem;
+  margin-top: 2.5rem;
 }
 
 .tag {
   margin-right: auto;
   font-size: 0.87rem;
   color: #1D9FD8;
+}
+
+.share {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: #1D9FD8;
+}
+
+.share svg {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.shareNote {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 0.35rem;
+  font-size: 0.72rem;
+  color: #6B7480;
+  white-space: nowrap;
+}
+
+/* ---- Side column ---- */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.sideCard {
+  background: var(--color-surface);
+  border-radius: 1.25rem;
+  box-shadow: 0 12px 30px rgba(19, 39, 66, 0.08);
+  padding: 1.75rem 1.5rem 1.1rem;
+}
+
+.sideTitle {
+  margin-bottom: 0.4rem;
+  font-size: 1rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #000;
+}
+
+.pollQuestion {
+  margin: 0.6rem 0 0.9rem;
+  font-size: 0.98rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #111;
 }
 
 .like {
@@ -143,12 +216,11 @@
 /* ---- Comments ---- */
 
 .comments {
-  margin: 3rem 0 0 1.8rem;
+  margin: 0;
 }
 
 .commentComposer {
-  padding: 1.6rem 0;
-  border-top: 1px solid #D5DAE1;
+  padding: 1.25rem 0 1.6rem;
   border-bottom: 1px solid #D5DAE1;
 }
 
@@ -158,13 +230,13 @@
 
 .comment {
   display: flex;
-  gap: 2.75rem;
+  gap: 1.4rem;
 }
 
 .commentAvatar {
   flex-shrink: 0;
-  width: 4.4rem;
-  height: 4.4rem;
+  width: 3.4rem;
+  height: 3.4rem;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -209,13 +281,13 @@
 
 /* Replies hang off a thin line under the parent's name. */
 .children {
-  margin: 1.6rem 0 0 7.15rem;
+  margin: 1.6rem 0 0 4.8rem;
   padding: 0.6rem 0 0.6rem 1.3rem;
   border-left: 2px solid #E3E8EE;
 }
 
 .children .comment {
-  gap: 1.9rem;
+  gap: 1.2rem;
 }
 
 .children .comment + .comment {
@@ -299,47 +371,31 @@
 /* ---- Tablets ---- */
 
 @media (max-width: 1100px) {
-  .card {
-    padding: 3rem 3rem 4rem;
-  }
-
   .title {
-    padding-left: 0;
-    font-size: 2.6rem;
+    font-size: 2.4rem;
   }
 
-  .main {
-    grid-template-columns: minmax(0, 1fr) 12rem;
-    padding: 0;
-    margin-top: 3rem;
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .actions {
-    width: auto;
-    padding: 0;
+  .card {
+    padding: 2.5rem 2.25rem 2rem;
   }
 
-  .comments {
-    margin-left: 0;
-  }
 }
 
 /* ---- Phones ---- */
 
 @media (max-width: 768px) {
-  .card {
-    padding: 1.75rem 1.15rem 2rem;
-    border-radius: 1rem;
-    margin-bottom: 2rem;
-  }
-
   .title {
     font-size: 1.6rem;
-    line-height: 1.35;
+    line-height: 1.3;
   }
 
-  .titleBreak {
-    display: none;
+  .byline {
+    margin-top: 0.6rem;
+    font-size: 0.82rem;
   }
 
   .hero {
@@ -348,21 +404,23 @@
     margin-top: 1.25rem;
   }
 
-  /* Author, date and sources move above the text, left-aligned. */
-  .main {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 1.5rem;
-    margin-top: 1.75rem;
+  .layout {
+    gap: 1.25rem;
+    margin: 1.5rem 0 2rem;
   }
 
-  .meta {
-    order: -1;
-    text-align: left;
-    line-height: 1.7;
+  .mainColumn {
+    gap: 1.25rem;
   }
 
-  .sources {
-    margin-top: 0.75rem;
+  .card {
+    padding: 1.5rem 1.15rem 1.5rem;
+    border-radius: 1rem;
+  }
+
+  .sideCard {
+    border-radius: 1rem;
+    padding: 1.4rem 1.15rem 0.9rem;
   }
 
   .body {
@@ -370,15 +428,12 @@
   }
 
   .actions {
-    margin-top: 2rem;
-  }
-
-  .comments {
-    margin-top: 2rem;
+    margin-top: 1.75rem;
+    gap: 1.25rem;
   }
 
   .commentComposer {
-    padding: 1.1rem 0;
+    padding: 0.75rem 0 1.1rem;
   }
 
   .thread {

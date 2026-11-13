@@ -3,7 +3,7 @@ import { Header } from '@/components/layout/Header';
 import { SignInNotice } from '@/components/layout/SignInNotice';
 import { getCurrentUser, isDiscourseConfigured, isSignInEnabled } from '@/lib/discourse';
 import { Footer } from '@/components/layout/Footer';
-import { loadMenu } from '@/lib/discourse/lists';
+import { loadMenu, loadNextEvent } from '@/lib/discourse/lists';
 import { Nunito_Sans } from "next/font/google";
 import "./globals.css";
 
@@ -27,8 +27,8 @@ export default async function RootLayout({ children }) {
     return null;
   });
 
-  // The side menu's categories and article topics, from the forum.
-  const menu = user ? await loadMenu() : null;
+  // The side menu (signed in) and the footer's next event, from the forum.
+  const [menu, nextEvent] = await Promise.all([user ? loadMenu() : null, loadNextEvent()]);
 
   return (
     <html lang="en" className={avenirStandIn.variable}>
@@ -38,7 +38,7 @@ export default async function RootLayout({ children }) {
           <SignInNotice />
         </Suspense>
         {children}
-        <Footer />
+        <Footer nextEvent={nextEvent} />
       </body>
     </html>
   );
