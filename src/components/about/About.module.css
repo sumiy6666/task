@@ -29,30 +29,19 @@
 .offerTitle { font-size: min(1.31vw, 17px); font-weight: 400; line-height: 1.15; }
 .offerText { font-size: min(1.12vw, 14.6px); font-weight: 400; line-height: 1.45; }
 
-/* ---- Two sides of the community ---- */
+/* ---- AV Platform photo card and the tabbed panel ---- */
 
-.sides { display: grid; grid-template-columns: minmax(0, 610fr) minmax(0, 963fr); gap: min(2.92vw, 38px); }
-.sidesCard { padding: min(2.77vw, 36px) min(2.92vw, 38px) min(3.08vw, 40px); }
-.sidesCard .sectionTitle { margin-bottom: min(2vw, 26px); }
-.side { display: flex; align-items: center; gap: min(1.08vw, 14px); }
-.sideIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: min(3.54vw, 46px);
-  height: min(3.54vw, 46px);
-  border-radius: 50%;
-  background: #11a0db;
-  color: #fff;
+.sides { display: grid; grid-template-columns: minmax(0, 410fr) minmax(0, 963fr); gap: min(2.92vw, 38px); }
+.platformCard {
+  display: block;
+  height: 100%;
+  min-height: min(38.15vw, 496px);
+  overflow: hidden;
+  border-radius: min(1.85vw, 24px);
+  box-shadow: 0 min(0.46vw, 6px) min(1.69vw, 22px) rgba(0, 0, 0, 0.12);
 }
-.sideIcon svg { width: min(1.85vw, 24px); height: min(1.85vw, 24px); }
-.sideName { font-size: min(1.31vw, 18px); font-weight: 600; color: #111; line-height: 1.3; }
-.sideNameAccent { color: #11a0db; }
-.sideSub { font-size: min(1.15vw, 15px); color: #111; }
-.sideList { display: flex; flex-direction: column; gap: min(1.15vw, 15px); margin: min(2.15vw, 28px) 0 min(1.85vw, 24px); font-size: min(1.04vw, 13.5px); color: #333; }
-.rule { border: 0; border-top: 1px solid #ddd; margin: min(1.38vw, 18px) 0; }
-.together { margin-top: min(2.31vw, 30px); font-size: min(1.04vw, 14px); font-weight: 600; line-height: 1.45; color: #111; }
+.platformCard img { width: 100%; height: 100%; object-fit: cover; object-position: center top; transition: transform 0.4s; }
+.platformCard:hover img { transform: scale(1.03); }
 
 /* Tabbed photo panel: a white pill of icons on the left, text over the photo. */
 .panel {
@@ -145,15 +134,8 @@
   .offerText { font-size: 15px; }
 
   .sides { grid-template-columns: 1fr; gap: 20px; }
-  .sidesCard { padding: 32px 28px; }
-  .sideIcon { width: 46px; height: 46px; }
-  .sideIcon svg { width: 22px; height: 22px; }
-  .sideName { font-size: 17px; }
-  .sideSub { font-size: 15px; }
-  .sideList { gap: 12px; margin: 22px 0 18px; font-size: 14px; }
-  .rule { margin: 16px 0; }
-  .together { margin-top: 22px; font-size: 14px; }
 
+  .platformCard { min-height: 0; aspect-ratio: 446 / 494; max-width: 520px; border-radius: 20px; }
   .panel { min-height: 420px; border-radius: 20px; }
   .panelNav { width: 60px; margin: 24px 0 24px 24px; padding: 14px 0 18px; }
   .panelTab { width: 46px; height: 46px; }
@@ -174,7 +156,7 @@
 
 /* Phones */
 @media (max-width: 640px) {
-  .card, .sidesCard { padding: 24px 18px; }
+  .card { padding: 24px 18px; }
   .offerGrid, .steps { grid-template-columns: 1fr; }
 
   /* The icon pill lies along the top of the photo. */
