@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { cache } from 'react';
 import { notFound } from 'next/navigation';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { ArticleContent } from '@/components/insights/ArticleContent';
@@ -12,7 +12,7 @@ import { ShareButton } from '@/components/insights/ShareButton';
 import styles from '@/components/insights/Article.module.css';
 import { getCurrentUser, getTopic, isDiscourseConfigured } from '@/lib/discourse';
 import { absoluteUrl, DiscourseError } from '@/lib/discourse/client';
-import { loadArticleSidebar, loadRelatedArticles } from '@/lib/discourse/lists';
+import { loadArticleSidebar } from '@/lib/discourse/lists';
 import { takeLeadImage } from '@/lib/discourse/lead-image';
 
 // Sample article, shown when Discourse is not connected.
@@ -131,17 +131,21 @@ function takeSources(html = '') {
   return { sources, html: html.replace(match[0], '') };
 }
 
-// A forum article (a topic in the Articles category), or null to show the sample.
-async function loadArticle(id) {
+// A forum article (a topic in the Articles category) with what goes around
+// it, or null to show the sample. Cached per request: the page and its
+// metadata share one load. The topic is read first so the side column's
+// reads don't push it past the forum's rate limit.
+const loadArticle = cache(async (id) => {
   if (!/^\d+$/.test(id) || !isDiscourseConfigured()) return null;
   try {
-    const [topic, related, sidebar] = await Promise.all([getTopic(id), loadRelatedArticles(id), loadArticleSidebar(id)]);
-    return { topic, related: related || [], sidebar };
+    const topic = await getTopic(id);
+    const around = await loadArticleSidebar(id);
+    return { topic, related: around?.related || [], sidebar: around };
   } catch (error) {
     if (error instanceof DiscourseError && (error.status === 404 || error.status === 403)) notFound();
     throw error;
   }
-}
+});
 
 export async function generateMetadata({ params }) {
   const { id } = await params;

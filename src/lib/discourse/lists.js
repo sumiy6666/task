@@ -430,17 +430,6 @@ export function loadInsights(categorySlug) {
   });
 }
 
-// Other articles to show under an article.
-export function loadRelatedArticles(excludeId) {
-  return safely('related articles', async () => {
-    const categories = await loadCategories();
-    const articles = findCategory(categories, /article|insight/i);
-    if (!articles) return [];
-    const items = newestFirst(mapList(await discourseFetch(articlesPath(articles)), new Map()));
-    return items.filter((a) => a.id !== Number(excludeId)).slice(0, 4).map((a) => ({ id: a.id, title: a.title, description: a.description, image: a.image }));
-  });
-}
-
 // Recent conversations for the side column of a conversation page, when the
 // forum suggests too few related ones itself.
 export function loadRecentDiscussions(excludeId, limit = 4) {
@@ -567,8 +556,9 @@ export function searchForum(term) {
   });
 }
 
-// The side column of an article page: other articles, recent conversations
-// outside Articles, and the most-voted open poll (voteable).
+// Everything around an article: the related-articles row, and the side
+// column's other articles, recent conversations outside Articles and the
+// most-voted open poll (voteable). One categories and one articles read.
 export function loadArticleSidebar(excludeId) {
   return safely('article sidebar', async () => {
     const categories = await loadCategories();
@@ -579,10 +569,11 @@ export function loadArticleSidebar(excludeId) {
     const [list, latest, polls] = await Promise.all([
       articles ? discourseFetch(articlesPath(articles)) : null,
       discourseFetch('/latest.json'),
-      fetchPolls(categories, 6).catch(() => []),
+      fetchPolls(categories, 3).catch(() => []),
     ]);
     const items = list ? mapList(list, categoriesById).filter((a) => a.id !== Number(excludeId)) : [];
     return {
+      related: newestFirst(items).slice(0, 4).map((a) => ({ id: a.id, title: a.title, description: a.description, image: a.image })),
       recommended: [...items]
         .sort((a, b) => (b.views || 0) - (a.views || 0))
         .slice(0, 4)
