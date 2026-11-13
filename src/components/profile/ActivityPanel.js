@@ -1,9 +1,8 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Bookmark, Eye, Heart, List, ListFilter, MessageSquare, PenLine, Reply } from 'lucide-react';
+import { Bookmark, Check, ChevronDown, Eye, Heart, List, ListFilter, MessageSquare, PenLine, Reply } from 'lucide-react';
 import { Reveal } from '../ui/Reveal';
-import { ProfileTabs } from './ProfileTabs';
 import { useProfileSection } from './useProfileSection';
 import { ACTIVITY } from './sampleProfile';
 import styles from './Profile.module.css';
@@ -38,7 +37,7 @@ function ActivityCard({ item }) {
             </div>
           )}
           <div className={styles.activityStats}>
-            {/* Forum activity has no counts, so those are left out. */}
+            {/* Counts come from the post's topic; entries without one leave them out. */}
             {item.likes != null && <span><Heart strokeWidth={1.3} aria-hidden="true" />{item.likes}<span className="sr-only"> likes</span></span>}
             {item.comments != null && <span><MessageSquare strokeWidth={1.3} aria-hidden="true" />{item.comments}<span className="sr-only"> comments</span></span>}
             {item.views != null && <span><Eye strokeWidth={1.3} aria-hidden="true" />{item.views}<span className="sr-only"> views</span></span>}
@@ -51,11 +50,61 @@ function ActivityCard({ item }) {
   );
 }
 
+// "FILTER" dropdown in the corner of the activity list; it shows the current
+// choice under its label.
+function FilterMenu({ value, onChange }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const close = (e) => {
+      if (e.type === 'keydown' ? e.key === 'Escape' : !ref.current?.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', close);
+    document.addEventListener('keydown', close);
+    return () => {
+      document.removeEventListener('mousedown', close);
+      document.removeEventListener('keydown', close);
+    };
+  }, [open]);
+
+  return (
+    <div ref={ref} className={styles.filterMenu}>
+      <button type="button" className={styles.filterButton} aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        <span className={styles.filterLabel}>FILTER</span>
+        <span className={styles.filterValue}>{value}</span>
+        <ChevronDown className={styles.filterChevron} strokeWidth={1.6} aria-hidden="true" />
+      </button>
+      {open && (
+        <ul className={styles.filterOptions} role="listbox" aria-label="Activity filter">
+          {FILTERS.map(({ id, label, icon: Icon }) => (
+            <li key={id}>
+              <button
+                type="button"
+                role="option"
+                aria-selected={id === value}
+                className={`${styles.filterOption} ${id === value ? styles.filterOptionActive : ''}`}
+                onClick={() => { onChange(id); setOpen(false); }}
+              >
+                <Icon strokeWidth={1.5} aria-hidden="true" />
+                {label}
+                {id === value && <Check className={styles.filterCheck} strokeWidth={2} aria-hidden="true" />}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 // Drafts and bookmarks are the member's own, so a forum profile loads them
 // when their filter is chosen.
 const PRIVATE = { Drafts: 'drafts', Bookmarks: 'bookmarks' };
 
-// Activity tab: a filter bar, then the member's posts as cards.
+// Activity tab: the member's posts as cards, with the filter dropdown in the
+// top corner of the first card.
 export function ActivityPanel({ items: activity = ACTIVITY, live = false }) {
   const [filter, setFilter] = useState('All');
   const [drafts] = useProfileSection('drafts', live && filter === 'Drafts');
@@ -67,8 +116,8 @@ export function ActivityPanel({ items: activity = ACTIVITY, live = false }) {
   const status = live && own && (own.loading ? 'Loading…' : own.error);
 
   return (
-    <>
-      <ProfileTabs tabs={FILTERS} active={filter} onChange={setFilter} small label="Activity filter" />
+    <div className={styles.activityList}>
+      <FilterMenu value={filter} onChange={setFilter} />
       {status ? (
         <div className={`${styles.card} ${styles.emptyState}`}>{status}</div>
       ) : items.length > 0 ? (
@@ -76,6 +125,6 @@ export function ActivityPanel({ items: activity = ACTIVITY, live = false }) {
       ) : (
         <div className={`${styles.card} ${styles.emptyState}`}>Nothing in {filter} yet.</div>
       )}
-    </>
+    </div>
   );
 }

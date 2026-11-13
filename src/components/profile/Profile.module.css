@@ -262,6 +262,53 @@
 }
 .emptyState { padding: 48px; text-align: center; font-size: 15px; color: #6b7280; }
 
+/* Activity filter: a small dropdown card in the top-right corner of the first card. */
+.activityList { position: relative; }
+.filterMenu { position: absolute; top: 25px; right: 50px; z-index: 5; min-width: 156px; }
+.filterButton {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 10px 44px 10px 16px;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(19, 39, 66, 0.12);
+  text-align: left;
+}
+.filterLabel { font-size: 14.5px; font-weight: 500; letter-spacing: 0.02em; color: #000; }
+.filterValue { margin-top: 2px; font-size: 13.5px; color: #0052CC; }
+.filterChevron { position: absolute; top: 12px; right: 14px; width: 18px; height: 18px; color: #11A0DB; transition: transform 0.2s; }
+.filterButton[aria-expanded='true'] .filterChevron { transform: rotate(180deg); }
+.filterOptions {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 100%;
+  padding: 6px;
+  list-style: none;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 10px 28px rgba(19, 39, 66, 0.16);
+}
+.filterOption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #000;
+  white-space: nowrap;
+}
+.filterOption svg { width: 15px; height: 15px; color: #8a8a8a; }
+.filterOption:hover { background: #F0F5FB; }
+.filterOptionActive { color: #11A0DB; }
+.filterOptionActive svg { color: #11A0DB; }
+.filterCheck { margin-left: auto; }
+
 /* ---- Notifications ---- */
 
 .listPanel { padding: 38px 37px 40px 57px; }
@@ -511,6 +558,7 @@
   .badgeCards { margin-right: 0; gap: 20px; }
 
   .activity { flex-direction: column-reverse; gap: 24px; padding: 32px; }
+  .filterMenu { position: relative; top: auto; right: auto; margin: 0 0 16px auto; width: max-content; }
   .activityImage { width: 100%; height: 240px; margin-top: 0; }
   .activityBody { margin-left: 0; margin-top: 24px; }
 

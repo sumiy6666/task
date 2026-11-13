@@ -2,7 +2,7 @@
 // public and read with the site key (cached); notifications, messages,
 // bookmarks and drafts are the member's own and are only loaded when their
 // tab is opened, to spare the member key's tight rate limit.
-import { avatarUrl, discourseBaseUrl, discourseFetch, isDiscourseConfigured } from './client';
+import { absoluteUrl, avatarUrl, discourseBaseUrl, discourseFetch, isDiscourseConfigured } from './client';
 import { timeAgo } from './format';
 import { withEmoji } from './emoji';
 import { isApprovalNotice } from './approvals';
@@ -59,18 +59,61 @@ const ACTION = {
   5: { type: 'Replies', action: 'Replied to a discussion' },
 };
 
+// Activity entries only carry a title and an excerpt. The picture, tags,
+// counts and category come from topic lists: the member's own topics and the
+// latest ones (which hold most topics they replied to or liked on a forum
+// this size). Topics in neither list show without those details.
+async function topicDetails(username) {
+  const shared = { revalidate: PROFILE_SECONDS };
+  const [own, latest, categories] = await Promise.all([
+    discourseFetch(`/topics/created-by/${encodeURIComponent(username)}.json`, shared).catch(() => null),
+    discourseFetch('/latest.json', shared).catch(() => null),
+    discourseFetch('/categories.json?include_subcategories=true', shared).catch(() => null),
+  ]);
+  const parents = categories?.category_list?.categories || [];
+  const articles = parents.find((c) => /article|insight/i.test(c.name));
+  const articleIds = new Set(articles ? [articles.id, ...(articles.subcategory_list || []).map((c) => c.id)] : []);
+  const details = new Map();
+  for (const t of [...(latest?.topic_list?.topics || []), ...(own?.topic_list?.topics || [])]) {
+    details.set(t.id, {
+      image: t.image_url ? absoluteUrl(t.image_url) : null,
+      tags: (t.tags || []).map((tag) => (typeof tag === 'string' ? tag : tag.name)),
+      likes: t.like_count ?? 0,
+      comments: Math.max(0, (t.posts_count || 1) - 1),
+      views: t.views ?? 0,
+      isArticle: articleIds.has(t.category_id),
+    });
+  }
+  // Activity entries carry the category too, for topics missing from the lists.
+  return { details, articleIds };
+}
+
+// An activity entry with its topic's picture, tags and counts. Articles say
+// so and open on the article page.
+function withTopic(item, topicId, categoryId, { details, articleIds }, isTopicStart) {
+  const topic = details.get(topicId);
+  const isArticle = topic?.isArticle ?? articleIds.has(categoryId);
+  return {
+    ...item,
+    ...(topic && { image: topic.image, tags: topic.tags, likes: topic.likes, comments: topic.comments, views: topic.views }),
+    ...(isArticle && isTopicStart && { action: 'Published a new article' }),
+    href: isArticle ? `/insights/${topicId}` : item.href,
+  };
+}
+
 // The public part of the profile, in the shapes the profile panels take.
 // Returns null when Discourse is not connected or the member can't be read.
 export async function loadProfile(username) {
   if (!isDiscourseConfigured() || !username) return null;
   const name = encodeURIComponent(username);
   const shared = { revalidate: PROFILE_SECONDS };
-  const [userData, summaryData, actionsData, userBadges, allBadges] = await Promise.all([
+  const [userData, summaryData, actionsData, userBadges, allBadges, topics] = await Promise.all([
     discourseFetch(`/u/${name}.json`, shared),
     discourseFetch(`/u/${name}/summary.json`, shared).catch(() => null),
     discourseFetch(`/user_actions.json?username=${name}&filter=1,4,5`, shared).catch(() => null),
     discourseFetch(`/user-badges/${name}.json`, shared).catch(() => null),
     discourseFetch('/badges.json', shared).catch(() => null),
+    topicDetails(username).catch(() => ({ details: new Map(), articleIds: new Set() })),
   ]);
   const user = userData.user;
   const s = summaryData?.user_summary || {};
@@ -88,16 +131,17 @@ export async function loadProfile(username) {
     .slice(0, 6)
     .map((b) => ({ id: b.id, icon: badgeIcon(b), name: b.name, text: plainText(b.description) }));
 
-  const activity = (actionsData?.user_actions || []).map((a) => ({
+  const activity = (actionsData?.user_actions || []).map((a) => withTopic({
     id: `${a.action_type}-${a.post_id || a.topic_id}`,
     type: ACTION[a.action_type]?.type || 'Topics',
     author: { name: a.name || a.username, avatar: avatarUrl(a.avatar_template) },
     timeAgo: timeAgo(a.created_at),
     action: ACTION[a.action_type]?.action || 'Posted',
     title: cleanTitle(a.title),
-    text: plainText(a.excerpt),
+    // A post that is only a poll has the excerpt "poll": no text to show.
+    text: plainText(a.excerpt).replace(/\s*\bpoll$/i, ''),
     href: `/conversations/${a.topic_id}`,
-  }));
+  }, a.topic_id, a.category_id, topics, a.action_type === 4));
 
   return {
     profile: {
@@ -269,7 +313,8 @@ export async function loadBookmarks(username) {
     if (error?.status === 404) return null;
     throw error;
   });
-  return (data?.user_bookmark_list?.bookmarks || []).map((b) => ({
+  const topics = await topicDetails(username).catch(() => ({ details: new Map(), articleIds: new Set() }));
+  return (data?.user_bookmark_list?.bookmarks || []).map((b) => withTopic({
     id: `bookmark-${b.id}`,
     type: 'Bookmarks',
     author: { name: b.user?.name || b.user?.username || b.username || 'Member', avatar: avatarUrl(b.user?.avatar_template || b.avatar_template) },
@@ -278,7 +323,7 @@ export async function loadBookmarks(username) {
     title: cleanTitle(b.title || b.fancy_title || ''),
     text: plainText(b.excerpt || ''),
     href: b.topic_id ? `/conversations/${b.topic_id}` : '/discussions',
-  }));
+  }, b.topic_id, b.category_id, topics, false));
 }
 
 export async function loadDrafts() {
