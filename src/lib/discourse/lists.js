@@ -166,7 +166,8 @@ async function loadMemberProfiles(limit) {
         username: m.username,
         name: m.name || m.username,
         avatar: avatarUrl(m.avatar_template),
-        role: text(ids.role) || m.title || user?.title || memberType,
+        // Empty when the member has not given one; the page then shows their member type.
+        role: text(ids.role) || m.title || user?.title || '',
         company: text(ids.company),
         location: user?.location || '',
         expertise: ids.expertise ? listValue(values[ids.expertise]) : [],

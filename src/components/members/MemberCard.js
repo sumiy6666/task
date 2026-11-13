@@ -8,7 +8,7 @@ export default function MemberCard({ member, isActive, onClick }) {
       <div className="flex-1 min-w-0">
         <div className={styles.rowName}>{member.name}</div>
         <div className={styles.rowRole}>
-          {member.role}
+          {member.role || member.memberType}
           {member.company && (
             <>
               <span className={styles.rowSep}>|</span>

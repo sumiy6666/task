@@ -18,7 +18,7 @@ export default function MemberDetail({ member, live = false }) {
         <img src={member.avatar} alt={member.name} className={styles.profileAvatar} />
         <div className="flex flex-col min-w-0">
           <h2 className={styles.profileName}>{member.name}</h2>
-          <span className={styles.profileRole}>{member.role}</span>
+          <span className={styles.profileRole}>{member.role || member.memberType}</span>
           {member.company && <span className={styles.profileCompany}>{member.company}</span>}
           {member.location && (
             <div className={styles.profileLocation}>
