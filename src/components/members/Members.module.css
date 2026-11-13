@@ -245,6 +245,27 @@ input.filterInput { cursor: text; color: #132742; }
   transition: filter 0.2s;
 }
 .follow:hover { filter: brightness(0.95); }
+.follow:disabled { opacity: 0.6; cursor: default; }
+
+/* CONNECT: a short message box in place of the button. */
+.connectForm { display: flex; flex-direction: column; gap: 10px; }
+.connectText {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d5dae1;
+  border-radius: 12px;
+  background: #fff;
+  font: inherit;
+  font-size: 14px;
+  resize: vertical;
+}
+.connectText:focus { outline: 2px solid rgba(17, 160, 219, 0.35); border-color: #11A0DB; }
+.connectActions { display: flex; gap: 12px; align-items: center; }
+.connectActions .follow { flex: 1; }
+.connectCancel { padding: 0 14px; height: 41px; font-size: 14px; color: #555; }
+.connectError { font-size: 13px; color: #c0392b; }
+.connectDone { padding: 12px 14px; border-radius: 12px; background: #fff; font-size: 14px; line-height: 1.5; color: #111; }
+.connectDone a { color: #11A0DB; text-decoration: underline; }
 
 /* Tablets: the list and profile stack. */
 @media (max-width: 1024px) {

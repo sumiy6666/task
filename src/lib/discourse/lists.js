@@ -115,8 +115,41 @@ const newestFirst = (topics) => [...topics].sort((a, b) => new Date(b.createdAt)
 
 // Members: the directory is closed to non-staff accounts on this forum, so
 // fall back to the "all members" group and each member's profile summary.
+// Profile fields set on the forum (Admin → Users → User fields), found by name.
+const FIELD = { role: /^(role|designation|title)$/i, company: /company|organi[sz]ation/i, expertise: /expertise/i };
+// Lines the Join form writes into "About me" for the approver, and anything
+// that looks like an email address or phone number: never shown in the directory.
+const PRIVATE_LINE = /^(title|phone|mobile|email|role|organi[sz]ation|company|location|profile|topics( of interest)?)\s*:/i;
+const EMAIL = /[\w.+-]+@[\w-]+(\.[\w-]+)+/g;
+const PHONE = /\+?\d[\d\s().-]{7,}\d/g;
+// The Join form's summary in "About You": "Mr Priya Mehta: Partner at Firm · Email: … · Phone: …".
+const JOIN_SUMMARY = /^[^:]{1,80}:\s*.+\s+at\s+.+$/;
+
+function memberBio(user, about) {
+  const own = (user?.bio_raw || '')
+    .split('\n')
+    .filter((line) => !PRIVATE_LINE.test(line.trim()))
+    .join(' ');
+  // "About You" is used only when it is the member's own words, not the Join summary.
+  const fallback = about && !about.includes(' · ') && !JOIN_SUMMARY.test(about) ? about : '';
+  return (own.trim() || fallback || '')
+    .replace(EMAIL, '')
+    .replace(PHONE, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// A multi-select field's value: an array, or one string with "|" between choices.
+const listValue = (v) => (Array.isArray(v) ? v : String(v || '').split('|')).map((x) => String(x).trim()).filter(Boolean);
+
 async function loadMemberProfiles(limit) {
-  const group = await discourseFetch(`/groups/trust_level_0/members.json?limit=${limit}&order=last_posted_at&asc=false`, { revalidate: PROFILE_SECONDS });
+  const [group, site] = await Promise.all([
+    discourseFetch(`/groups/trust_level_0/members.json?limit=${limit}&order=last_posted_at&asc=false`, { revalidate: PROFILE_SECONDS }),
+    discourseFetch('/site.json', { revalidate: PROFILE_SECONDS }).catch(() => null),
+  ]);
+  const fields = site?.user_fields || [];
+  const fieldId = (pattern) => String(fields.find((f) => pattern.test(f.name))?.id ?? '');
+  const ids = { role: fieldId(FIELD.role), company: fieldId(FIELD.company), expertise: fieldId(FIELD.expertise), about: fieldId(/about/i) };
   const members = (group.members || []).filter((m) => m.id > 0);
   const profiles = await Promise.all(
     members.map(async (m) => {
@@ -125,17 +158,20 @@ async function loadMemberProfiles(limit) {
         discourseFetch(`/u/${name}.json`, { revalidate: PROFILE_SECONDS }).then((d) => d.user).catch(() => null),
         discourseFetch(`/u/${name}/summary.json`, { revalidate: PROFILE_SECONDS }).then((d) => d.user_summary).catch(() => null),
       ]);
-      const about = Object.values(user?.user_fields || {}).find((v) => typeof v === 'string' && v.trim());
+      const values = user?.user_fields || {};
+      const text = (id) => (id && typeof values[id] === 'string' ? values[id].trim() : '');
+      const memberType = user?.admin ? 'Admin' : user?.moderator ? 'Moderator' : 'Member';
       return {
         id: m.id,
         username: m.username,
         name: m.name || m.username,
         avatar: avatarUrl(m.avatar_template),
-        role: m.title || user?.title || (user?.admin ? 'Admin' : user?.moderator ? 'Moderator' : 'Member'),
-        company: '',
+        role: text(ids.role) || m.title || user?.title || memberType,
+        company: text(ids.company),
         location: user?.location || '',
-        expertise: [],
-        bio: about || user?.bio_excerpt || '',
+        expertise: ids.expertise ? listValue(values[ids.expertise]) : [],
+        memberType,
+        bio: memberBio(user, text(ids.about)),
         stats: {
           discussions: summary?.topic_count ?? 0,
           // The summary's post count leaves out the posts that open a topic.

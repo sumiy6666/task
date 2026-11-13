@@ -1,12 +1,15 @@
 import styles from './Members.module.css';
 
+// The directory's filters. Each dropdown lists the values members actually have.
 const DROPDOWNS = [
-  { label: 'Role', placeholder: 'All roles' },
-  { label: 'Organisation', placeholder: 'All organisations' },
-  { label: 'Geography', placeholder: 'All locations' },
-  { label: 'Expertise', placeholder: 'All Expertise' },
-  { label: 'Member Type', placeholder: 'All' }
+  { key: 'role', label: 'Role', placeholder: 'All roles' },
+  { key: 'company', label: 'Organisation', placeholder: 'All organisations' },
+  { key: 'location', label: 'Geography', placeholder: 'All locations' },
+  { key: 'expertise', label: 'Expertise', placeholder: 'All Expertise' },
+  { key: 'memberType', label: 'Member Type', placeholder: 'All' },
 ];
+
+export const EMPTY_FILTERS = { name: '', role: '', company: '', location: '', expertise: '', memberType: '' };
 
 const SearchIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={styles.filterIcon} aria-hidden="true">
@@ -21,12 +24,15 @@ const ChevronIcon = () => (
   </svg>
 );
 
-export default function MemberDirectoryFilters() {
+export default function MemberDirectoryFilters({ values = EMPTY_FILTERS, options = {}, onChange = () => {}, onClear = () => {} }) {
+  const set = (key) => (e) => onChange({ ...values, [key]: e.target.value });
+  const active = Object.values(values).some(Boolean);
+
   return (
     <section className={styles.filters} aria-labelledby="member-search-title">
       <div className={`rise-in ${styles.filtersHead}`}>
         <h2 id="member-search-title" className={styles.filtersTitle}>SEARCH MEMBER DIRECTORY</h2>
-        <button type="button" className={styles.clearAll}>
+        <button type="button" className={styles.clearAll} onClick={onClear} disabled={!active}>
           <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
             <path strokeLinecap="round" d="M2 2l8 8M10 2l-8 8" />
           </svg>
@@ -39,17 +45,18 @@ export default function MemberDirectoryFilters() {
         <label className={`rise-in ${styles.filterField}`} style={{ '--delay': '0.15s' }}>
           <span className={styles.filterLabel}>Name</span>
           <span className={styles.filterControl}>
-            <input type="text" placeholder="Search by name" className={styles.filterInput} />
+            <input type="search" placeholder="Search by name" className={styles.filterInput} value={values.name} onChange={set('name')} />
             <SearchIcon />
           </span>
         </label>
 
         {DROPDOWNS.map((d, i) => (
-          <label key={d.label} className={`rise-in ${styles.filterField}`} style={{ '--delay': `${0.27 + i * 0.12}s` }}>
+          <label key={d.key} className={`rise-in ${styles.filterField}`} style={{ '--delay': `${0.27 + i * 0.12}s` }}>
             <span className={styles.filterLabel}>{d.label}</span>
             <span className={styles.filterControl}>
-              <select className={styles.filterInput}>
-                <option>{d.placeholder}</option>
+              <select className={styles.filterInput} value={values[d.key]} onChange={set(d.key)}>
+                <option value="">{d.placeholder}</option>
+                {(options[d.key] || []).map((o) => <option key={o} value={o}>{o}</option>)}
               </select>
               <ChevronIcon />
             </span>

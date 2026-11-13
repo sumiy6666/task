@@ -1,7 +1,8 @@
 import { Reveal } from '@/components/ui/Reveal';
+import { ConnectButton } from './ConnectButton';
 import styles from './Members.module.css';
 
-export default function MemberDetail({ member }) {
+export default function MemberDetail({ member, live = false }) {
   if (!member) return null;
 
   const stats = [
@@ -37,7 +38,7 @@ export default function MemberDetail({ member }) {
           <h3 className={styles.sectionTitle}>Expertise</h3>
           <div className={styles.tags}>
             {member.expertise.map((tag) => (
-              <span key={tag} className={`cursor-pointer ${styles.tag}`}>{tag}</span>
+              <span key={tag} className={styles.tag}>{tag}</span>
             ))}
           </div>
         </div>
@@ -59,7 +60,7 @@ export default function MemberDetail({ member }) {
         ))}
       </div>
 
-      <button type="button" className={styles.follow}>FOLLOW</button>
+      <ConnectButton member={member} live={live} />
     </Reveal>
   );
 }
