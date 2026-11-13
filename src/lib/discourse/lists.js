@@ -333,7 +333,7 @@ export function loadDiscussions({ type, tag } = {}) {
       members,
       // Forum tags are the topics, most used first.
       tags: (tags?.tags || [])
-        .map((t) => ({ name: t.text || t.name || t.id, slug: t.id || t.name || t.text, count: t.count || 0 }))
+        .map((t) => ({ name: t.text || t.name || t.id, slug: t.name || t.text || String(t.id), count: t.count || 0 }))
         .filter((t) => t.count > 0)
         .sort((a, b) => b.count - a.count),
     };
