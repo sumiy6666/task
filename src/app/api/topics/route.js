@@ -1,10 +1,11 @@
-import { createTopic } from '@/lib/discourse';
+import { createTopic, getCategories } from '@/lib/discourse';
+import { categoriesFor, POST_KINDS } from '@/lib/discourse/post-kinds';
 import { errorResponse } from '@/lib/discourse/client';
 import { buildPollMarkup } from '@/lib/discourse/poll';
 
 export async function POST(request) {
   try {
-    const { type, title, body = '', categoryId = null, poll } = await request.json();
+    const { type, kind: sentKind, title, body = '', categoryId: sentCategoryId = null, poll } = await request.json();
     const cleanTitle = String(title || '').trim();
     if (!cleanTitle) return Response.json({ error: 'Please add a title.' }, { status: 422 });
 
@@ -25,6 +26,14 @@ export async function POST(request) {
     } else if (!raw) {
       return Response.json({ error: 'Please write something before posting.' }, { status: 422 });
     }
+
+    // The type of post decides its category: an article always goes into
+    // Articles, a poll into Polls, an insight into a discussion category. A
+    // category outside that group is replaced by the group's first one.
+    const kind = type === 'poll' ? 'poll' : POST_KINDS.includes(sentKind) ? sentKind : 'insight';
+    const group = categoriesFor(kind, await getCategories());
+    const chosen = group.find((c) => c.id != null && c.id === sentCategoryId) || group.find((c) => c.id != null);
+    const categoryId = chosen ? chosen.id : sentCategoryId;
 
     const result = await createTopic({ title: cleanTitle, raw, categoryId });
     return Response.json(result, { status: 201 });

@@ -35,6 +35,7 @@ function KindHeader({ kind, onBack, backLabel = 'GO BACK' }) {
   );
 }
 import { redirectIfSignedOut } from '@/lib/auth-client';
+import { categoriesFor } from '@/lib/discourse/post-kinds';
 
 let nextOptionId = 1;
 const newOption = (text = '') => ({ id: nextOptionId++, text });
@@ -68,11 +69,13 @@ function Author({ user }) {
   );
 }
 
-export function CategoryField({ categories, value, onChange, readOnly = false, className = '' }) {
+const CATEGORY_LABEL = { article: 'Article topic', poll: 'Category', insight: 'Categories' };
+
+export function CategoryField({ categories, value, onChange, readOnly = false, className = '', label = 'Categories' }) {
   const current = categories.find((c) => String(c.id ?? c.name) === value);
   return (
     <div className={`${styles.category} ${readOnly ? styles.categoryStatic : ''} ${className}`}>
-      <span className={styles.categoryLabel} id="category-label">Categories</span>
+      <span className={styles.categoryLabel} id="category-label">{label}</span>
       <span className={styles.categoryValue}>{current?.name || 'Select'}</span>
       <ChevronDownIcon className={styles.categoryChevron} />
       {!readOnly && (
@@ -99,11 +102,12 @@ export function CategoryField({ categories, value, onChange, readOnly = false, c
 export function ComposeFlow({ user, categories, initialType = 'discussion', initialTitle = '', initialCategory, initialBody = '', initialImages = [] }) {
   const router = useRouter();
   const keyOf = (c) => String(c.id ?? c.name);
-  const defaultKey = (type) => keyOf(categories.find((c) => (type === 'poll' ? c.isPoll : !c.isPoll)) || categories[0]);
+  const defaultKey = (type) => keyOf(categoriesFor(type === 'poll' ? 'poll' : 'insight', categories)[0] || categories[0]);
 
   const [step, setStep] = useState('edit');
   // What is being posted: 'article' | 'poll' | 'insight'; null shows the type cards.
-  const [kind, setKind] = useState(initialType === 'poll' ? 'poll' : initialBody || initialImages.length ? 'article' : null);
+  // Text started on the discussions page still asks which type it is.
+  const [kind, setKind] = useState(initialType === 'poll' ? 'poll' : null);
   const [categoryKey, setCategoryKey] = useState(() => {
     const named = initialCategory && categories.find((c) => c.name === initialCategory);
     return named ? keyOf(named) : defaultKey(initialType);
@@ -135,21 +139,17 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [step]);
 
-  const category = categories.find((c) => keyOf(c) === categoryKey);
+  // The categories this type of post may go to; the dropdown lists only these.
+  const choices = kind ? categoriesFor(kind, categories) : categoriesFor('insight', categories);
+  const category = choices.find((c) => keyOf(c) === categoryKey) || choices[0] || null;
   const isPoll = kind === 'poll';
 
-  // Picking a type moves to its usual category: polls to the Polls category
-  // (so they appear on the Poll page), insights to Articles/Insights.
+  // Picking a type moves the post into that type's categories.
   const chooseKind = (next) => {
     setKind(next);
     setError('');
-    const find = (test) => categories.find(test);
-    const target =
-      next === 'poll' ? find((c) => c.isPoll)
-      : next === 'insight' ? find((c) => !c.parentId && /insight|article/i.test(c.name))
-      : category?.isPoll ? find((c) => !c.isPoll)
-      : null;
-    if (target) setCategoryKey(keyOf(target));
+    const group = categoriesFor(next, categories);
+    if (!group.some((c) => keyOf(c) === categoryKey) && group[0]) setCategoryKey(keyOf(group[0]));
   };
   const filledOptions = options.map((o) => o.text.trim()).filter(Boolean);
   const close = useMemo(() => formatClose(endDate, endTime), [endDate, endTime]);
@@ -201,9 +201,10 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
             type: 'poll',
             title: title.trim(),
             categoryId: category?.id ?? null,
+            kind,
             poll: { options: filledOptions, allowMultiple, anonymous, closesAt: close?.iso || null },
           }
-        : { type: 'discussion', title: title.trim(), body: fullBody(), categoryId: category?.id ?? null };
+        : { type: 'discussion', kind, title: title.trim(), body: fullBody(), categoryId: category?.id ?? null };
       const { topicId, pending } = await postJson('/api/topics', payload);
       setCreated({ topicId, isPoll, pending: Boolean(pending) });
       setStep('success');
@@ -321,7 +322,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
         <h1 className={styles.srOnly}>Review and Publish</h1>
         <div className={styles.reviewTop}>
           <Author user={user} />
-          <CategoryField categories={categories} value={categoryKey} readOnly />
+          <CategoryField categories={choices} value={category ? keyOf(category) : ''} label={CATEGORY_LABEL[kind] || 'Categories'} readOnly />
         </div>
         <KindHeader kind="poll" onBack={() => setStep('edit')} backLabel="EDIT" />
         <h2 className={styles.reviewQuestion}>{title.trim()}</h2>
@@ -367,8 +368,10 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
           onChange={(e) => setTitle(e.target.value)}
         />
         <CategoryField
-          categories={categories}
-          value={categoryKey}
+          categories={choices}
+          value={category ? keyOf(category) : ''}
+          label={CATEGORY_LABEL[kind] || 'Categories'}
+          readOnly={isPoll && choices.length <= 1}
           onChange={(key) => {
             setCategoryKey(key);
             setError('');
