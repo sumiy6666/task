@@ -367,16 +367,20 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
           maxLength={255}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <CategoryField
-          categories={choices}
-          value={category ? keyOf(category) : ''}
-          label={CATEGORY_LABEL[kind] || 'Categories'}
-          readOnly={isPoll && choices.length <= 1}
-          onChange={(key) => {
-            setCategoryKey(key);
-            setError('');
-          }}
-        />
+        {/* The type decides where the post goes. The dropdown appears only
+            once an Article or Insight is chosen, to pick within that type;
+            polls always go to Polls. */}
+        {kind && !isPoll && choices.length > 1 && (
+          <CategoryField
+            categories={choices}
+            value={category ? keyOf(category) : ''}
+            label={CATEGORY_LABEL[kind] || 'Categories'}
+            onChange={(key) => {
+              setCategoryKey(key);
+              setError('');
+            }}
+          />
+        )}
       </div>
 
       {!kind ? (
