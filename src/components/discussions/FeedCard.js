@@ -36,7 +36,8 @@ const samplePoll = (labels) => ({ options: labels.map((label) => ({ id: label, l
 // `body` (paragraphs), the like/comment/view counts, `reply` (the latest
 // reply, with a reply box under it).
 export function FeedCard({ item, currentUser }) {
-  const href = topicHref(item.id);
+  // Articles open on their article page.
+  const href = item.isArticle && isLive(item.id) ? `/insights/${item.id}` : topicHref(item.id);
   const poll = item.poll || (item.pollOptions?.length ? samplePoll(item.pollOptions) : null);
   const isPoll = Boolean(poll);
 

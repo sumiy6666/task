@@ -104,6 +104,8 @@ export function mapTopic(topic, categoriesById = new Map()) {
     id: topic.id,
     title: withEmoji(topic.title),
     categoryName: categoriesById.get(topic.category_id)?.name || '',
+    // In the Articles category or one of its article topics: shown on /insights.
+    isArticle: /article|insight/i.test(categoriesById.get(topic.category_id)?.parentName || categoriesById.get(topic.category_id)?.name || ''),
     tags,
     firstPost: first || null,
     replies: threadReplies(rest),

@@ -89,6 +89,7 @@ function topicMapper(list, categoriesById) {
       timeAgo: timeAgo(t.created_at),
       createdAt: t.created_at,
       category: categoriesById.get(t.category_id)?.name || '',
+      categoryId: t.category_id,
       pinned: Boolean(t.pinned),
       views: t.views ?? null,
       replies: Math.max(0, (t.posts_count || 1) - 1),
@@ -349,7 +350,8 @@ export function loadDiscussions({ type, tag } = {}) {
       // The discussions feed, latest activity first (a new reply brings a
       // conversation back to the top), each with its latest reply. The page
       // filters it by category and trims it.
-      feed: withLatestReplies(feedTopics.filter((t) => !t.pinned || filteredList).slice(0, 30), recentPosts),
+      feed: withLatestReplies(feedTopics.filter((t) => !t.pinned || filteredList).slice(0, 30), recentPosts)
+        .map((t) => (articleIds.has(t.categoryId) ? { ...t, isArticle: true } : t)),
       filters: [
         { key: 'articles', name: 'Articles', count: compactNumber(articleCount) },
         { key: 'insights', name: 'Insights', count: compactNumber(otherCount) },

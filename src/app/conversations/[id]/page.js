@@ -44,6 +44,8 @@ export default async function ConversationPage({ params }) {
   const { id } = await params;
   const [topic, currentUser] = await Promise.all([loadTopic(id), getCurrentUser()]);
   if (!topic) notFound();
+  // Articles have their own page; any link to one as a conversation lands there.
+  if (topic.isArticle) redirect(`/insights/${topic.id}`);
 
   // The side column always lists other conversations: the forum's own
   // suggestions, topped up with the latest ones when it has few.
