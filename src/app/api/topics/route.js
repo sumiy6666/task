@@ -1,11 +1,12 @@
-import { createTopic, getCategories } from '@/lib/discourse';
+import { createTopic, getCategories, getTagOptions } from '@/lib/discourse';
+import { cleanTags } from '@/lib/discourse/tags';
 import { categoriesFor, POST_KINDS } from '@/lib/discourse/post-kinds';
 import { errorResponse } from '@/lib/discourse/client';
 import { buildPollMarkup } from '@/lib/discourse/poll';
 
 export async function POST(request) {
   try {
-    const { type, kind: sentKind, title, body = '', categoryId: sentCategoryId = null, poll } = await request.json();
+    const { type, kind: sentKind, title, body = '', categoryId: sentCategoryId = null, poll, tags: sentTags = [] } = await request.json();
     const cleanTitle = String(title || '').trim();
     if (!cleanTitle) return Response.json({ error: 'Please add a title.' }, { status: 422 });
 
@@ -35,7 +36,11 @@ export async function POST(request) {
     const chosen = group.find((c) => c.id != null && c.id === sentCategoryId) || group.find((c) => c.id != null);
     const categoryId = chosen ? chosen.id : sentCategoryId;
 
-    const result = await createTopic({ title: cleanTitle, raw, categoryId });
+    // Optional tags, cleaned the way the forum stores them.
+    const limits = Array.isArray(sentTags) && sentTags.length ? await getTagOptions() : null;
+    const tags = limits ? cleanTags(sentTags, limits.max, limits.maxLength) : [];
+
+    const result = await createTopic({ title: cleanTitle, raw, categoryId, tags });
     return Response.json(result, { status: 201 });
   } catch (error) {
     return errorResponse(error);

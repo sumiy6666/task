@@ -36,6 +36,7 @@ function KindHeader({ kind, onBack, backLabel = 'GO BACK' }) {
 }
 import { redirectIfSignedOut } from '@/lib/auth-client';
 import { categoriesFor } from '@/lib/discourse/post-kinds';
+import { TagInput } from './TagInput';
 
 let nextOptionId = 1;
 const newOption = (text = '') => ({ id: nextOptionId++, text });
@@ -99,7 +100,7 @@ export function CategoryField({ categories, value, onChange, readOnly = false, c
 // `initialTitle`, `initialCategory` (a category name) and `initialBody` (e.g.
 // images and links added there) prefill the form from the composer on the
 // discussions page.
-export function ComposeFlow({ user, categories, initialType = 'discussion', initialTitle = '', initialCategory, initialBody = '', initialImages = [] }) {
+export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5, maxLength: 20 }, initialType = 'discussion', initialTitle = '', initialCategory, initialBody = '', initialImages = [] }) {
   const router = useRouter();
   const keyOf = (c) => String(c.id ?? c.name);
   const defaultKey = (type) => keyOf(categoriesFor(type === 'poll' ? 'poll' : 'insight', categories)[0] || categories[0]);
@@ -113,6 +114,8 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
     return named ? keyOf(named) : defaultKey(initialType);
   });
   const [title, setTitle] = useState(initialTitle);
+  // Optional forum tags for the post.
+  const [tags, setTags] = useState([]);
   // The post text as the editor's HTML; it goes to the forum as Markdown.
   const [initialHtml] = useState(() => markdownLinksToHtml(initialBody));
   const [body, setBody] = useState(initialHtml);
@@ -159,6 +162,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
     setStep('edit');
     setKind(null);
     setTitle('');
+    setTags([]);
     setBody('');
     bodyRef.current?.clear();
     setImages([]);
@@ -202,9 +206,10 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
             title: title.trim(),
             categoryId: category?.id ?? null,
             kind,
+            tags,
             poll: { options: filledOptions, allowMultiple, anonymous, closesAt: close?.iso || null },
           }
-        : { type: 'discussion', kind, title: title.trim(), body: fullBody(), categoryId: category?.id ?? null };
+        : { type: 'discussion', kind, title: title.trim(), body: fullBody(), categoryId: category?.id ?? null, tags };
       const { topicId, pending } = await postJson('/api/topics', payload);
       setCreated({ topicId, isPoll, pending: Boolean(pending) });
       setStep('success');
@@ -232,6 +237,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
         reply: fullBody(),
         categoryId: category?.id ?? null,
         archetypeId: 'regular',
+        tags,
         poll: isPoll ? { options: filledOptions, allowMultiple, anonymous, endDate, endTime } : undefined,
       };
       const { sequence } = await postJson('/api/drafts', { data, sequence: draftSequence });
@@ -326,6 +332,7 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
         </div>
         <KindHeader kind="poll" onBack={() => setStep('edit')} backLabel="EDIT" />
         <h2 className={styles.reviewQuestion}>{title.trim()}</h2>
+        {tags.length > 0 && <p className={styles.reviewTags}>{tags.map((t) => `#${t}`).join('  ')}</p>}
         <ul className={styles.reviewOptions}>
           {filledOptions.map((o, i) => (
             <li key={i}>{o}</li>
@@ -382,6 +389,10 @@ export function ComposeFlow({ user, categories, initialType = 'discussion', init
           />
         )}
       </div>
+
+      {kind && (
+        <TagInput value={tags} onChange={setTags} options={tagOptions.tags} max={tagOptions.max} maxLength={tagOptions.maxLength} />
+      )}
 
       {!kind ? (
         <div className={styles.kinds} role="group" aria-label="What would you like to post?">

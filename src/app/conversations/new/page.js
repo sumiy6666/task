@@ -2,7 +2,7 @@ import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { ComposeFlow } from '@/components/compose/ComposeFlow';
 import styles from '@/components/compose/Compose.module.css';
 import { SignInCard } from '@/components/compose/SignInCard';
-import { getCategories, getCurrentUser } from '@/lib/discourse';
+import { getCategories, getCurrentUser, getTagOptions } from '@/lib/discourse';
 
 export const metadata = { title: 'Start a Discussion | AV Community' };
 
@@ -15,13 +15,13 @@ export default async function NewConversationPage({ searchParams }) {
   } catch {}
   const user = await getCurrentUser();
   const returnTo = type === 'poll' ? '/conversations/new?type=poll' : '/conversations/new';
-  const categories = user ? await getCategories() : [];
+  const [categories, tagOptions] = user ? await Promise.all([getCategories(), getTagOptions().catch(() => undefined)]) : [[], undefined];
 
   return (
     <main className={`container min-h-screen ${styles.page}`}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Start a Discussion' }]} />
       {user ? (
-        <ComposeFlow user={user} categories={categories} initialType={type === 'poll' ? 'poll' : 'discussion'} initialTitle={title || ''} initialCategory={category} initialBody={body || ''} initialImages={initialImages} />
+        <ComposeFlow user={user} categories={categories} tagOptions={tagOptions} initialType={type === 'poll' ? 'poll' : 'discussion'} initialTitle={title || ''} initialCategory={category} initialBody={body || ''} initialImages={initialImages} />
       ) : (
         <SignInCard returnTo={returnTo} />
       )}

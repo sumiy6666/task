@@ -1,0 +1,158 @@
+/* Tags box in the composer: same border, radius and height as the title box. */
+.wrap {
+  --px: min(calc(100vw / 1440), 1px);
+  position: relative;
+  margin-top: calc(16 * var(--px));
+}
+
+.box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-height: calc(58 * var(--px));
+  padding: 9px 64px 9px calc(20 * var(--px));
+  border: 1px solid var(--color-input-border);
+  border-radius: calc(8 * var(--px));
+  background: #fff;
+  cursor: text;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.box:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(17, 160, 219, 0.12);
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: var(--color-primary);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 30px;
+  padding: 0 6px 0 12px;
+  border-radius: 999px;
+  background: #E8F5FC;
+  color: #0B7FB3;
+  font-size: 13.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: #0B7FB3;
+  transition: background 0.15s;
+}
+
+.remove:hover {
+  background: rgba(11, 127, 179, 0.15);
+}
+
+.remove svg {
+  width: 11px;
+  height: 11px;
+}
+
+.input {
+  flex: 1;
+  min-width: 180px;
+  height: 30px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-size: calc(14 * var(--px));
+  color: #111;
+}
+
+.input::placeholder {
+  color: #8a9099;
+}
+
+.count {
+  position: absolute;
+  top: calc(29 * var(--px));
+  right: 16px;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #9AA3AD;
+  pointer-events: none;
+}
+
+/* Suggestions under the box. */
+.list {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 290px;
+  overflow-y: auto;
+  padding: 6px;
+  list-style: none;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(19, 39, 66, 0.16);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #1d1d1d;
+  text-align: left;
+}
+
+.optionActive {
+  background: #EEF7FC;
+}
+
+.uses {
+  margin-left: auto;
+  font-size: 13px;
+  color: #9AA3AD;
+}
+
+.plus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.option strong {
+  color: #0B7FB3;
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  .wrap { --px: 1px; }
+}
+
+@media (max-width: 640px) {
+  .box { padding-right: 52px; }
+  .input { min-width: 120px; font-size: 16px; }
+  .option { font-size: 14px; }
+}

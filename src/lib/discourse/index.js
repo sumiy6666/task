@@ -9,6 +9,7 @@ import { loadDemo, recordDemoOp } from './demo-session';
 import { mockCategories, mockGetTopic, mockUser, nextTopicId } from './mock';
 import { countryOf, flagUrl } from '../locations';
 import { loadMessageThreads } from './profile';
+import { MAX_TAG_LENGTH, MAX_TAGS } from './tags';
 
 export { isDiscourseConfigured, isSignInEnabled };
 
@@ -53,6 +54,26 @@ async function withCountry(user, location) {
   }
   const country = countryOf(location);
   return country ? { ...user, country: country.name, flag: flagUrl(country.code) } : user;
+}
+
+// The forum's tags, most used first, and its limits, for the composer's tags box.
+export async function getTagOptions() {
+  const fallback = { tags: [], max: MAX_TAGS, maxLength: MAX_TAG_LENGTH };
+  if (!isDiscourseConfigured()) {
+    return { ...fallback, tags: [['familyoffice', 12], ['investments', 9], ['bestpractices', 7], ['liquidity', 4], ['reporting', 3]].map(([name, count]) => ({ name, count })) };
+  }
+  const [data, site] = await Promise.all([
+    discourseFetch('/tags.json').catch(() => null),
+    discourseFetch('/site.json').catch(() => null),
+  ]);
+  const tags = (data?.tags || [])
+    .map((t) => ({ name: t.name || t.text || String(t.id), count: t.count || 0 }))
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  return {
+    tags,
+    max: Number(site?.max_tags_per_topic) || MAX_TAGS,
+    maxLength: Number(site?.max_tag_length) || MAX_TAG_LENGTH,
+  };
 }
 
 export async function getCategories() {

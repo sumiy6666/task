@@ -82,6 +82,9 @@
 .titleInput::placeholder { color: #1d1d1d; }
 .titleInput:focus, .bodyInput:focus, .optionInput:focus-within, .dateInput:focus { border-color: var(--color-primary); }
 
+/* Tags under the question on the poll review step. */
+.reviewTags { margin-top: 8px; font-size: 14px; color: #0B7FB3; }
+
 /* Category select */
 .category {
   position: relative;
