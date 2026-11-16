@@ -391,7 +391,7 @@ export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5,
       </div>
 
       {kind && (
-        <TagInput value={tags} onChange={setTags} options={tagOptions.tags} max={tagOptions.max} maxLength={tagOptions.maxLength} />
+        <TagInput value={tags} onChange={setTags} options={tagOptions.tags} max={tagOptions.max} maxLength={tagOptions.maxLength} canCreate={Boolean(user?.staff) || !tagOptions.tags.length} />
       )}
 
       {!kind ? (

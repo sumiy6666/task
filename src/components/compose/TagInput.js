@@ -13,7 +13,9 @@ const TagIcon = (props) => (
 // "Optional tags": chosen tags as chips, a box to search the forum's tags
 // (with how often each is used) or add a new one, as on the forum's composer.
 // Enter or comma adds what is typed; Backspace in an empty box removes the last tag.
-export function TagInput({ value, onChange, options = [], max = 5, maxLength = 20 }) {
+// `canCreate`: the forum lets only staff (and trust level 3) make new tags,
+// so other members pick from the existing ones.
+export function TagInput({ value, onChange, options = [], max = 5, maxLength = 20, canCreate = true }) {
   const [text, setText] = useState('');
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
@@ -28,13 +30,14 @@ export function TagInput({ value, onChange, options = [], max = 5, maxLength = 2
       .filter((t) => !value.includes(t.name) && (!typed || t.name.includes(typed)))
       .slice(0, 8)
       .map((t) => ({ ...t, isNew: false }));
-    if (typed && !value.includes(typed) && !options.some((t) => t.name === typed)) matches.push({ name: typed, count: 0, isNew: true });
+    if (canCreate && typed && !value.includes(typed) && !options.some((t) => t.name === typed)) matches.push({ name: typed, count: 0, isNew: true });
     return matches;
-  }, [options, value, typed]);
+  }, [options, value, typed, canCreate]);
 
   const add = (name) => {
     const tag = cleanTag(name, maxLength);
     if (!tag || value.includes(tag) || full) return;
+    if (!canCreate && !options.some((t) => t.name === tag)) return;
     onChange([...value, tag]);
     setText('');
     setActive(0);
@@ -79,7 +82,7 @@ export function TagInput({ value, onChange, options = [], max = 5, maxLength = 2
             ref={inputRef}
             className={styles.input}
             value={text}
-            placeholder={value.length ? 'Add another tag…' : 'Optional tags… type to search or create'}
+            placeholder={value.length ? 'Add another tag…' : canCreate ? 'Optional tags… type to search or create' : 'Optional tags… type to search'}
             aria-label="Tags"
             role="combobox"
             aria-expanded={showList}
