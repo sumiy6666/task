@@ -358,7 +358,7 @@ export function loadDiscussions({ type, tag } = {}) {
         .map((t) => (articleIds.has(t.categoryId) ? { ...t, isArticle: true } : t)),
       filters: [
         { key: 'articles', name: 'Articles', count: compactNumber(articleCount) },
-        { key: 'insights', name: 'Insights', count: compactNumber(otherCount) },
+        { key: 'insights', name: 'Posts', count: compactNumber(otherCount) },
         { key: 'polls', name: 'Polls', count: compactNumber(pollCount) },
       ],
       // An open poll for the feed, and the most-voted one for the sidebar.

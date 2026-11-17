@@ -79,7 +79,7 @@ const sampleCategories = [
 
 const sampleFilters = [
   { key: 'articles', name: 'Articles', count: '1.2K' },
-  { key: 'insights', name: 'Insights', count: '236' },
+  { key: 'insights', name: 'Posts', count: '236' },
   { key: 'polls', name: 'Polls', count: '186' },
 ];
 

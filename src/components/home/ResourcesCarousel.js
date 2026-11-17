@@ -5,12 +5,12 @@ import { Carousel } from '../ui/Carousel';
 import { Reveal } from '../ui/Reveal';
 import styles from './ResourcesCarousel.module.css';
 
-// Fixed cards (not from the forum): Article and Insight open the Insights
-// page, Poll opens the Poll page.
+// Fixed cards (not from the forum): Posts and Articles open the Insights
+// page, Polls opens the Poll page.
 const resources = [
-  { tag: 'Article', title: 'Handbook on Philanthropy', image: '/images/resource-article.jpg', href: '/insights' },
-  { tag: 'Insight', title: 'The Future of family governance: Principles for sustainable legacy', image: '/images/resource-insight.jpg', href: '/insights' },
-  { tag: 'Poll', title: 'Security and Control in Wealth Tech', image: '/images/resource-poll.jpg', href: '/poll' },
+  { tag: 'Posts', title: 'Short updates and perspectives curated by the Asset Vantage team.', image: '/images/resource-insight.jpg', href: '/insights' },
+  { tag: 'Articles', title: 'In-depth reads on family office accounting, performance, operations and technology.', image: '/images/resource-article.jpg', href: '/insights' },
+  { tag: 'Polls', title: 'Weigh in and see how your peers approach key decisions.', image: '/images/resource-poll.jpg', href: '/poll' },
 ];
 
 export function ResourcesCarousel() {
