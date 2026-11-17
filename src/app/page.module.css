@@ -10,6 +10,10 @@
   }
 }
 
+.offers {
+  margin-bottom: 2.75rem;
+}
+
 .gridRow {
   display: flex;
   gap: 2.45rem;

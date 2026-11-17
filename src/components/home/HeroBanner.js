@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './HeroBanner.module.css';
 import { Button } from '../ui/Button';
-import { ArrowLeft, ArrowRight, MessageSquare } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 // Sample slides, shown when Discourse is not connected.
 const sampleArticle = {
@@ -59,13 +59,10 @@ export function HeroBanner({ article = null, event = null }) {
     <div className={styles.heroWrapper}>
       <div className={styles.welcomeSection}>
         <div className={styles.welcomeText}>
-          <h1 className="rise-in">Welcome to <span className={styles.highlight}>AV COMMUNITY</span></h1>
+          <h1 className="rise-in">Welcome to the <span className={styles.highlight}>AV Community</span></h1>
           <p className="rise-in" style={{ '--delay': '0.15s' }}>Connect, learn and grow with professionals around the world.</p>
         </div>
         <div className={`${styles.welcomeActions} rise-in`} style={{ '--delay': '0.3s' }}>
-          <Button href="/conversations/new" variant="secondary" icon={<MessageSquare size={18} strokeWidth={1.5} />} iconPosition="left" className={styles.discussionBtn}>
-            START A DISCUSSION
-          </Button>
           <Button href="/discussions" variant="primary" icon={<ArrowRight size={16} />} iconPosition="right" className={styles.dashboardBtn}>
             MY DASHBOARD
           </Button>

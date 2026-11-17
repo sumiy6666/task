@@ -168,8 +168,10 @@ export default async function DiscussionPage({ searchParams }) {
     <main className={`container ${styles.page}`}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Discussion' }]} />
 
-      <div className={styles.layout}>
-        <DiscussionComposer avatar={user?.avatar} categories={categories.filter((c) => c.name !== 'All categories')} />
+      <div className={`${styles.layout} ${user?.admin ? '' : styles.noComposer}`}>
+        {user?.admin && (
+          <DiscussionComposer avatar={user.avatar} categories={categories.filter((c) => c.name !== 'All categories')} />
+        )}
 
         <div className={styles.sideFilters}>
           <TypeFilter filters={filters} active={type} />

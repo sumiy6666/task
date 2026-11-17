@@ -37,9 +37,12 @@ export function TypeFilter({ filters, active }) {
   return <FilterCard id="filter-title" title="FILTER" rows={rows} active={active} />;
 }
 
+// Forum tags are lowercase; the list shows them with a capital first letter.
+const capitalize = (name = '') => name.charAt(0).toUpperCase() + name.slice(1);
+
 // "Topics": the forum's tags, most used first, in a scrolling list.
 export function TopicFilter({ topics, active }) {
   if (!topics.length) return null;
-  const rows = topics.map((t) => ({ key: t.slug, name: t.name, count: t.count, href: `/discussions?tag=${encodeURIComponent(t.slug)}` }));
+  const rows = topics.map((t) => ({ key: t.slug, name: capitalize(t.name), count: t.count, href: `/discussions?tag=${encodeURIComponent(t.slug)}` }));
   return <FilterCard id="topics-title" title="TOPICS" rows={rows} active={active} scroll />;
 }

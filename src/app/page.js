@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './page.module.css';
 import { HeroBanner } from '@/components/home/HeroBanner';
-import { DiscussionForum } from '@/components/home/DiscussionForum';
+import { OfferCards } from '@/components/about/OfferCards';
 import { ResourcesCarousel } from '@/components/home/ResourcesCarousel';
 import { PollWidget } from '@/components/home/PollWidget';
 import { UpdateList } from '@/components/home/UpdateList';
@@ -16,7 +16,10 @@ export default async function Home() {
   return (
     <main className={`container ${styles.main}`}>
       <HeroBanner article={live?.hero.article} event={live?.hero.event || orderEvents(withUpcoming(SAMPLE_EVENTS))[0]} />
-      <DiscussionForum topics={live?.forum} />
+      {/* "What you can do here": the same cards as on the About page. */}
+      <div className={styles.offers}>
+        <OfferCards />
+      </div>
       <ResourcesCarousel resources={live?.resources} />
 
       {/* Poll + News */}

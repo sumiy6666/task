@@ -29,6 +29,14 @@
 .sideFilters { grid-column: 2; grid-row: 2; display: flex; flex-direction: column; gap: 1.75rem; min-width: 0; }
 .sidePoll { grid-column: 2; grid-row: 3; }
 
+/* No composer (only admins get one): everything moves up a row. */
+@media (min-width: 1025px) {
+  .noComposer { grid-template-rows: auto 1fr; }
+  .noComposer .feed { grid-row: 1 / span 2; }
+  .noComposer .sideFilters { grid-row: 1; }
+  .noComposer .sidePoll { grid-row: 2; }
+}
+
 .card,
 .composer,
 .categoriesCard {

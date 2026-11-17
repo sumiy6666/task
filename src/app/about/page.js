@@ -23,8 +23,7 @@ export default function AboutPage() {
         titleWidth="min(36.9vw, 480px)"
         text="Connect with peers, learn from real world experience, build your AV knowledge and stay closer to the ideas shaping better financial operations."
         actions={[
-          { label: 'Explore the community', href: '/discussions', arrow: true },
-          { label: 'Start a conversation', href: '/conversations/new', variant: 'solid' }
+          { label: 'Explore the community', href: '/discussions', arrow: true }
         ]}
       />
 

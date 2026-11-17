@@ -10,6 +10,8 @@ export function mapUser(user) {
     avatar: avatarUrl(user.avatar_template),
     // Admins and moderators approve new members.
     staff: Boolean(user.admin || user.moderator || user.staff),
+    // Only admins see the "Start a Discussion" box on the discussions page.
+    admin: Boolean(user.admin),
     // New personal messages, for the header's message dot.
     unreadMessages: user.new_personal_messages_notifications_count || 0,
   };
