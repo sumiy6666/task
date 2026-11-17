@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import { unstable_rethrow } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { SignInNotice } from '@/components/layout/SignInNotice';
 import { getCurrentUser, isDiscourseConfigured, isSignInEnabled } from '@/lib/discourse';
@@ -23,6 +24,8 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   // A Discourse outage should not take the whole site down with it.
   const user = await getCurrentUser().catch((error) => {
+    // A rejected sign-in key redirects to sign in again; let that through.
+    unstable_rethrow(error);
     console.error('Could not load the signed-in member', error);
     return null;
   });

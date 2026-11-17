@@ -126,7 +126,7 @@ const sidebarPoll = (p) => ({
 });
 
 export default async function DiscussionPage({ searchParams }) {
-  const { category, type: typeParam, tag: tagParam, topics: topicsParam } = await searchParams;
+  const { category, type: typeParam, tag: tagParam } = await searchParams;
   // ?type= (Filter card) and ?tag= (Topics card) narrow the feed; ?category=
   // comes from the side menu.
   const type = FEED_TYPES.includes(typeParam) ? typeParam : null;
@@ -175,7 +175,7 @@ export default async function DiscussionPage({ searchParams }) {
 
         <div className={styles.sideFilters}>
           <TypeFilter filters={filters} active={type} />
-          <TopicFilter topics={topics} active={tag} showAll={topicsParam === 'all'} />
+          <TopicFilter topics={topics} active={tag} />
         </div>
 
         <section className={styles.feed} aria-label="Discussions">

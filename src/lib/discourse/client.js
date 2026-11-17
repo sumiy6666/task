@@ -1,7 +1,18 @@
 // Server-side Discourse API client. Never import this from a client component:
 // it reads API keys from the environment and the member's cookies.
 import { revalidateTag } from 'next/cache';
-import { getUserAuth } from './session';
+import { headers as requestHeaders } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { getUserAuth, PAGE_HEADER } from './session';
+
+// The page being rendered, or null outside a page render (API routes, builds).
+async function renderingPage() {
+  try {
+    return (await requestHeaders()).get(PAGE_HEADER);
+  } catch {
+    return null;
+  }
+}
 
 const BASE_URL = (process.env.DISCOURSE_URL || '').replace(/\/+$/, '');
 const API_KEY = process.env.DISCOURSE_API_KEY || '';
@@ -56,6 +67,16 @@ const MAX_RETRY_WAIT_SECONDS = 4;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// The last good answer to each shared read, kept in this server's memory. When
+// the forum rate-limits a read, the page shows these slightly older lists
+// instead of failing. Oldest entries go first past the limit.
+const lastGood = new Map();
+const LAST_GOOD_LIMIT = 500;
+function remember(key, data) {
+  lastGood.delete(key);
+  lastGood.set(key, data);
+  if (lastGood.size > LAST_GOOD_LIMIT) lastGood.delete(lastGood.keys().next().value);
+}
 
 // `revalidate` (seconds) overrides how long a shared read is cached. Reads made
 // with a member's own key are personal and never cached.
@@ -97,7 +118,9 @@ export async function discourseFetch(path, { method = 'GET', body, formData, use
     payload = JSON.stringify(body);
   }
 
-  const caching = !user && method === 'GET' ? { next: { revalidate, tags: [CACHE_TAG] } } : { cache: 'no-store' };
+  const shared = !user && method === 'GET';
+  const caching = shared ? { next: { revalidate, tags: [CACHE_TAG] } } : { cache: 'no-store' };
+  const sharedKey = shared && `${headers['Api-Key'] ? `site:${headers['Api-Username']}` : 'guest'} ${path}`;
   // A retry must reach the forum again: its own signal opts it out of Next's
   // per-render memoization, which would otherwise replay the first answer.
   const signal = attempt > 0 ? new AbortController().signal : undefined;
@@ -116,8 +139,16 @@ export async function discourseFetch(path, { method = 'GET', body, formData, use
       await sleep(wait * 1000);
       return discourseFetch(path, { method, body, formData, username, revalidate, personal, requireUser, asSite, headers: extraHeaders }, 1);
     }
+    if (res.status === 429 && sharedKey && lastGood.has(sharedKey)) {
+      console.warn(`Discourse rate limit: showing the last good ${path}`);
+      return lastGood.get(sharedKey);
+    }
     // A revoked or expired member key comes back as 403 "invalid_access".
+    // While a page renders, the stale key is cleared and the member is sent to
+    // sign in again, then back; API routes answer 401 as before.
     if (user && (res.status === 401 || (res.status === 403 && data?.error_type === 'invalid_access'))) {
+      const page = await renderingPage();
+      if (page) redirect(`/api/auth/expired?return=${encodeURIComponent(page)}`);
       throw new DiscourseError(SIGN_IN_REQUIRED, 401);
     }
     const errors = data?.errors || (data?.error ? [data.error] : []);
@@ -125,6 +156,7 @@ export async function discourseFetch(path, { method = 'GET', body, formData, use
   }
   // Something changed on the forum: the next page view loads fresh lists.
   if (method !== 'GET' && !QUIET_WRITES.includes(path)) revalidateTag(CACHE_TAG, { expire: 0 });
+  if (sharedKey) remember(sharedKey, data);
   return data;
 }
 

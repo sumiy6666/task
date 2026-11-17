@@ -5,6 +5,8 @@ import { cookies } from 'next/headers';
 export const KEY_COOKIE = 'av_user_key';
 export const CLIENT_COOKIE = 'av_client_id';
 export const PENDING_COOKIE = 'av_auth_pending';
+// Set by the proxy on page requests: the page being rendered.
+export const PAGE_HEADER = 'x-av-page';
 
 export const cookieOptions = (maxAge) => ({
   httpOnly: true,

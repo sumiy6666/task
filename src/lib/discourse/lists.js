@@ -32,7 +32,10 @@ async function safely(label, load) {
   try {
     return await load();
   } catch (error) {
-    console.error(`Could not load ${label} from Discourse`, error);
+    // Hitting the forum's rate limit is expected now and then: the page falls
+    // back to its sample content, so a short warning is enough.
+    if (error?.status === 429) console.warn(`Discourse rate limit: ${label} shows sample content (${error.message})`);
+    else console.error(`Could not load ${label} from Discourse`, error);
     return null;
   }
 }
@@ -41,7 +44,8 @@ async function safely(label, load) {
 let restricted = new Set();
 
 async function loadCategories() {
-  const [data, hidden] = await Promise.all([discourseFetch('/categories.json?include_subcategories=true'), restrictedCategoryIds()]);
+  // Categories rarely change, so they are cached longer than other lists.
+  const [data, hidden] = await Promise.all([discourseFetch('/categories.json?include_subcategories=true', { revalidate: PROFILE_SECONDS }), restrictedCategoryIds()]);
   restricted = hidden;
   return (data.category_list?.categories || []).filter((c) => !c.read_restricted && c.slug !== 'uncategorized');
 }

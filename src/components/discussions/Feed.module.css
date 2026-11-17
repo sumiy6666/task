@@ -485,19 +485,6 @@ a.stat:hover, .statButton:hover:not(:disabled), .statActive { color: var(--color
   border-bottom: 1px solid #D5DAE1;
 }
 
-/* "… and more" under the Topics list. */
-.moreLink {
-  display: inline-block;
-  margin: 1rem 0 0 3.25rem;
-  font-size: 1.05rem;
-  font-style: italic;
-  color: var(--color-primary);
-}
-
-.moreLink:hover {
-  text-decoration: underline;
-}
-
 li:last-child > .categoryRow::after {
   display: none;
 }
@@ -627,10 +614,6 @@ li:last-child > .categoryRow::after {
     display: none;
   }
 
-  .moreLink {
-    margin: 0.75rem 0 0 1.5rem;
-    font-size: 0.9rem;
-  }
 
   .card {
     padding: 2rem 2rem 1.75rem 2.5rem;

@@ -1,9 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
+import { ClampedText } from '@/components/ui/ClampedText';
 
 const metaStyle = { fontSize: 'calc(0.95 * var(--fa) + var(--fb))', color: '#c2c2c2' };
 
 export function InsightListCard({ article }) {
+  const href = `/insights/${article.id}`;
   return (
     <div className="flex max-sm:flex-col border-b border-[#e5e7eb]" style={{ gap: 'calc(1.45 * var(--sa))', padding: 'calc(2.4 * var(--sa)) 0' }}>
       <img
@@ -13,14 +15,21 @@ export function InsightListCard({ article }) {
         style={{ width: 'calc(15.2 * var(--da) + var(--db))', height: 'calc(8.2 * var(--da) + var(--db))', borderRadius: 'calc(0.75 * var(--sa))', boxShadow: '0 calc(0.5 * var(--sa)) calc(1 * var(--sa)) rgba(0, 0, 0, 0.2)' }}
       />
       <div className="flex-1 min-w-0 flex flex-col justify-center">
-        <Link prefetch={false} href={`/insights/${article.id}`} className="no-underline text-inherit">
+        <Link prefetch={false} href={href} className="no-underline text-inherit">
           <h3 className="text-[#111] hover:text-[#00A4E4] transition-colors max-lg:max-w-none!" style={{ fontSize: 'calc(1.15 * var(--fa) + var(--fb))', fontWeight: 500, lineHeight: 1.36, marginBottom: 'calc(0.4 * var(--sa))', maxWidth: 'calc(20 * var(--da) + var(--db))' }}>
             {article.title}
           </h3>
         </Link>
-        <p className="text-[#4b5563] line-clamp-2 max-lg:max-w-none!" style={{ fontSize: 'calc(0.95 * var(--fa) + var(--fb))', lineHeight: 1.45, marginBottom: 'calc(1 * var(--sa))', maxWidth: 'calc(22 * var(--da) + var(--db))' }}>
-          {article.description}
-        </p>
+        {article.description && (
+          <ClampedText
+            text={article.description}
+            href={href}
+            lines={2}
+            className="text-[#4b5563] max-lg:max-w-none!"
+            style={{ fontSize: 'calc(0.95 * var(--fa) + var(--fb))', lineHeight: 1.45, marginBottom: 'calc(1 * var(--sa))', maxWidth: 'calc(22 * var(--da) + var(--db))' }}
+            moreClassName="italic text-[#00A4E4] hover:underline"
+          />
+        )}
         <div className="flex justify-between items-center gap-x-4 max-sm:flex-col max-sm:items-start max-sm:gap-1">
           <div className="flex flex-wrap items-center whitespace-nowrap" style={{ ...metaStyle, gap: 'calc(1.6 * var(--sa))' }}>
             <span>{article.author}</span>

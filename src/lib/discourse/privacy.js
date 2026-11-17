@@ -6,7 +6,7 @@ import { discourseFetch } from './client';
 // Ids of the categories only some members can read (from the full, flat
 // category list, so subcategories are covered too).
 export async function restrictedCategoryIds() {
-  const site = await discourseFetch('/site.json').catch(() => null);
+  const site = await discourseFetch('/site.json', { revalidate: 300 }).catch(() => null);
   return new Set((site?.categories || []).filter((c) => c.read_restricted).map((c) => c.id));
 }
 
