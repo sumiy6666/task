@@ -3,9 +3,11 @@ import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { Faq } from '@/components/ui/Faq';
 import { PollWidget } from '@/components/home/PollWidget';
 import { JoinHero } from '@/components/join/JoinHero';
+import { JoinStatus } from '@/components/join/JoinStatus';
 import { WhyJoin } from '@/components/join/WhyJoin';
 import { MemberVoices } from '@/components/join/MemberVoices';
 import { getCurrentUser, isSignInEnabled } from '@/lib/discourse';
+import { discourseBaseUrl } from '@/lib/discourse/client';
 import { loadJoin } from '@/lib/discourse/lists';
 import { listCountries } from '@/lib/locations';
 import home from '@/app/page.module.css';
@@ -28,15 +30,35 @@ const FAQS = [
   { q: 'Who uses Asset Vantage?', a: 'Single and multi-family offices, and the finance and investment teams who run them.' },
 ];
 
+// Where the "Set password" button goes: the forum's own set-password page for
+// the token in the email (when the email links here with ?token=), otherwise
+// its "forgot password" page, which sends a fresh link.
+function setPasswordHref(token) {
+  const forum = discourseBaseUrl();
+  if (!forum) return '/signin';
+  return /^[a-zA-Z0-9]+$/.test(token || '') ? `${forum}/u/password-reset/${token}` : `${forum}/password-reset`;
+}
+
 // New members ask to join here; signed-in members have nothing to do.
-export default async function JoinPage() {
+// /join?approved=1 (from the approval email) shows the "you're approved" card.
+export default async function JoinPage({ searchParams }) {
+  const { approved, token } = await searchParams;
   if (isSignInEnabled() && (await getCurrentUser().catch(() => null))) redirect('/');
   const live = await loadJoin();
 
   return (
     <main className={`container min-h-screen ${home.main} ${styles.page}`}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Join' }]} />
-      <JoinHero topics={live?.topics?.length ? live.topics : SAMPLE_TOPICS} countries={listCountries()} />
+      {approved ? (
+        <JoinStatus
+          kind="approved"
+          title="You’re Approved"
+          lines={['Welcome to AV Community.', 'Click on the button below to set your password and access your account.']}
+          action={{ label: 'Set password', href: setPasswordHref(token) }}
+        />
+      ) : (
+        <JoinHero topics={live?.topics?.length ? live.topics : SAMPLE_TOPICS} countries={listCountries()} />
+      )}
       <WhyJoin />
       <MemberVoices />
 

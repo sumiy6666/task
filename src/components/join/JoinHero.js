@@ -1,8 +1,8 @@
 'use client';
 import { useRef, useState } from 'react';
-import Link from 'next/link';
 import { SearchSelect } from '@/components/ui/SearchSelect';
 import { TopicsInput } from './TopicsInput';
+import { JoinStatus } from './JoinStatus';
 import styles from './Join.module.css';
 
 const TITLES = ['Mr', 'Ms', 'Mrs', 'Dr', 'Prof'];
@@ -77,11 +77,23 @@ export function JoinHero({ topics = [], countries = [] }) {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Could not send your request.');
       setStatus('sent');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       setError(err.message);
       setStatus('idle');
     }
   };
+
+  // Once the request is in, a blue "under review" card takes the banner's place.
+  if (status === 'sent') {
+    return (
+      <JoinStatus
+        kind="review"
+        title="Request Under Review"
+        lines={['Our team will review your request.', 'You’ll receive an email shortly.']}
+      />
+    );
+  }
 
   return (
     <section className={styles.hero}>
@@ -97,19 +109,6 @@ export function JoinHero({ topics = [], countries = [] }) {
       </div>
 
       <div className={styles.formCard}>
-        {status === 'sent' ? (
-          <div className={styles.sent} role="status">
-            <h2 className={styles.sentTitle}>Thanks, your request is in</h2>
-            <p>
-              Your request is awaiting approval. Our team will review it and email <strong>{form.email}</strong> once
-              you&apos;re approved.
-            </p>
-            <p>
-              That email has a link to set your password. Then choose Sign in and use your email and that password.
-            </p>
-            <Link href="/" className={styles.sentLink}>Back to home</Link>
-          </div>
-        ) : (
           <form id="join-form" onSubmit={submit} noValidate className={styles.form}>
             <div className={styles.nameRow}>
               <Field label="Title">
@@ -185,16 +184,13 @@ export function JoinHero({ topics = [], countries = [] }) {
 
             {error && <p role="alert" className={styles.error}>{error}</p>}
           </form>
-        )}
       </div>
 
-      {status !== 'sent' && (
-        <div className={styles.heroAction}>
-          <button type="submit" form="join-form" className={styles.joinButton} disabled={status === 'sending'}>
-            {status === 'sending' ? 'SENDING…' : 'JOIN'}
-          </button>
-        </div>
-      )}
+      <div className={styles.heroAction}>
+        <button type="submit" form="join-form" className={styles.joinButton} disabled={status === 'sending'}>
+          {status === 'sending' ? 'SENDING…' : 'JOIN'}
+        </button>
+      </div>
     </section>
   );
 }
