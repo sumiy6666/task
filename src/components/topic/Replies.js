@@ -57,7 +57,7 @@ export function Replies({ topicId, replies, currentUser }) {
       if (!res.ok) throw new Error(data.error || 'Could not post your reply.');
       setText('');
       setReplyTo(null);
-      if (data.pending) setNotice('Thanks! Your reply will appear once a moderator approves it.');
+      if (data.pending) setNotice('Thanks! Your comment is with our editors. It will be live soon.');
       router.refresh();
     } catch (err) {
       setError(err.message);

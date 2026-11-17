@@ -53,7 +53,7 @@ export function CommentForm({ topicId }) {
       {(error || status === 'sent' || status === 'pending') && (
         <p role={error ? 'alert' : 'status'} style={{ margin: '8px 0', fontSize: 14, color: error ? '#b42318' : '#027a48' }}>
           {error || (status === 'pending' ? (
-            'Thanks! Your comment will appear once a moderator approves it.'
+            'Thanks! Your comment is with our editors. It will be live soon.'
           ) : (
             <>
               Thanks, your comment is posted. <Link prefetch={false} href={`/conversations/${topicId}`} className="underline">See the discussion</Link>

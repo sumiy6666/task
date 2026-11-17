@@ -35,7 +35,7 @@ export function CommentBox({ topicId, replyToPostNumber = null, avatar, placehol
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Could not post your reply.');
       setText('');
-      setMessage({ text: data.pending ? 'Thanks! It will appear once a moderator approves it.' : 'Posted.', error: false });
+      setMessage({ text: data.pending ? 'Thanks! Your comment is with our editors. It will be live soon.' : 'Posted.', error: false });
       router.refresh();
     } catch (err) {
       setMessage({ text: err.message, error: true });
