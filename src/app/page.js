@@ -5,7 +5,7 @@ import { OfferCards } from '@/components/about/OfferCards';
 import { ResourcesCarousel } from '@/components/home/ResourcesCarousel';
 import { PollWidget } from '@/components/home/PollWidget';
 import { UpdateList } from '@/components/home/UpdateList';
-import { CommunityPulse } from '@/components/home/CommunityPulse';
+import { AboutBanner } from '@/components/about/AboutBanner';
 import { SAMPLE_EVENTS } from '@/components/events/sampleEvents';
 import { loadHome, orderEvents, withUpcoming } from '@/lib/discourse/lists';
 
@@ -15,12 +15,17 @@ export default async function Home() {
 
   return (
     <main className={`container ${styles.main}`}>
-      <HeroBanner article={live?.hero.article} event={live?.hero.event || orderEvents(withUpcoming(SAMPLE_EVENTS))[0]} />
+      {/* The About Us banner shows in place of the article/event slides for now. */}
+      <HeroBanner
+        article={live?.hero.article}
+        event={live?.hero.event || orderEvents(withUpcoming(SAMPLE_EVENTS))[0]}
+        banner={<AboutBanner />}
+      />
       {/* "What you can do here": the same cards as on the About page. */}
       <div className={styles.offers}>
         <OfferCards />
       </div>
-      <ResourcesCarousel resources={live?.resources} />
+      <ResourcesCarousel />
 
       {/* Poll + News */}
       <section className={styles.gridRow}>
@@ -31,8 +36,6 @@ export default async function Home() {
           <UpdateList updates={live?.updates} />
         </div>
       </section>
-
-      <CommunityPulse pulse={live?.pulse} />
     </main>
   );
 }

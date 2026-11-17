@@ -5,20 +5,15 @@ import { Carousel } from '../ui/Carousel';
 import { Reveal } from '../ui/Reveal';
 import styles from './ResourcesCarousel.module.css';
 
-const FALLBACK_IMAGES = ['/images/feature1.jpg', '/images/trend1.jpg', '/images/herobanner2.jpg', '/images/herobanner1.jpg'];
-
-const SAMPLE_RESOURCES = [
-  { tag: 'Best Practices', title: 'Handbook on Philanthropy', image: '/images/feature1.jpg', href: '/insights' },
-  { tag: 'Insights', title: 'The Future of family governance: Principles for sustainable legacy', image: '/images/trend1.jpg', href: '/insights' },
-  { tag: 'Whitepaper', title: 'Security and Control in Wealth Tech', image: '/images/herobanner2.jpg', href: '/insights' },
-  { tag: 'Insights', title: 'Consolidated reporting across custodians and asset classes', image: '/images/herobanner1.jpg', href: '/insights' },
+// Fixed cards (not from the forum): Article and Insight open the Insights
+// page, Poll opens the Poll page.
+const resources = [
+  { tag: 'Article', title: 'Handbook on Philanthropy', image: '/images/resource-article.jpg', href: '/insights' },
+  { tag: 'Insight', title: 'The Future of family governance: Principles for sustainable legacy', image: '/images/resource-insight.jpg', href: '/insights' },
+  { tag: 'Poll', title: 'Security and Control in Wealth Tech', image: '/images/resource-poll.jpg', href: '/poll' },
 ];
 
-// `resources` are the forum's latest articles; without them the samples show.
-export function ResourcesCarousel({ resources: live }) {
-  const resources = live?.length
-    ? live.map((r, i) => ({ ...r, image: r.image || FALLBACK_IMAGES[i % FALLBACK_IMAGES.length] }))
-    : SAMPLE_RESOURCES;
+export function ResourcesCarousel() {
 
   return (
     <Carousel id="resources-title" title="RESOURCES" headerClassName={styles.header}>

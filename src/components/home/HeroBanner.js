@@ -33,7 +33,9 @@ function slidesFor({ article, event }) {
   return slides;
 }
 
-export function HeroBanner({ article = null, event = null }) {
+// `banner`, when given, takes the slides' place (the home page shows the
+// About Us banner there for now); the slides stay here to switch back to.
+export function HeroBanner({ article = null, event = null, banner = null }) {
   const bannerData = slidesFor({ article, event });
   const [currentSlide, setCurrentSlide] = useState(0);
   // The first slide's text waits for the welcome heading; later slides don't.
@@ -45,29 +47,38 @@ export function HeroBanner({ article = null, event = null }) {
   };
 
   useEffect(() => {
+    if (banner) return undefined;
     const timer = setInterval(() => {
       setHasSlid(true);
       setCurrentSlide((prev) => (prev + 1) % bannerData.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, [currentSlide, bannerData.length]);
+  }, [currentSlide, bannerData.length, banner]);
 
   const nextSlide = () => goTo((prev) => (prev + 1) % bannerData.length);
   const prevSlide = () => goTo((prev) => (prev === 0 ? bannerData.length - 1 : prev - 1));
 
+  const welcome = (
+    <div className={styles.welcomeSection}>
+      <div className={styles.welcomeText}>
+        <h1 className="rise-in">Welcome to the <span className={styles.highlight}>AV Community</span></h1>
+        <p className="rise-in" style={{ '--delay': '0.15s' }}>Connect, learn and grow with professionals around the world.</p>
+      </div>
+    </div>
+  );
+
+  if (banner) {
+    return (
+      <div className={`${styles.heroWrapper} ${styles.withBanner}`}>
+        {welcome}
+        {banner}
+      </div>
+    );
+  }
+
   return (
     <div className={styles.heroWrapper}>
-      <div className={styles.welcomeSection}>
-        <div className={styles.welcomeText}>
-          <h1 className="rise-in">Welcome to the <span className={styles.highlight}>AV Community</span></h1>
-          <p className="rise-in" style={{ '--delay': '0.15s' }}>Connect, learn and grow with professionals around the world.</p>
-        </div>
-        <div className={`${styles.welcomeActions} rise-in`} style={{ '--delay': '0.3s' }}>
-          <Button href="/discussions" variant="primary" icon={<ArrowRight size={16} />} iconPosition="right" className={styles.dashboardBtn}>
-            MY DASHBOARD
-          </Button>
-        </div>
-      </div>
+      {welcome}
 
       <div className={styles.featuredBanner}>
         {bannerData.map((banner, index) => (

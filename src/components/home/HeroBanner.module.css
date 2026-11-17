@@ -6,6 +6,23 @@
   margin-bottom: 2.75rem;
 }
 
+/* A page banner (About Us) in the slides' place: flush with the card's
+   sides and bottom, keeping only its own rounded top corners. */
+.withBanner > section {
+  margin-bottom: 0;
+  box-shadow: none;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Phones: no white card, so the banner is a full rounded card of its own. */
+@media (max-width: 768px) {
+  .withBanner > section {
+    border-radius: 16px;
+    box-shadow: var(--shadow-card);
+  }
+}
+
 .welcomeSection {
   display: flex;
   justify-content: space-between;

@@ -17,9 +17,7 @@ const NAV_LINKS = [
 
 const ICON_LINKS = [
   { href: '#', label: 'AV Product', icon: '/images/Vector1.svg' },
-  { href: '#', label: 'Support', icon: '/images/Icon4.svg' },
-  { href: '#', label: 'AI Assistance', icon: '/images/Vector2.svg' },
-];
+  { href: '#', label: 'Support', icon: '/images/Icon4.svg' },];
 
 const LEGAL_LINKS = [
   { href: '/about', label: 'About AV Community' },

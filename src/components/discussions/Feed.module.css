@@ -269,6 +269,16 @@
   margin-top: 1.2rem;
 }
 
+/* "more" after a preview that was cut short. */
+.moreText {
+  font-style: italic;
+  color: var(--color-primary);
+}
+
+.moreText:hover {
+  text-decoration: underline;
+}
+
 .stats {
   display: flex;
   align-items: center;
@@ -458,7 +468,8 @@ a.stat:hover, .statButton:hover:not(:disabled), .statActive { color: var(--color
   justify-content: space-between;
   align-items: center;
   height: 4.05rem;
-  padding: 0 1.4rem 0 4.5rem;
+  /* Starts in line with the card title. */
+  padding: 0 1.4rem 0 3.25rem;
   font-size: 1.1rem;
   color: #000;
   transition: color 0.2s;
@@ -468,10 +479,23 @@ a.stat:hover, .statButton:hover:not(:disabled), .statActive { color: var(--color
 .categoryRow::after {
   content: '';
   position: absolute;
-  left: 2.75rem;
+  left: 3.25rem;
   right: 0;
   bottom: 0;
   border-bottom: 1px solid #D5DAE1;
+}
+
+/* "… and more" under the Topics list. */
+.moreLink {
+  display: inline-block;
+  margin: 1rem 0 0 3.25rem;
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--color-primary);
+}
+
+.moreLink:hover {
+  text-decoration: underline;
 }
 
 li:last-child > .categoryRow::after {
@@ -491,7 +515,6 @@ li:last-child > .categoryRow::after {
 .scrollList {
   max-height: 24.3rem;
   overflow-y: auto;
-  padding-right: 0.6rem;
   scrollbar-width: thin;
   scrollbar-color: var(--color-primary) transparent;
 }
@@ -602,6 +625,11 @@ li:last-child > .categoryRow::after {
 
   .categoryRow::after {
     display: none;
+  }
+
+  .moreLink {
+    margin: 0.75rem 0 0 1.5rem;
+    font-size: 0.9rem;
   }
 
   .card {

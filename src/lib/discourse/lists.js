@@ -404,7 +404,7 @@ export function loadJoin() {
 }
 
 // Home page: the newest article and next event, the most-voted open poll,
-// the trending carousel, the forum cards, the resources carousel, the pulse
+// the trending carousel, the forum cards, the pulse
 // numbers and the news list.
 export function loadHome() {
   return safely('home', async () => {
@@ -458,9 +458,6 @@ export function loadHome() {
         .filter((t, i, all) => all.findIndex((x) => x.category === t.category) === i)
         .slice(0, 4)
         .map((t) => ({ category: t.category, title: t.title, replies: t.replies, timeAgo: t.timeAgo, href: `/conversations/${t.id}` })),
-      resources: articleTopics
-        .slice(0, 6)
-        .map((t) => ({ tag: t.category, title: t.title, image: t.image, href: `/insights/${t.id}` })),
       pulse: {
         contributors: stats.participating_users_30_days ?? null,
         topics: topTopics.length || null,

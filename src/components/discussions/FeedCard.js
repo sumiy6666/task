@@ -60,7 +60,16 @@ export function FeedCard({ item, currentUser }) {
 
       {item.body?.length > 0 && (
         <div className={styles.body}>
-          {item.body.map((paragraph, i) => <p key={i}>{paragraph}</p>)}
+          {item.body.map((paragraph, i) => {
+            // A preview cut short ends in "…": an italic "more" link opens the post.
+            const cut = i === item.body.length - 1 && /(…|\.\.\.)$/.test(paragraph);
+            return (
+              <p key={i}>
+                {paragraph}
+                {cut && <> <Link prefetch={false} href={href} className={styles.moreText}>more</Link></>}
+              </p>
+            );
+          })}
         </div>
       )}
 
