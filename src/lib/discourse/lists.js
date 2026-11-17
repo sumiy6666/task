@@ -374,11 +374,10 @@ export function loadDiscussions({ type, tag } = {}) {
         ...categories.map((c) => ({ name: c.name, count: compactNumber(c.topic_count || 0), isActive: false })),
       ],
       members,
-      // Forum tags are the topics, most used first.
+      // Forum tags are the topics, most used first; unused tags (0) are listed too.
       tags: (tags?.tags || [])
         .map((t) => ({ name: t.text || t.name || t.id, slug: t.name || t.text || String(t.id), count: t.count || 0 }))
-        .filter((t) => t.count > 0)
-        .sort((a, b) => b.count - a.count),
+        .sort((a, b) => b.count - a.count || String(a.name).localeCompare(String(b.name))),
     };
   });
 }
