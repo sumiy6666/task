@@ -2,10 +2,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './AccordionMenu.module.css';
+
 // The side menu. `menu` holds the forum's discussion categories (from
 // loadMenu); without it the designed sample entries show. Articles has only
 // "Latest article".
-// topics (from loadMenu); without it the designed sample entries show.
 const SAMPLE_DISCUSSIONS = ['General', 'Tax & Legal', 'Technology'].map((name) => ({ name, href: '/discussions' }));
 
 export function AccordionMenu({ menu = null }) {
