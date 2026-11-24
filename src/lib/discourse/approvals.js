@@ -6,7 +6,6 @@
 import { avatarUrl, discourseFetch } from './client';
 import { timeAgo } from './format';
 import { PHONE_LINE } from './signup';
-import { firstNameOf, sendRegretEmail, sendWelcomeEmail } from '@/lib/email/send';
 
 const ADMIN = { asSite: true, revalidate: 0 };
 
@@ -59,9 +58,7 @@ export async function approveMember(id) {
           return false;
         })
     : false;
-  // Our own welcome email (see src/lib/email), next to the forum's password email.
-  const welcomeEmail = user?.email ? await sendWelcomeEmail(user.email, firstNameOf(user.name, user.username)) : false;
-  return { ok: true, passwordEmail, welcomeEmail };
+  return { ok: true, passwordEmail };
 }
 
 // The Join form leaves the phone number in "About me" when the forum has no
@@ -76,13 +73,10 @@ async function removePhoneFromBio(username) {
 }
 
 // A declined request removes the waiting account, so the same email can ask
-// again later. The applicant gets our "your application" email; their address
-// is read before the account goes.
+// again later.
 export async function declineMember(id) {
-  const user = await discourseFetch(`/admin/users/${Number(id)}.json`, ADMIN).catch(() => null);
   await discourseFetch(`/admin/users/${Number(id)}.json`, { method: 'DELETE', asSite: true, body: { context: 'Join request declined' } });
-  const regretEmail = user?.email ? await sendRegretEmail(user.email, firstNameOf(user.name, user.username)) : false;
-  return { ok: true, regretEmail };
+  return { ok: true };
 }
 
 // Whether a notification or message is Discourse's "users waiting for
