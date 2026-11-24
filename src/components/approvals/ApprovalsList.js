@@ -35,8 +35,9 @@ export function ApprovalsList() {
       if (redirectIfSignedOut(res)) return;
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'That didn’t work. Please try again.');
-      const approved = data.passwordEmail ? 'Approved: email to set a password sent' : 'Approved: login email sent';
-      setAnswers((a) => ({ ...a, [item.id]: action === 'approve' ? approved : 'Declined' }));
+      const approved = `Approved${data.welcomeEmail ? ': welcome email sent' : ''}${data.passwordEmail ? `${data.welcomeEmail ? ' +' : ':'} password link sent` : ''}`;
+      const declined = data.regretEmail ? 'Declined: email sent' : 'Declined';
+      setAnswers((a) => ({ ...a, [item.id]: action === 'approve' ? approved : declined }));
     } catch (e) {
       setError(e.message);
     } finally {
