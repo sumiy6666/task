@@ -26,6 +26,9 @@ export async function POST(request) {
       raw = raw ? `${raw}\n\n${markup}` : markup;
     } else if (!raw) {
       return Response.json({ error: 'Please write something before posting.' }, { status: 422 });
+    } else if ((sentKind === 'article' || sentKind === 'insight') && !/!\[[^\]]*\]\([^)]+\)|<img\b|upload:\/\//i.test(raw)) {
+      // Articles and insights must carry a picture.
+      return Response.json({ error: `Please add an image: every ${sentKind} needs one.` }, { status: 422 });
     }
 
     // The type of post decides its category: an article always goes into

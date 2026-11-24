@@ -82,6 +82,27 @@
 .titleInput::placeholder { color: #1d1d1d; }
 .titleInput:focus, .bodyInput:focus, .optionInput:focus-within, .dateInput:focus { border-color: var(--color-primary); }
 
+/* "Add an image" box under the editor, shown until an article or insight has one. */
+.imageRequired {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 16px 20px;
+  border: 1.5px dashed #9CC9E6;
+  border-radius: 10px;
+  background: #F4FAFE;
+  color: #0B7FB3;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s;
+}
+.imageRequired:hover { background: #E8F5FC; border-color: var(--color-primary); }
+.imageRequired svg { width: 26px; height: 26px; flex-shrink: 0; }
+.imageRequired span { display: flex; flex-direction: column; gap: 2px; }
+.imageRequired strong { font-size: 15px; font-weight: 600; }
+.imageRequired small { font-size: 12.5px; color: #5A7A90; }
+
 /* Tags under the question on the poll review step. */
 .reviewTags { margin-top: 8px; font-size: 14px; color: #0B7FB3; }
 

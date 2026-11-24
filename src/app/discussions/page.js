@@ -78,6 +78,7 @@ const sampleCategories = [
 ];
 
 const sampleFilters = [
+  { key: 'all', name: 'All', count: '1.6K' },
   { key: 'articles', name: 'Articles', count: '1.2K' },
   { key: 'insights', name: 'Posts', count: '236' },
   { key: 'polls', name: 'Polls', count: '186' },
@@ -127,11 +128,12 @@ const sidebarPoll = (p) => ({
 
 export default async function DiscussionPage({ searchParams }) {
   const { category, type: typeParam, tag: tagParam } = await searchParams;
-  // ?type= (Filter card) and ?tag= (Topics card) narrow the feed; ?category=
-  // comes from the side menu.
+  // ?type= (Filter card) and ?tag= (Topics card, several tags comma-separated)
+  // narrow the feed and work together; ?category= comes from the side menu.
   const type = FEED_TYPES.includes(typeParam) ? typeParam : null;
-  const tag = !type && typeof tagParam === 'string' && tagParam ? tagParam : null;
-  const [live, user] = await Promise.all([loadDiscussions({ type, tag }), getCurrentUser().catch(() => null)]);
+  const tags = [...new Set((Array.isArray(tagParam) ? tagParam : [tagParam]).flatMap((t) => String(t || '').split(',')).map((t) => t.trim()).filter(Boolean))].slice(0, 10);
+  const tag = tags.length ? tags.join(',') : null;
+  const [live, user] = await Promise.all([loadDiscussions({ type, tags }), getCurrentUser().catch(() => null)]);
 
   const categories = live?.categories.length > 1
     ? live.categories.map((c, i) => ({ name: c.name, count: c.count, isAll: i === 0 }))
@@ -149,7 +151,7 @@ export default async function DiscussionPage({ searchParams }) {
   if (live?.feedPoll && !type && !tag && !feed.some((item) => item.id === live.feedPoll.topicId)) feed.splice(1, 0, fromPoll(live.feedPoll));
   if (active) feed = feed.filter((item) => item.category === active);
   // Sample feed: filter by the sample's tags and kinds.
-  if (!live && tag) feed = feed.filter((item) => item.tags?.some((t) => t.toLowerCase() === tag.replace(/-/g, '')));
+  if (!live && tags.length) feed = feed.filter((item) => item.tags?.some((t) => tags.some((x) => t.toLowerCase() === x.replace(/-/g, ''))));
   if (!live && type === 'polls') feed = feed.filter((item) => item.pollOptions);
   if (!live && type === 'articles') feed = [];
   feed = feed.slice(0, 8);
@@ -158,10 +160,10 @@ export default async function DiscussionPage({ searchParams }) {
   feed = feed.map((item) => (bookmarked.has(item.id) ? { ...item, bookmarked: true } : item));
 
   const poll = live?.poll ? sidebarPoll(live.poll) : samplePoll;
-  const topicName = tag && (topics.find((t) => t.slug === tag)?.name || tag);
-  const emptyText = type
-    ? `No ${filters.find((f) => f.key === type)?.name.toLowerCase() || 'posts'} yet.`
-    : tag ? `No discussions tagged #${topicName} yet.`
+  const topicName = tags.map((x) => topics.find((t) => t.slug === x)?.name || x).join(', #');
+  const typeName = type ? filters.find((f) => f.key === type)?.name.toLowerCase() || 'posts' : 'discussions';
+  const emptyText = tags.length ? `No ${typeName} tagged #${topicName} yet.`
+    : type ? `No ${typeName} yet.`
     : active ? `No discussions in ${active} yet.` : 'No discussions yet.';
 
   return (
@@ -174,8 +176,8 @@ export default async function DiscussionPage({ searchParams }) {
         )}
 
         <div className={styles.sideFilters}>
-          <TypeFilter filters={filters} active={type} />
-          <TopicFilter topics={topics} active={tag} />
+          <TypeFilter filters={filters} type={type} tags={tags} />
+          <TopicFilter topics={topics} type={type} tags={tags} />
         </div>
 
         <section className={styles.feed} aria-label="Discussions">

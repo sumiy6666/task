@@ -180,6 +180,10 @@ export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5,
   // The text with the attached images after it.
   const fullBody = () => [toMarkdown(isBlankHtml(body) ? '' : body), ...images.map((i) => i.markdown)].filter(Boolean).join('\n\n');
 
+  // Articles and insights must have a picture: an attached image, or one in the text.
+  const needsImage = kind === 'article' || kind === 'insight';
+  const hasImage = images.length > 0 || /<img\b/i.test(body || '');
+
   const validate = () => {
     if (!kind) return 'Choose Article, Poll or Insight.';
     if (!title.trim()) return isPoll ? 'Please write your question.' : 'Please add what this conversation is about.';
@@ -190,6 +194,8 @@ export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5,
       if (close?.isPast) return 'The end date and time must be in the future.';
     } else if (isBlankHtml(body) && images.length === 0) {
       return 'Please write something before posting.';
+    } else if (needsImage && !hasImage) {
+      return `Please add an image: every ${kind === 'article' ? 'article' : 'insight'} needs one.`;
     }
     return '';
   };
@@ -440,6 +446,15 @@ export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5,
         <>
           <KindHeader kind={kind} onBack={() => setKind(null)} />
           <RichEditor ref={bodyRef} initialHtml={initialHtml} onChange={setBody} />
+          {needsImage && !hasImage && !uploading && (
+            <button type="button" className={styles.imageRequired} onClick={() => fileRef.current?.click()}>
+              <ImageIcon aria-hidden="true" />
+              <span>
+                <strong>Add an image</strong>
+                <small>Required for every {kind === 'article' ? 'article' : 'insight'} · JPG, PNG or GIF</small>
+              </span>
+            </button>
+          )}
           {(images.length > 0 || uploading) && (
             <div className={styles.imageList} aria-label="Attached images">
               {images.map((img, i) => (

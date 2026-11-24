@@ -92,6 +92,7 @@ function topicMapper(list, categoriesById) {
       authorIsStaff: Boolean(op?.admin || op?.moderator),
       timeAgo: timeAgo(t.created_at),
       createdAt: t.created_at,
+      bumpedAt: t.bumped_at || t.last_posted_at || t.created_at,
       category: categoriesById.get(t.category_id)?.name || '',
       categoryId: t.category_id,
       pinned: Boolean(t.pinned),
@@ -294,16 +295,17 @@ const mostVoted = (polls) => [...polls].sort((a, b) => (b.voters || 0) - (a.vote
 export const FEED_TYPES = ['articles', 'insights', 'polls'];
 
 // `type` narrows the feed to articles, polls or the other conversations
-// ("insights"); `tag` narrows it to one forum tag (a topic).
-export function loadDiscussions({ type, tag } = {}) {
+// ("insights"); `tags` (forum tags, the Topics card) narrows it to posts with
+// any of those tags. Both can be used together.
+export function loadDiscussions({ type, tags: tagFilter = [] } = {}) {
   return safely('discussions', async () => {
     const categories = await loadCategories();
     const articles = findCategory(categories, /article|insight/i);
     const pollCategory = findCategory(categories, /poll/i);
     const articleIds = new Set(articles ? [articles.id, ...subcategoriesOf(articles).map((c) => c.id)] : []);
     // A topic or type filter reads its own list, so it is not limited to the latest page.
-    const filtered = tag
-      ? discourseFetch(`/tag/${encodeURIComponent(tag)}.json`).catch(() => null)
+    const filtered = tagFilter.length
+      ? Promise.all(tagFilter.map((t) => discourseFetch(`/tag/${encodeURIComponent(t)}.json`).catch(() => null)))
       : type === 'articles' && articles ? discourseFetch(articlesPath(articles))
       : type === 'polls' && pollCategory ? discourseFetch(categoryPath(pollCategory))
       : null;
@@ -330,8 +332,18 @@ export function loadDiscussions({ type, tag } = {}) {
       .reduce((sum, c) => sum + countOf(c) + subcategoriesOf(c).reduce((s, sub) => s + countOf(sub), 0), 0);
 
     // The feed list for the current filter.
+    const ofType = (t) =>
+      type === 'articles' ? articleIds.has(t.categoryId)
+      : type === 'polls' ? t.categoryId === pollCategory?.id
+      : type === 'insights' ? !articleIds.has(t.categoryId) && t.categoryId !== pollCategory?.id
+      : true;
     let feedTopics;
-    if (filteredList) feedTopics = mapList(filteredList, categoriesById);
+    if (tagFilter.length) {
+      // Posts with any of the chosen tags, latest activity first, then the type filter.
+      const byId = new Map();
+      for (const list of filteredList || []) for (const t of list ? mapList(list, categoriesById) : []) byId.set(t.id, t);
+      feedTopics = [...byId.values()].filter(ofType).sort((a, b) => new Date(b.bumpedAt) - new Date(a.bumpedAt));
+    } else if (filteredList) feedTopics = mapList(filteredList, categoriesById);
     else if (type === 'articles' || type === 'polls') feedTopics = [];
     else {
       const recent = topicsOf(active)
@@ -357,6 +369,7 @@ export function loadDiscussions({ type, tag } = {}) {
       feed: withLatestReplies(feedTopics.filter((t) => !t.pinned || filteredList).slice(0, 30), recentPosts)
         .map((t) => (articleIds.has(t.categoryId) ? { ...t, isArticle: true } : t)),
       filters: [
+        { key: 'all', name: 'All', count: compactNumber(articleCount + otherCount + pollCount) },
         { key: 'articles', name: 'Articles', count: compactNumber(articleCount) },
         { key: 'insights', name: 'Posts', count: compactNumber(otherCount) },
         { key: 'polls', name: 'Polls', count: compactNumber(pollCount) },

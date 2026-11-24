@@ -771,3 +771,59 @@ li:last-child > .categoryRow::after {
 }
 .attachmentLabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .attachment button { display: inline-flex; color: inherit; cursor: pointer; }
+
+/* Card title with an optional link on the right ("Clear" in Topics). */
+.sideTitleRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-right: 1.4rem;
+}
+
+.clearTopics {
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.clearTopics:hover {
+  text-decoration: underline;
+}
+
+/* Topics rows: a small checkbox before the name, ticked when chosen. */
+.rowLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  border: 1.5px solid #B8C2CC;
+  border-radius: 4px;
+  background: #fff;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.checkOn {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.check svg {
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+@media (max-width: 1024px) {
+  .sideTitleRow { padding-right: 1.5rem; }
+  .categoryActive .checkOn { border-color: #fff; background: #fff; color: var(--color-primary); }
+}
