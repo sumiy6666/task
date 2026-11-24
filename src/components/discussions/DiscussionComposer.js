@@ -9,15 +9,15 @@ import { ImageIcon, LinkIcon } from '../compose/icons';
 import styles from './Feed.module.css';
 
 // "Start a Discussion" box at the top of the discussions page. It collects a
-// title, category, images and links, then hands over to the full compose
-// page to write the post.
-export function DiscussionComposer({ avatar, categories }) {
+// title, a topic (one of the forum's tags), images and links, then hands over
+// to the full compose page to write the post.
+export function DiscussionComposer({ avatar, topics = [] }) {
   const router = useRouter();
   const inputRef = useRef(null);
   const fileRef = useRef(null);
-  const options = categories.map((c) => ({ name: c.name }));
+  const options = [{ id: '', name: 'No topic' }, ...topics.map((t) => ({ id: t.slug, name: t.name }))];
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState(options[0]?.name || '');
+  const [topic, setTopic] = useState('');
   const [attachments, setAttachments] = useState([]); // { label, markdown, image? }
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
@@ -26,7 +26,7 @@ export function DiscussionComposer({ avatar, categories }) {
     e?.preventDefault();
     const params = new URLSearchParams();
     if (title.trim()) params.set('title', title.trim());
-    if (category) params.set('category', category);
+    if (topic) params.set('tag', topic);
     // Links go into the text; images are shown as pictures in the full composer.
     const links = attachments.filter((a) => !a.image);
     const images = attachments.filter((a) => a.image).map((a) => a.image);
@@ -74,8 +74,8 @@ export function DiscussionComposer({ avatar, categories }) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
-          {options.length > 0 && (
-            <CategoryField categories={options} value={category} onChange={setCategory} className={styles.composerCategory} />
+          {topics.length > 0 && (
+            <CategoryField categories={options} value={topic} onChange={setTopic} label="Topic" className={styles.composerCategory} />
           )}
         </div>
         {(attachments.length > 0 || uploading || error) && (

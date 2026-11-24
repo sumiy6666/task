@@ -172,7 +172,7 @@ export default async function DiscussionPage({ searchParams }) {
 
       <div className={`${styles.layout} ${user?.admin ? '' : styles.noComposer}`}>
         {user?.admin && (
-          <DiscussionComposer avatar={user.avatar} categories={categories.filter((c) => c.name !== 'All categories')} />
+          <DiscussionComposer avatar={user.avatar} topics={topics} />
         )}
 
         <div className={styles.sideFilters}>

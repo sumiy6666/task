@@ -37,7 +37,6 @@ function KindHeader({ kind, onBack, backLabel = 'GO BACK' }) {
 }
 import { redirectIfSignedOut } from '@/lib/auth-client';
 import { categoriesFor } from '@/lib/discourse/post-kinds';
-import { TagInput } from './TagInput';
 
 let nextOptionId = 1;
 const newOption = (text = '') => ({ id: nextOptionId++, text });
@@ -71,8 +70,6 @@ function Author({ user }) {
   );
 }
 
-const CATEGORY_LABEL = { article: 'Article topic', poll: 'Category', insight: 'Categories' };
-
 export function CategoryField({ categories, value, onChange, readOnly = false, className = '', label = 'Categories' }) {
   const current = categories.find((c) => String(c.id ?? c.name) === value);
   return (
@@ -101,7 +98,7 @@ export function CategoryField({ categories, value, onChange, readOnly = false, c
 // `initialTitle`, `initialCategory` (a category name) and `initialBody` (e.g.
 // images and links added there) prefill the form from the composer on the
 // discussions page.
-export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5, maxLength: 20 }, initialType = 'discussion', initialTitle = '', initialCategory, initialBody = '', initialImages = [] }) {
+export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5, maxLength: 20 }, initialType = 'discussion', initialTitle = '', initialCategory, initialTag = '', initialBody = '', initialImages = [] }) {
   const router = useRouter();
   const keyOf = (c) => String(c.id ?? c.name);
   const defaultKey = (type) => keyOf(categoriesFor(type === 'poll' ? 'poll' : 'insight', categories)[0] || categories[0]);
@@ -115,8 +112,10 @@ export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5,
     return named ? keyOf(named) : defaultKey(initialType);
   });
   const [title, setTitle] = useState(initialTitle);
-  // Optional forum tags for the post.
-  const [tags, setTags] = useState([]);
+  // The post's topic: one forum tag picked in the Topic dropdown (optional).
+  const [topic, setTopic] = useState(() => (initialTag && tagOptions.tags.some((t) => t.name === initialTag) ? initialTag : ''));
+  const tags = topic ? [topic] : [];
+  const topicChoices = [{ id: '', name: 'No topic' }, ...tagOptions.tags.map((t) => ({ id: t.name, name: t.name }))];
   // The post text as the editor's HTML; it goes to the forum as Markdown.
   const [initialHtml] = useState(() => markdownLinksToHtml(initialBody));
   const [body, setBody] = useState(initialHtml);
@@ -163,7 +162,7 @@ export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5,
     setStep('edit');
     setKind(null);
     setTitle('');
-    setTags([]);
+    setTopic("");
     setBody('');
     bodyRef.current?.clear();
     setImages([]);
@@ -351,11 +350,10 @@ export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5,
         <h1 className={styles.srOnly}>Review and Publish</h1>
         <div className={styles.reviewTop}>
           <Author user={user} />
-          <CategoryField categories={choices} value={category ? keyOf(category) : ''} label={CATEGORY_LABEL[kind] || 'Categories'} readOnly />
+          <CategoryField categories={topicChoices} value={topic} label="Topic" readOnly />
         </div>
         <KindHeader kind="poll" onBack={() => setStep('edit')} backLabel="EDIT" />
         <h2 className={styles.reviewQuestion}>{title.trim()}</h2>
-        {tags.length > 0 && <p className={styles.reviewTags}>{tags.map((t) => `#${t}`).join('  ')}</p>}
         <ul className={styles.reviewOptions}>
           {filledOptions.map((o, i) => (
             <li key={i}>{o}</li>
@@ -397,25 +395,20 @@ export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5,
           maxLength={255}
           onChange={(e) => setTitle(e.target.value)}
         />
-        {/* The type decides where the post goes. The dropdown appears only
-            once an Article or Insight is chosen, to pick within that type;
-            polls always go to Polls. */}
-        {kind && !isPoll && choices.length > 1 && (
+        {/* The type decides the forum category; the Topic dropdown picks the
+            post's tag from the forum's tags. */}
+        {kind && tagOptions.tags.length > 0 && (
           <CategoryField
-            categories={choices}
-            value={category ? keyOf(category) : ''}
-            label={CATEGORY_LABEL[kind] || 'Categories'}
-            onChange={(key) => {
-              setCategoryKey(key);
+            categories={topicChoices}
+            value={topic}
+            label="Topic"
+            onChange={(name) => {
+              setTopic(name);
               setError('');
             }}
           />
         )}
       </div>
-
-      {kind && (
-        <TagInput value={tags} onChange={setTags} options={tagOptions.tags} max={tagOptions.max} maxLength={tagOptions.maxLength} canCreate={Boolean(user?.staff) || !tagOptions.tags.length} />
-      )}
 
       {!kind ? (
         <div className={styles.kinds} role="group" aria-label="What would you like to post?">

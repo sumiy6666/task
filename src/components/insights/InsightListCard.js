@@ -36,7 +36,7 @@ export function InsightListCard({ article }) {
             <span>|</span>
             <span>{article.timeAgo}</span>
             <span>|</span>
-            <span>{article.category}</span>
+            <span>{article.tags?.length ? `#${article.tags[0]}` : article.category}</span>
           </div>
           {article.readTime && (
             <div className="flex items-center flex-shrink-0 whitespace-nowrap" style={{ ...metaStyle, gap: 'calc(0.8 * var(--sa))' }}>

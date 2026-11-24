@@ -7,7 +7,7 @@ import { getCategories, getCurrentUser, getTagOptions } from '@/lib/discourse';
 export const metadata = { title: 'Start a Discussion | AV Community' };
 
 export default async function NewConversationPage({ searchParams }) {
-  const { type, title, category, body, images } = await searchParams;
+  const { type, title, category, tag, body, images } = await searchParams;
   // Images added in the discussions page's composer: [{ name, url, markdown }].
   let initialImages = [];
   try {
@@ -21,7 +21,7 @@ export default async function NewConversationPage({ searchParams }) {
     <main className={`container min-h-screen ${styles.page}`}>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Start a Discussion' }]} />
       {user ? (
-        <ComposeFlow user={user} categories={categories} tagOptions={tagOptions} initialType={type === 'poll' ? 'poll' : 'discussion'} initialTitle={title || ''} initialCategory={category} initialBody={body || ''} initialImages={initialImages} />
+        <ComposeFlow user={user} categories={categories} tagOptions={tagOptions} initialType={type === 'poll' ? 'poll' : 'discussion'} initialTitle={title || ''} initialCategory={category} initialTag={typeof tag === 'string' ? tag : ''} initialBody={body || ''} initialImages={initialImages} />
       ) : (
         <SignInCard returnTo={returnTo} />
       )}

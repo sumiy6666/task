@@ -490,26 +490,36 @@ export function loadHome() {
 
 // Insights are the topics in the forum's Articles category.
 // `categorySlug` narrows the articles to one article topic (a subcategory of Articles).
-export function loadInsights(categorySlug) {
+// `tag` (from the Topic dropdown) narrows the articles to one forum tag.
+export function loadInsights(categorySlug, tag) {
   return safely('insights', async () => {
     const categories = await loadCategories();
     const categoriesById = new Map(withSubcategories(categories).map((c) => [c.id, c]));
     const articles = findCategory(categories, /article|insight/i);
     if (!articles) return null;
     const topic = categorySlug ? subcategoriesOf(articles).find((c) => c.slug === categorySlug) : null;
+    const articleIds = new Set([articles.id, ...subcategoriesOf(articles).map((c) => c.id)]);
 
-    const [list, latest, polls, members] = await Promise.all([
-      discourseFetch(articlesPath(topic || articles)),
+    const [list, latest, polls, members, tagList] = await Promise.all([
+      tag ? discourseFetch(`/tag/${encodeURIComponent(tag)}.json`).catch(() => null) : discourseFetch(articlesPath(topic || articles)),
       discourseFetch('/latest.json'),
       fetchPolls(categories, 6).catch(() => []),
       loadTopMembers(3).catch(() => []),
+      discourseFetch('/tags.json').catch(() => null),
     ]);
-    const items = newestFirst(mapList(list, categoriesById)).map((a) => ({ ...a, author: a.author.name, authorAvatar: a.author.avatar }));
-    if (items.length === 0 && !topic) return null;
+    const items = newestFirst(mapList(list, categoriesById))
+      .filter((a) => !tag || articleIds.has(a.categoryId))
+      .map((a) => ({ ...a, author: a.author.name, authorAvatar: a.author.avatar }));
+    if (items.length === 0 && !topic && !tag) return null;
+    const tags = (tagList?.tags || [])
+      .map((t) => ({ name: t.name || t.text || String(t.id), count: t.count || 0 }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
     const poll = mostVoted(polls.filter((p) => !p.closed));
     return {
       topic: topic ? { name: topic.name, slug: topic.slug } : null,
+      tag: tag || null,
+      tags,
       topics: subcategoriesOf(articles).map((c) => ({ name: c.name, slug: c.slug })),
       featured: items.slice(0, 3),
       latest: items.slice(0, 6),

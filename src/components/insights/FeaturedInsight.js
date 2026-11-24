@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const bannerSlides = [
   {
@@ -31,21 +32,22 @@ const bannerSlides = [
   },
 ];
 
-const categories = [
-  'Reporting and Accounting',
-  'Practice Operations',
-  'Structures and Cross-Border',
-  'Allocation Trends',
-  'Technology and AI'
-];
+// Shown when the forum's tags can't be loaded.
+const SAMPLE_TOPICS = ['reporting', 'operations', 'structures', 'allocation', 'technology'];
 
-export function FeaturedInsight({ slides }) {
+// `topics`: the forum's tags; picking one opens /insights?tag=… (articles with that tag).
+export function FeaturedInsight({ slides, topics, currentTopic = '' }) {
+  const router = useRouter();
+  const tagNames = topics?.length ? topics : SAMPLE_TOPICS;
+  // "All topics" first, then every tag.
+  const categories = ['', ...tagNames];
+  const topicLabel = (t) => (t ? `#${t}` : 'All topics');
   // Live articles keep the designed banner photo, so the white text stays readable.
   const banners = slides?.length ? slides.map((slide) => ({ ...slide, image: bannerSlides[0].image })) : bannerSlides;
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  const selectedCategory = currentTopic;
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -119,7 +121,7 @@ export function FeaturedInsight({ slides }) {
             <div>
               <div style={{ fontSize: 'calc(1.1 * var(--fa) + var(--fb))', fontWeight: 400, marginBottom: 'calc(0.2 * var(--sa))' }}>{currentBanner.author.name}</div>
               <div style={{ fontSize: 'calc(1 * var(--fa) + var(--fb))', fontWeight: 300 }}>
-                {currentBanner.timeAgo}<span style={{ margin: '0 calc(1.2 * var(--sa))' }}>|</span>{currentBanner.category}
+                {currentBanner.timeAgo}<span style={{ margin: '0 calc(1.2 * var(--sa))' }}>|</span>{currentBanner.tags?.length ? `#${currentBanner.tags[0]}` : currentBanner.category}
               </div>
             </div>
           </div>
@@ -171,11 +173,11 @@ export function FeaturedInsight({ slides }) {
           style={{ padding: 'calc(0.8 * var(--sa)) calc(1.2 * var(--sa))' }}
         >
           <span className="uppercase text-[#111]" style={{ fontSize: 'calc(1 * var(--fa) + var(--fb))', fontWeight: 400, marginBottom: 'calc(0.2 * var(--sa))' }}>
-            CATEGORIES
+            TOPIC
           </span>
           <div className="flex items-center justify-between w-full">
             <span className="text-[#0056d6] whitespace-nowrap overflow-hidden text-ellipsis min-w-0" style={{ fontSize: 'calc(1.15 * var(--fa) + var(--fb))', fontWeight: 400, marginRight: 'calc(1 * var(--sa))' }}>
-              {selectedCategory}
+              {topicLabel(selectedCategory)}
             </span>
             <svg viewBox="0 0 24 24" fill="none" stroke="#0056d6" strokeWidth="1.5" style={{ width: 'calc(1.2 * var(--da) + var(--db))', height: 'calc(1.1 * var(--da) + var(--db))', transition: 'transform 0.2s', transform: isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -183,18 +185,18 @@ export function FeaturedInsight({ slides }) {
           </div>
         </button>
         {isDropdownOpen && (
-          <div className="bg-white flex flex-col border-t border-gray-100">
+          <div className="bg-white flex flex-col border-t border-gray-100" style={{ maxHeight: 'min(320px, 50vh)', overflowY: 'auto' }}>
             {categories.filter(c => c !== selectedCategory).map((cat, index) => (
               <button
                 key={index}
                 onClick={() => {
-                  setSelectedCategory(cat);
                   setIsDropdownOpen(false);
+                  router.push(cat ? `/insights?tag=${encodeURIComponent(cat)}` : '/insights');
                 }}
                 className="w-full text-left font-medium text-gray-800 hover:text-[#00A4E4] bg-white hover:bg-blue-50 transition-colors cursor-pointer border-none"
                 style={{ padding: 'calc(0.8 * var(--sa)) calc(1.2 * var(--sa))', fontSize: 'calc(0.8 * var(--fa) + var(--fb))', borderBottom: index < categories.length - 2 ? 'calc(0.05 * var(--sa)) solid #f0f0f0' : 'none' }}
               >
-                {cat}
+                {topicLabel(cat)}
               </button>
             ))}
           </div>

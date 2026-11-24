@@ -124,8 +124,10 @@ const recommendedArticles = [
 export default async function InsightsListingPage({ searchParams }) {
   // Articles come from the forum's Articles category when Discourse is connected;
   // ?category= narrows them to one article topic (from the menu).
-  const { category } = await searchParams;
-  const live = await loadInsights(typeof category === 'string' ? category : undefined);
+  // ?tag= comes from the Topic dropdown on the banner.
+  const { category, tag: tagParam } = await searchParams;
+  const tag = typeof tagParam === 'string' && tagParam.trim() ? tagParam.trim().toLowerCase().slice(0, 40) : undefined;
+  const live = await loadInsights(typeof category === 'string' ? category : undefined, tag);
   const featured = live?.featured.map((a) => ({ ...a, author: { name: a.author, avatar: a.authorAvatar } }));
   const articles = live?.latest || latestInsights;
   const discussions = live?.discussions.length ? live.discussions : relatedDiscussions;
@@ -138,13 +140,13 @@ export default async function InsightsListingPage({ searchParams }) {
 
   return (
     <div className="container min-h-screen" style={{ paddingBottom: 'calc(2.5 * var(--sa))' }}>
-      <Breadcrumb items={live?.topic ? [{ label: 'Home', href: '/' }, { label: 'Insights', href: '/insights' }, { label: live.topic.name }] : [{ label: 'Home', href: '/' }, { label: 'Insights' }]} />
+      <Breadcrumb items={live?.tag ? [{ label: 'Home', href: '/' }, { label: 'Insights', href: '/insights' }, { label: `#${live.tag}` }] : live?.topic ? [{ label: 'Home', href: '/' }, { label: 'Insights', href: '/insights' }, { label: live.topic.name }] : [{ label: 'Home', href: '/' }, { label: 'Insights' }]} />
 
-      {live?.topic && live.latest.length === 0 && (
-        <p style={{ margin: '0 0 24px', color: '#6b7280' }}>No articles in {live.topic.name} yet.</p>
+      {(live?.topic || live?.tag) && live.latest.length === 0 && (
+        <p style={{ margin: '0 0 24px', color: '#6b7280' }}>{live.tag ? `No articles tagged #${live.tag} yet.` : `No articles in ${live.topic.name} yet.`}</p>
       )}
 
-      <FeaturedInsight slides={featured} />
+      <FeaturedInsight slides={featured} topics={live?.tags?.map((t) => t.name)} currentTopic={live?.tag || tag || ''} />
 
       <div className="flex flex-wrap" style={{ gap: 'calc(1.5 * var(--sa))' }}>
         {/* Main Content Column */}
