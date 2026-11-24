@@ -83,25 +83,56 @@
 .titleInput:focus, .bodyInput:focus, .optionInput:focus-within, .dateInput:focus { border-color: var(--color-primary); }
 
 /* "Add an image" box under the editor, shown until an article or insight has one. */
-.imageRequired {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
+.imagePicker {
   margin-top: 14px;
-  padding: 16px 20px;
+  padding: 16px 18px 18px;
   border: 1.5px dashed #9CC9E6;
   border-radius: 10px;
   background: #F4FAFE;
-  color: #0B7FB3;
-  text-align: left;
-  transition: background 0.15s, border-color 0.15s;
 }
-.imageRequired:hover { background: #E8F5FC; border-color: var(--color-primary); }
-.imageRequired svg { width: 26px; height: 26px; flex-shrink: 0; }
-.imageRequired span { display: flex; flex-direction: column; gap: 2px; }
-.imageRequired strong { font-size: 15px; font-weight: 600; }
-.imageRequired small { font-size: 12.5px; color: #5A7A90; }
+.imagePickerHead { display: flex; align-items: center; gap: 12px; color: #0B7FB3; }
+.imagePickerHead svg { width: 24px; height: 24px; flex-shrink: 0; }
+.imagePickerHead span { display: flex; flex-direction: column; gap: 2px; }
+.imagePickerHead strong { font-size: 15px; font-weight: 600; }
+.imagePickerHead small { font-size: 12.5px; color: #5A7A90; }
+.coverGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+  list-style: none;
+}
+.coverUpload, .coverOption {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.15s, transform 0.15s, border-color 0.15s;
+}
+.coverUpload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 1.5px solid #9CC9E6;
+  background: #fff;
+  color: #0B7FB3;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.coverUpload span { font-size: 22px; line-height: 1; font-weight: 400; }
+.coverUpload small { font-size: 11px; font-weight: 400; color: #5A7A90; }
+.coverUpload:hover { border-color: var(--color-primary); background: #E8F5FC; }
+.coverOption img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.coverOption:hover, .coverOption:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-primary);
+  transform: translateY(-1px);
+}
+@media (max-width: 640px) {
+  .coverGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 
 /* Tags under the question on the poll review step. */
 .reviewTags { margin-top: 8px; font-size: 14px; color: #0B7FB3; }

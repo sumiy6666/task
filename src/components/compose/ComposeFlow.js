@@ -14,6 +14,7 @@ const RichEditor = dynamic(() => import('./RichEditor').then((m) => m.RichEditor
   loading: () => <div className={styles.richEditorLoading}>Loading editor…</div>,
 });
 import { PollOptionsEditor } from './PollOptionsEditor';
+import { DEFAULT_COVERS } from './defaultCovers';
 import { ArticleIcon, ChevronDownIcon, ChevronLeftIcon, CloseIcon, ImageIcon, InsightIcon, PaperPlaneIcon, PollIcon } from './icons';
 
 const KINDS = [
@@ -282,6 +283,22 @@ export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5,
     }
   };
 
+  // A ready-made picture: fetched from the site and uploaded like the user's own,
+  // so the post carries a normal forum upload.
+  const pickDefaultCover = async (cover) => {
+    setUploading(true);
+    setError('');
+    try {
+      const res = await fetch(cover.src);
+      if (!res.ok) throw new Error('Could not load that image.');
+      const blob = await res.blob();
+      await attachImage(new File([blob], `${cover.id}.jpg`, { type: blob.type || 'image/jpeg' }));
+    } catch (e) {
+      setError(e.message);
+      setUploading(false);
+    }
+  };
+
   const closeButton = (
     <button type="button" className={styles.closeButton} aria-label="Close" onClick={() => router.push('/discussions')}>
       <CloseIcon />
@@ -447,13 +464,31 @@ export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5,
           <KindHeader kind={kind} onBack={() => setKind(null)} />
           <RichEditor ref={bodyRef} initialHtml={initialHtml} onChange={setBody} />
           {needsImage && !hasImage && !uploading && (
-            <button type="button" className={styles.imageRequired} onClick={() => fileRef.current?.click()}>
-              <ImageIcon aria-hidden="true" />
-              <span>
-                <strong>Add an image</strong>
-                <small>Required for every {kind === 'article' ? 'article' : 'insight'} · JPG, PNG or GIF</small>
-              </span>
-            </button>
+            <section className={styles.imagePicker} aria-labelledby="image-picker-title">
+              <div className={styles.imagePickerHead}>
+                <ImageIcon aria-hidden="true" />
+                <span>
+                  <strong id="image-picker-title">Add an image</strong>
+                  <small>Required for every {kind === 'article' ? 'article' : 'insight'} · upload your own or pick one of ours</small>
+                </span>
+              </div>
+              <ul className={styles.coverGrid}>
+                <li>
+                  <button type="button" className={styles.coverUpload} onClick={() => fileRef.current?.click()}>
+                    <span aria-hidden="true">+</span>
+                    Upload image
+                    <small>JPG, PNG or GIF</small>
+                  </button>
+                </li>
+                {DEFAULT_COVERS.map((c) => (
+                  <li key={c.id}>
+                    <button type="button" className={styles.coverOption} aria-label={`Use image: ${c.alt}`} onClick={() => pickDefaultCover(c)}>
+                      <img src={c.thumb} alt="" loading="lazy" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
           {(images.length > 0 || uploading) && (
             <div className={styles.imageList} aria-label="Attached images">
