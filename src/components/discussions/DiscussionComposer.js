@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
 import { redirectIfSignedOut } from '@/lib/auth-client';
-import { CategoryField } from '../compose/ComposeFlow';
+import { TopicPicker } from '../compose/TopicPicker';
 import { EmojiButton, insertAtCursor } from '../compose/EmojiButton';
 import { ImageIcon, LinkIcon } from '../compose/icons';
 import styles from './Feed.module.css';
@@ -15,9 +15,9 @@ export function DiscussionComposer({ avatar, topics = [] }) {
   const router = useRouter();
   const inputRef = useRef(null);
   const fileRef = useRef(null);
-  const options = [{ id: '', name: 'No topic' }, ...topics.map((t) => ({ id: t.slug, name: t.name }))];
+  const options = topics.map((t) => ({ name: t.slug, count: t.count }));
   const [title, setTitle] = useState('');
-  const [topic, setTopic] = useState('');
+  const [picked, setPicked] = useState([]);
   const [attachments, setAttachments] = useState([]); // { label, markdown, image? }
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
@@ -26,7 +26,7 @@ export function DiscussionComposer({ avatar, topics = [] }) {
     e?.preventDefault();
     const params = new URLSearchParams();
     if (title.trim()) params.set('title', title.trim());
-    if (topic) params.set('tag', topic);
+    if (picked.length) params.set('tag', picked.join(','));
     // Links go into the text; images are shown as pictures in the full composer.
     const links = attachments.filter((a) => !a.image);
     const images = attachments.filter((a) => a.image).map((a) => a.image);
@@ -75,7 +75,7 @@ export function DiscussionComposer({ avatar, topics = [] }) {
             onChange={(e) => setTitle(e.target.value)}
           />
           {topics.length > 0 && (
-            <CategoryField categories={options} value={topic} onChange={setTopic} label="Topic" className={styles.composerCategory} />
+            <TopicPicker options={options} value={picked} onChange={setPicked} className={styles.composerCategory} />
           )}
         </div>
         {(attachments.length > 0 || uploading || error) && (

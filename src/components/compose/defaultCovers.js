@@ -12,9 +12,13 @@ const ALTS = [
   'Team meeting with a data dashboard',
 ];
 
-export const DEFAULT_COVERS = ALTS.map((alt, i) => ({
-  id: `cover-${i + 1}`,
-  alt,
-  src: `/images/default-covers/cover-${i + 1}.jpg`,
-  thumb: `/images/default-covers/thumb-${i + 1}.jpg`,
-}));
+export const DEFAULT_COVERS = [
+  ...ALTS.map((alt, i) => ({
+    id: `cover-${i + 1}`,
+    alt,
+    src: `/images/default-covers/cover-${i + 1}.jpg`,
+    thumb: `/images/default-covers/thumb-${i + 1}.jpg`,
+  })),
+  // Animated: an advisor with a rising growth chart.
+  { id: 'cover-10', alt: 'Animated: advisor with a rising growth chart', src: '/images/default-covers/cover-10.gif', thumb: '/images/default-covers/thumb-10.gif' },
+];

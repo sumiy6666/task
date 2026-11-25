@@ -15,6 +15,7 @@ const RichEditor = dynamic(() => import('./RichEditor').then((m) => m.RichEditor
 });
 import { PollOptionsEditor } from './PollOptionsEditor';
 import { DEFAULT_COVERS } from './defaultCovers';
+import { TopicPicker } from './TopicPicker';
 import { ArticleIcon, ChevronDownIcon, ChevronLeftIcon, CloseIcon, ImageIcon, InsightIcon, PaperPlaneIcon, PollIcon } from './icons';
 
 const KINDS = [
@@ -112,10 +113,8 @@ export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5,
     return named ? keyOf(named) : defaultKey(initialType);
   });
   const [title, setTitle] = useState(initialTitle);
-  // The post's topic: one forum tag picked in the Topic dropdown (optional).
-  const [topic, setTopic] = useState(() => (initialTag && tagOptions.tags.some((t) => t.name === initialTag) ? initialTag : ''));
-  const tags = topic ? [topic] : [];
-  const topicChoices = [{ id: '', name: 'No topic' }, ...tagOptions.tags.map((t) => ({ id: t.name, name: t.name }))];
+  // The post's topics: forum tags picked in the Topic box (optional, several).
+  const [tags, setTags] = useState(() => String(initialTag || '').split(',').map((t) => t.trim()).filter((t) => tagOptions.tags.some((o) => o.name === t)).slice(0, tagOptions.max));
   // The post text as the editor's HTML; it goes to the forum as Markdown.
   const [initialHtml] = useState(() => markdownLinksToHtml(initialBody));
   const [body, setBody] = useState(initialHtml);
@@ -162,7 +161,7 @@ export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5,
     setStep('edit');
     setKind(null);
     setTitle('');
-    setTopic("");
+    setTags([]);
     setBody('');
     bodyRef.current?.clear();
     setImages([]);
@@ -291,7 +290,7 @@ export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5,
       const res = await fetch(cover.src);
       if (!res.ok) throw new Error('Could not load that image.');
       const blob = await res.blob();
-      await attachImage(new File([blob], `${cover.id}.jpg`, { type: blob.type || 'image/jpeg' }));
+      await attachImage(new File([blob], cover.src.split('/').pop(), { type: blob.type || (cover.src.endsWith('.gif') ? 'image/gif' : 'image/jpeg') }));
     } catch (e) {
       setError(e.message);
       setUploading(false);
@@ -350,7 +349,7 @@ export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5,
         <h1 className={styles.srOnly}>Review and Publish</h1>
         <div className={styles.reviewTop}>
           <Author user={user} />
-          <CategoryField categories={topicChoices} value={topic} label="Topic" readOnly />
+          <TopicPicker options={tagOptions.tags} value={tags} max={tagOptions.max} readOnly />
         </div>
         <KindHeader kind="poll" onBack={() => setStep('edit')} backLabel="EDIT" />
         <h2 className={styles.reviewQuestion}>{title.trim()}</h2>
@@ -398,12 +397,12 @@ export function ComposeFlow({ user, categories, tagOptions = { tags: [], max: 5,
         {/* The type decides the forum category; the Topic dropdown picks the
             post's tag from the forum's tags. */}
         {kind && tagOptions.tags.length > 0 && (
-          <CategoryField
-            categories={topicChoices}
-            value={topic}
-            label="Topic"
-            onChange={(name) => {
-              setTopic(name);
+          <TopicPicker
+            options={tagOptions.tags}
+            value={tags}
+            max={tagOptions.max}
+            onChange={(next) => {
+              setTags(next);
               setError('');
             }}
           />

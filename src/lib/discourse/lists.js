@@ -305,7 +305,10 @@ export function loadDiscussions({ type, tags: tagFilter = [] } = {}) {
     const articleIds = new Set(articles ? [articles.id, ...subcategoriesOf(articles).map((c) => c.id)] : []);
     // A topic or type filter reads its own list, so it is not limited to the latest page.
     const filtered = tagFilter.length
-      ? Promise.all(tagFilter.map((t) => discourseFetch(`/tag/${encodeURIComponent(t)}.json`).catch(() => null)))
+      ? Promise.all(tagFilter.map((t) => discourseFetch(`/tag/${encodeURIComponent(t)}.json`).catch((error) => {
+          console.warn(`Could not load tag ${t}: ${error?.status || ''} ${error?.message || error}`);
+          return null;
+        })))
       : type === 'articles' && articles ? discourseFetch(articlesPath(articles))
       : type === 'polls' && pollCategory ? discourseFetch(categoryPath(pollCategory))
       : null;
@@ -340,7 +343,11 @@ export function loadDiscussions({ type, tags: tagFilter = [] } = {}) {
     let feedTopics;
     if (tagFilter.length) {
       // Posts with any of the chosen tags, latest activity first, then the type filter.
+      // The tag pages are read fresh and can fail (e.g. the forum's rate
+      // limit), so topics with those tags in the lists already loaded count too.
       const byId = new Map();
+      const wanted = new Set(tagFilter.map((t) => t.toLowerCase()));
+      for (const list of [latest, active, top]) for (const t of mapList(list, categoriesById)) if (t.tags.some((x) => wanted.has(x.toLowerCase()))) byId.set(t.id, t);
       for (const list of filteredList || []) for (const t of list ? mapList(list, categoriesById) : []) byId.set(t.id, t);
       feedTopics = [...byId.values()].filter(ofType).sort((a, b) => new Date(b.bumpedAt) - new Date(a.bumpedAt));
     } else if (filteredList) feedTopics = mapList(filteredList, categoriesById);
